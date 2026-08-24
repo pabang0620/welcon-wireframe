@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WelCon 기업정보 등록</title>
+<style>
+/* ===== 기본 ===== */
+* { box-sizing: border-box; border-radius: 0; margin: 0; padding: 0; }
+html, body { background: #f4f4f4; }
+body {
+  font-family: "Pretendard", -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  color: #1a1a1a; -webkit-font-smoothing: antialiased; font-size: 14px; line-height: 1.5;
+}
+button, input { font-family: inherit; }
+.accent { color: #6d28d9; }
+
+/* ===== 상단바 + 스테퍼 ===== */
+.gnb { background: #fff; border-bottom: 1px solid #e0e0e0; }
+.gnb-in { max-width: 1120px; margin: 0 auto; padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; }
+.logo { font-size: 17px; font-weight: 800; letter-spacing: -0.02em; }
+.logo span { color: #6d28d9; }
+
+.stepper { display: flex; align-items: center; gap: 6px; }
+.step-node { display: flex; align-items: center; gap: 8px; }
+.step-dot {
+  width: 24px; height: 24px; border: 1.5px solid #ccc; color: #999; background: #fff;
+  display: grid; place-items: center; font-size: 12px; font-weight: 700; flex: none;
+}
+.step-node.done .step-dot { background: #6d28d9; border-color: #6d28d9; color: #fff; }
+.step-node.now .step-dot { border-color: #6d28d9; color: #6d28d9; border-width: 2px; }
+.step-node .step-label { font-size: 12.5px; color: #999; white-space: nowrap; }
+.step-node.now .step-label { color: #6d28d9; font-weight: 700; }
+.step-node.done .step-label { color: #444; }
+.step-line { width: 34px; height: 1px; background: #ddd; }
+
+/* ===== 페이지 공통 ===== */
+.page { max-width: 1120px; margin: 0 auto; padding: 36px 32px 140px; }
+.screen { display: none; }
+.screen.active { display: block; }
+.title { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 6px; }
+.req { color: #d93025; }
+.desc { font-size: 13.5px; color: #606060; margin-bottom: 28px; }
+
+/* ===== STEP1: 장르 타일 ===== */
+.genre-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.genre-tile {
+  border: 1px solid #d5d5d5; background: #fff; padding: 22px 12px; text-align: center;
+  font-size: 15px; font-weight: 600; cursor: pointer; color: #1a1a1a; position: relative;
+}
+.genre-tile:hover { border-color: #999; }
+.genre-tile.on { border-color: #6d28d9; border-width: 2px; color: #6d28d9; background: #f5f0fc; }
+.genre-tile.on::after {
+  content: ""; position: absolute; top: 11px; right: 13px; width: 8px; height: 5px;
+  border-left: 2px solid #6d28d9; border-bottom: 2px solid #6d28d9; transform: rotate(-45deg);
+}
+
+/* ===== 필터 칩 (장르 / 공통모듈) ===== */
+.filter-label { font-size: 11.5px; color: #999; margin-bottom: 7px; }
+.filter-label .filter-hint { font-size: 11px; color: #b3b3b3; font-weight: 400; margin-left: 8px; }
+.chips { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 22px; }
+.chip { border: 1px solid #d5d5d5; background: #fff; color: #444; padding: 7px 14px; font-size: 12.5px; cursor: pointer; }
+.chip:hover { border-color: #999; }
+.chip.on { background: #1a1a1a; border-color: #1a1a1a; color: #fff; }
+.chip-badge { display: inline-block; font-size: 10px; font-weight: 800; padding: 0 5px; margin-left: 6px; min-width: 14px; text-align: center; vertical-align: middle; }
+.chip-badge.main { background: #6d28d9; color: #fff; }
+.chip-badge.sub { background: #ddd; color: #444; }
+
+/* ===== 검색창 ===== */
+.search-box {
+  display: flex; align-items: center; border: 1.5px solid #d5d5d5; background: #fff;
+  padding: 11px 14px; max-width: 420px; margin-bottom: 24px;
+}
+.search-box:focus-within { border-color: #6d28d9; }
+.search-box input { flex: 1; border: none; outline: none; font-size: 13.5px; background: transparent; }
+.search-box .clear {
+  position: relative; border: none; background: #eee; width: 18px; height: 18px;
+  cursor: pointer; display: none; place-items: center; flex: none;
+}
+.search-box.has-val .clear { display: grid; }
+.search-box .clear::before, .search-box .clear::after {
+  content: ""; position: absolute; width: 9px; height: 1.5px; background: #777;
+}
+.search-box .clear::before { transform: rotate(45deg); }
+.search-box .clear::after { transform: rotate(-45deg); }
+
+/* ===== STEP2·3 결과 영역: 장르 카드가 마쏘너리로 배치, 카드 안 항목은 좌→우 흐름 ===== */
+.card-area { display: block; }
+.card-area.single { display: grid; grid-template-columns: 1fr; }
+.card-area.masonry { display: flex; align-items: flex-start; gap: 16px; }
+.masonry-col { display: flex; flex-direction: column; gap: 16px; flex: 1 1 0; min-width: 0; }
+
+.group { border: 1px solid #e2e2e2; background: #fff; overflow: hidden; }
+.group-title {
+  font-size: 12.5px; font-weight: 700; color: #fff; background: #6d28d9; letter-spacing: 0.02em;
+  padding: 9px 13px; display: flex; justify-content: space-between; align-items: center;
+}
+.group-title .g-badge {
+  background: #fff; color: #6d28d9; font-size: 10.5px; font-weight: 800;
+  width: 16px; height: 16px; display: grid; place-items: center; flex: none;
+}
+
+.group-body { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+.group.full .group-body { grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); }
+
+.opt {
+  display: flex; align-items: center; gap: 10px; padding: 12px 13px; cursor: pointer;
+  border-right: 1px solid #f0f0f0; border-bottom: 1px solid #f0f0f0;
+}
+.opt:hover { background: #fafafa; }
+.opt .box {
+  width: 18px; height: 18px; border: 1.5px solid #bbb; flex: none; background: #fff;
+  display: grid; place-items: center;
+}
+.opt .box::after { content: ""; width: 9px; height: 9px; background: #6d28d9; transform: scale(0); transition: transform .12s; }
+.opt.on .box { border-color: #6d28d9; }
+.opt.on .box::after { transform: scale(1); }
+.opt .label { flex: 1; font-size: 13.5px; }
+.opt.on .label { font-weight: 600; }
+.opt .sub { display: block; font-size: 11px; color: #999; font-weight: 400; margin-top: 2px; }
+
+.empty { border: 1px dashed #ddd; padding: 50px 16px; text-align: center; color: #999; font-size: 13px; }
+
+/* ===== 우리 회사(재선택 재개) 음영 표시 + 주/보조 배지 ===== */
+.opt.dim { cursor: not-allowed; background: #fafafa; }
+.opt.dim:hover { background: #fafafa; }
+.opt.dim .box { border-color: #bbb; }
+.opt.dim .box::after { content: ""; width: 9px; height: 9px; background: #999; transform: scale(1); }
+.opt.dim .label { color: #999; }
+.own-tag {
+  display: inline-block; font-size: 10.5px; font-weight: 700; color: #767676; background: #eee;
+  padding: 1.5px 6px; margin-left: 6px; vertical-align: middle;
+}
+.pos-badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 1.5px 6px; margin-left: 6px; vertical-align: middle; }
+.pos-badge.main { background: #6d28d9; color: #fff; }
+.pos-badge.sub { background: #fff; color: #6d28d9; border: 1px solid #6d28d9; }
+/* 음영(재선택 불가) 항목 안에서는 자주색이 튀면 선택 가능 항목과 헷갈리므로 회색 계열로 대체 */
+.opt.dim .pos-badge.main { background: #767676; color: #fff; border: none; }
+.opt.dim .pos-badge.sub { background: #fff; color: #999; border: 1px solid #ccc; }
+
+/* 보조포지션 배지 자체가 "주포지션으로 지정" 버튼을 겸한다.
+   평소엔 보조포지션과 동일한 외곽선 스타일, hover 시 주포지션 배지와 같은 채움 모양으로 바뀌어
+   클릭했을 때 어떻게 될지 미리 보여준다. */
+.pos-badge-btn {
+  font: inherit; line-height: normal; cursor: pointer;
+  appearance: none; -webkit-appearance: none; border-radius: 0; box-shadow: none;
+}
+.pos-badge-btn:hover, .pos-badge-btn:focus-visible { background: #6d28d9; color: #fff; }
+
+.tag.pos-main { border-color: #6d28d9; color: #6d28d9; }
+.tag.pos-main em { color: #6d28d9; }
+.tag.pos-sub em { color: #999; }
+
+/* ===== STEP4: 완료 ===== */
+.done-msg { display: flex; align-items: center; gap: 14px; padding-bottom: 28px; }
+.done-msg .ic { width: 40px; height: 40px; flex: none; border: 2px solid #6d28d9; display: grid; place-items: center; }
+.ic-check { width: 14px; height: 8px; border-left: 2.5px solid #6d28d9; border-bottom: 2.5px solid #6d28d9; transform: rotate(-45deg) translateY(-2px); }
+.done-msg .t { font-size: 18px; font-weight: 700; }
+.done-msg .d { font-size: 13px; color: #666; margin-top: 3px; }
+
+.sum-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.sum-card { border: 1px solid #e0e0e0; background: #fff; }
+.sum-head {
+  padding: 12px 15px; background: #fafafa; border-bottom: 1px solid #e0e0e0;
+  font-size: 12.5px; font-weight: 700; color: #444; display: flex; justify-content: space-between;
+}
+.sum-head .edit { color: #6d28d9; font-weight: 600; cursor: pointer; }
+.sum-body { padding: 14px 15px; display: flex; flex-wrap: wrap; gap: 6px; min-height: 60px; align-content: flex-start; }
+.tag { border: 1px solid #d5d5d5; background: #fff; font-size: 12px; padding: 5px 10px; }
+.tag em { font-style: normal; color: #999; font-size: 11px; margin-right: 4px; }
+.sum-none { color: #999; font-size: 13px; }
+
+/* ===== 하단 고정바 ===== */
+.footer { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; border-top: 1px solid #e0e0e0; }
+.footer-in { max-width: 1120px; margin: 0 auto; padding: 14px 32px; display: flex; align-items: center; justify-content: space-between; }
+.count-note { font-size: 13px; color: #767676; }
+.btn-row { display: flex; gap: 8px; }
+.btn { padding: 12px 28px; font-size: 14.5px; font-weight: 700; cursor: pointer; border: 1px solid #d5d5d5; background: #fff; color: #333; }
+.btn.primary { background: #6d28d9; border-color: #6d28d9; color: #fff; }
+.btn.primary:disabled { background: #e5e5e5; border-color: #e5e5e5; color: #aaa; cursor: not-allowed; }
+
+@media (max-width: 900px) {
+  .genre-grid { grid-template-columns: repeat(2, 1fr); }
+  .sum-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="gnb">
+  <div class="gnb-in">
+    <div class="logo">Wel<span>Con</span></div>
+    <div class="stepper" id="stepper"></div>
+  </div>
+</div>
+
+<div class="page">
+
+  <section class="screen" data-s="1">
+    <h1 class="title">활동 장르를 선택해 주세요 <span class="req">*</span></h1>
+    <p class="desc">해당하는 장르를 모두 선택할 수 있습니다.</p>
+    <div class="genre-grid" id="genreGrid"></div>
+  </section>
+
+  <section class="screen" data-s="2">
+    <h1 class="title">귀사가 하는 일을 선택해 주세요 <span class="req">*</span></h1>
+    <p class="desc">여러 역할을 함께 수행하는 경우 모두 선택해 주세요. 가장 대표적인 역할 하나가 주포지션이 되며, 보조포지션 배지를 누르면 주포지션을 바꿀 수 있습니다.</p>
+    <div id="catGenreFilterWrap">
+      <div class="filter-label">장르 <span class="filter-hint">선택하면 해당 장르의 항목만 보입니다.</span></div>
+      <div class="chips" id="catGenreFilter"></div>
+    </div>
+    <div class="filter-label">공통모듈 <span class="filter-hint">선택하면 해당 공통모듈의 항목만 보입니다.</span></div>
+    <div class="chips" id="catModuleFilter"></div>
+    <div class="search-box" id="catSearchBox">
+      <input type="text" id="catSearch" placeholder="항목 이름으로 검색 (예: 배급사, 유통)">
+      <button class="clear" id="catSearchClear"></button>
+    </div>
+    <div id="catArea"></div>
+  </section>
+
+  <section class="screen" data-s="3">
+    <h1 class="title">어떤 회사와 협업하고 싶으신가요?</h1>
+    <p class="desc">찾고 있는 파트너 유형을 선택해 주세요. 다른 장르의 기업도 선택할 수 있습니다.</p>
+    <div class="filter-label">장르 <span class="filter-hint">선택하면 해당 장르의 항목만 보입니다.</span></div>
+    <div class="chips" id="wishGenreFilter"></div>
+    <div class="filter-label">공통모듈 <span class="filter-hint">선택하면 해당 공통모듈의 항목만 보입니다.</span></div>
+    <div class="chips" id="wishModuleFilter"></div>
+    <div class="search-box" id="wishSearchBox">
+      <input type="text" id="wishSearch" placeholder="항목 이름으로 검색">
+      <button class="clear" id="wishSearchClear"></button>
+    </div>
+    <div id="wishArea"></div>
+  </section>
+
+  <section class="screen" data-s="4">
+    <div class="done-msg">
+      <div class="ic"><span class="ic-check"></span></div>
+      <div>
+        <div class="t">기업정보가 등록되었습니다</div>
+        <div class="d">입력하신 정보로 파트너 추천이 시작됩니다.</div>
+      </div>
+    </div>
+    <div class="sum-grid">
+      <div class="sum-card">
+        <div class="sum-head"><span>활동 장르</span><span class="edit" data-go="1">수정</span></div>
+        <div class="sum-body" id="sumGenre"></div>
+      </div>
+      <div class="sum-card">
+        <div class="sum-head"><span>우리 회사</span><span class="edit" data-go="2">수정</span></div>
+        <div class="sum-body" id="sumCat"></div>
+      </div>
+      <div class="sum-card">
+        <div class="sum-head"><span>찾는 파트너</span><span class="edit" data-go="3">수정</span></div>
+        <div class="sum-body" id="sumWish"></div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div class="footer">
+  <div class="footer-in">
+    <div class="count-note" id="countNote"></div>
+    <div class="btn-row">
+      <button class="btn" id="btnBack" style="display:none">이전</button>
+      <button class="btn primary" id="btnNext">다음</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===== 데이터 ===== */
+const STAGE_ORDER = ["기획·IP","투자","제작","제작지원·기술","유통·배급","플랫폼·서비스","중개·에이전트","마케팅·홍보","제조·상품화","기관·협회"];
+
+const DATA = {
+  "방송": {
+    "기획·IP": ["배급사"],
+    "투자": ["VC/투자", "정부기관"],
+    "제작": ["제작사", "숏폼 콘텐츠 제작사"],
+    "제작지원·기술": ["VFX/Virtual Production 스튜디오", "방송영상기술", "포스트프로덕션", "기술서비스", "시스템/소프트웨어", "장비/제조", "컨설팅"],
+    "유통·배급": ["방송사", "온라인플랫폼", "OTT/IPTV", "Fast TV", "숏폼 플랫폼"],
+    "플랫폼·서비스": ["MCN"],
+    "중개·에이전트": ["세일즈에이전트", "라이선싱에이전트", "미디어에이전시/브랜드", "섭외에이전시", "광고/홍보"],
+    "기타": ["기타"]
+  },
+  "게임": {
+    "투자": ["게임투자", "VC(투자사)"],
+    "제작": ["게임제작"],
+    "제작지원·기술": ["게임 제작지원/기술"],
+    "유통·배급": ["게임 배급", "게임마케팅"],
+    "플랫폼·서비스": ["게임서비스플랫폼"],
+    "기관·협회": ["게임 기관/협회"],
+    "기타": ["기타"]
+  },
+  "애니메이션": {
+    "기획·IP": ["판권보유배급사"],
+    "투자": ["투자사", "공공기관"],
+    "제작": ["제작사(자체IP)", "제작대행사(하청)"],
+    "제작지원·기술": ["포스트프로덕션", "컨설팅"],
+    "유통·배급": ["TV방송사업자", "온라인/모바일플랫폼", "OTT/IPTV"],
+    "중개·에이전트": ["세일즈에이전트", "라이선싱에이전트"],
+    "제조·상품화": ["제조·상품화(완구/굿즈)"],
+    "기타": ["기타"]
+  },
+  "만화": {
+    "제작": ["만화전문출판사", "일반출판사(만화부문)", "디지털만화CP", "웹툰CP"],
+    "제작지원·기술": ["웹툰현지화전문업체"],
+    "유통·배급": ["웹툰해외유통사"],
+    "플랫폼·서비스": ["디지털만화서비스", "웹툰서비스"],
+    "중개·에이전트": ["웹툰콘텐츠에이전트"],
+    "기타": ["기타"]
+  },
+  "캐릭터": {
+    "기획·IP": ["라이센서"],
+    "투자": ["투자사"],
+    "제작": ["캐릭터 제작사(디자인·기획)"],
+    "제작지원·기술": ["라이선싱 솔루션·기술서비스사"],
+    "유통·배급": ["리테일러"],
+    "플랫폼·서비스": ["캐릭터 놀이시설/체험시설 운영업"],
+    "중개·에이전트": ["라이선싱에이전트"],
+    "마케팅·홍보": ["IP 상품화·마케팅 대행사"],
+    "제조·상품화": ["라이선스/제조사"],
+    "기타": ["기타"]
+  },
+  "음악": {
+    "기획·IP": ["뮤직퍼블리셔(음악출판사)"],
+    "제작": ["음악제작사(레이블)"],
+    "제작지원·기술": ["음악제작지원업체(스튜디오·엔지니어링)"],
+    "유통·배급": ["음원유통사"],
+    "플랫폼·서비스": ["온라인음악서비스(스트리밍)"],
+    "중개·에이전트": ["공연기획사"],
+    "마케팅·홍보": ["음악마케팅·홍보대행사(팬덤/SNS/해외프로모션)"],
+    "기관·협회": ["저작권신탁관리단체"]
+  },
+  "패션": {
+    "기획·IP": ["IP·라이선싱(브랜드·캐릭터)"],
+    "제작": ["디자이너브랜드"],
+    "제작지원·기술": ["패턴실·샘플실"],
+    "유통·배급": ["해외 유통·물류 대행사"],
+    "플랫폼·서비스": ["온라인편집숍"],
+    "중개·에이전트": ["쇼룸", "바잉오피스", "소싱에이전트"],
+    "제조·상품화": ["OEM/ODM 생산업체(벤더사)"]
+  },
+  "신기술융합": {
+    "기획·IP": ["IP라이선싱 에이전시"],
+    "제작": ["실감콘텐츠(XR) 제작사"],
+    "제작지원·기술": ["모션캡처 전문업체"],
+    "플랫폼·서비스": ["XR플랫폼"],
+    "제조·상품화": ["실감형 전시·체험시설 구축업체"]
+  }
+};
+
+const GENRES = Object.keys(DATA);
+const STEP_LABELS = ["", "활동 장르", "우리 회사", "찾는 파트너", "완료"];
+const SEP = "||";
+
+/* ===== 상태 ===== */
+const st = {
+  step: 1,
+  genres: new Set(),
+  cats: new Set(),
+  wishes: new Set(),
+  catGenreFilter: new Set(),
+  catModuleFilter: new Set(),
+  wishGenreFilter: new Set(),
+  wishModuleFilter: new Set(),
+  catQ: "",
+  wishQ: "",
+  mainKey: null
+};
+
+const key = (g, item) => g + SEP + item;
+const parseKey = k => k.split(SEP);
+
+function stagesOf(genre) {
+  const d = DATA[genre];
+  return STAGE_ORDER.filter(s => d[s]).concat(d["기타"] ? ["기타"] : []);
+}
+
+function matchesQuery(text, q) {
+  return !q || text.toLowerCase().includes(q.toLowerCase());
+}
+
+/* ===== 메인 렌더 ===== */
+function render() {
+  document.querySelectorAll(".screen").forEach(el => {
+    el.classList.toggle("active", el.dataset.s === String(st.step));
+  });
+  drawStepper();
+
+  document.getElementById("btnBack").style.display = (st.step > 1 && st.step < 4) ? "inline-block" : "none";
+  const nextBtn = document.getElementById("btnNext");
+  nextBtn.textContent = st.step === 3 ? "등록 완료" : (st.step === 4 ? "처음부터 다시" : "다음");
+  nextBtn.disabled = (st.step === 1 && !st.genres.size) || (st.step === 2 && !st.cats.size);
+
+  if (st.step === 1) drawGenreStep();
+  if (st.step === 2) drawCatStep();
+  if (st.step === 3) drawWishStep();
+  if (st.step === 4) drawSummaryStep();
+
+  updateCountNote();
+  window.scrollTo(0, 0);
+}
+
+function drawStepper() {
+  const el = document.getElementById("stepper");
+  let html = "";
+  for (let i = 1; i <= 4; i++) {
+    const cls = i < st.step ? "done" : (i === st.step ? "now" : "");
+    const dotContent = i < st.step ? '<span class="ic-check" style="border-color:#fff;width:9px;height:5px;transform:rotate(-45deg)"></span>' : String(i);
+    html += '<div class="step-node ' + cls + '"><div class="step-dot">' + dotContent + '</div>' +
+      '<div class="step-label">' + STEP_LABELS[i] + '</div></div>';
+    if (i < 4) html += '<div class="step-line"></div>';
+  }
+  el.innerHTML = html;
+}
+
+function updateCountNote() {
+  const note = document.getElementById("countNote");
+  note.textContent =
+    st.step === 2 ? st.cats.size + "개 선택됨" :
+    st.step === 3 ? st.wishes.size + "개 선택됨" : "";
+}
+
+/* ===== STEP1: 장르 ===== */
+function drawGenreStep() {
+  const el = document.getElementById("genreGrid");
+  el.innerHTML = GENRES.map(g =>
+    '<button class="genre-tile ' + (st.genres.has(g) ? "on" : "") + '" data-g="' + g + '">' + g + '</button>'
+  ).join("");
+  el.querySelectorAll(".genre-tile").forEach(btn => {
+    btn.onclick = () => {
+      const g = btn.dataset.g;
+      if (st.genres.has(g)) {
+        st.genres.delete(g);
+        st.catGenreFilter.delete(g);
+        st.wishGenreFilter.delete(g);
+      } else {
+        st.genres.add(g);
+        st.catGenreFilter.add(g);
+        st.wishGenreFilter.add(g);
+      }
+      [...st.cats].forEach(k => { if (!st.genres.has(parseKey(k)[0])) st.cats.delete(k); });
+      st.catModuleFilter.clear();
+      st.wishModuleFilter.clear();
+      render();
+    };
+  });
+}
+
+/* ===== 공용: 필터 칩 그리기 =====
+   badgeFn(v)가 주어지면 칩 안에 선택 현황 카운트 배지를 얹는다(클릭=필터 토글과는 별개 채널). */
+function drawChipRow(container, options, selectedSet, onToggle, badgeFn) {
+  container.innerHTML = options.map(v => {
+    const info = badgeFn ? badgeFn(v) : null;
+    const badge = (info && info.count) ? '<span class="chip-badge ' + info.level + '">' + info.count + '</span>' : "";
+    return '<button class="chip ' + (selectedSet.has(v) ? "on" : "") + '" data-v="' + v + '">' + v + badge + '</button>';
+  }).join("");
+  container.querySelectorAll(".chip").forEach(btn => {
+    btn.onclick = () => {
+      const v = btn.dataset.v;
+      selectedSet.has(v) ? selectedSet.delete(v) : selectedSet.add(v);
+      onToggle();
+    };
+  });
+}
+
+/* 항목 키가 속한 스테이지(공통모듈)를 역으로 찾는다 */
+function stageOfKey(k) {
+  const p = parseKey(k);
+  const g = p[0], item = p[1];
+  const d = DATA[g];
+  for (const s in d) { if (d[s].indexOf(item) > -1) return s; }
+  return null;
+}
+
+/* 모듈 필터칩용 선택 현황 배지 정보 - noMain이면 주/보조 구분 없이 항상 회색(sub)으로 표시 */
+function moduleBadgeInfo(pickedSet, genresScope, stage, noMain) {
+  let count = 0, hasMain = false;
+  const mainKey = noMain ? null : getMainKey();
+  pickedSet.forEach(k => {
+    if (genresScope.indexOf(parseKey(k)[0]) === -1) return;
+    if (stageOfKey(k) !== stage) return;
+    count++;
+    if (!noMain && k === mainKey) hasMain = true;
+  });
+  if (!count) return null;
+  return { count: count, level: hasMain ? "main" : "sub" };
+}
+
+function moduleOptionsFor(genresScope, includeOther) {
+  const set = new Set();
+  genresScope.forEach(g => stagesOf(g).forEach(s => {
+    if (!includeOther && s === "기타") return;
+    set.add(s);
+  }));
+  const ordered = STAGE_ORDER.filter(s => set.has(s));
+  if (set.has("기타")) ordered.push("기타");
+  return ordered;
+}
+
+/* ===== 공용: 장르별 카드 데이터 생성 ===== */
+function collectCards(genresScope, moduleFilter, q, dimSet, skipOther) {
+  const cards = [];
+  genresScope.forEach(g => {
+    const items = [];
+    stagesOf(g).forEach(stage => {
+      if (skipOther && stage === "기타") return;
+      if (moduleFilter.size && !moduleFilter.has(stage)) return;
+      DATA[g][stage].forEach(item => {
+        const k = key(g, item);
+        if (!matchesQuery(item, q)) return;
+        items.push({ k: k, item: item, stage: stage, dim: !!(dimSet && dimSet.has(k)) });
+      });
+    });
+    if (items.length) cards.push({ genre: g, items: items });
+  });
+  return cards;
+}
+
+function cardHtml(card, pickedSet, isFull, allowMainToggle) {
+  const picked = card.items.filter(o => pickedSet.has(o.k)).length;
+  const badge = picked ? '<span class="g-badge">' + picked + '</span>' : "";
+  const body = card.items.map(o => {
+    const isOn = pickedSet.has(o.k);
+    const isDim = !!o.dim;
+    const posBadge = catPositionLabel(o.k, !isDim && isOn && allowMainToggle);
+    const extra = isDim ? '<span class="own-tag">우리 회사</span>' + posBadge : posBadge;
+    return '<div class="opt' + (isOn ? " on" : "") + (isDim ? " dim" : "") + '" data-k="' + o.k + '">' +
+      '<div class="box"></div><div class="label">' + o.item + extra + '<span class="sub">' + o.stage + '</span></div>' +
+    '</div>';
+  }).join("");
+  return '<div class="group' + (isFull ? " full" : "") + '"><div class="group-title">' + card.genre + badge + '</div>' +
+    '<div class="group-body">' + body + '</div></div>';
+}
+
+/* 카드 목록을 실제 DOM에 배치 - 카드 1개면 전체폭, 여러 개면 마쏘너리(짧은 열 우선) 배치 */
+function renderCards(container, cards, pickedSet, emptyMsg, allowMainToggle) {
+  container.classList.remove("single", "masonry");
+  if (!cards.length) {
+    container.innerHTML = '<div class="empty">' + emptyMsg + '</div>';
+    return;
+  }
+  if (cards.length === 1) {
+    container.classList.add("single");
+    container.innerHTML = cardHtml(cards[0], pickedSet, true, allowMainToggle);
+    return;
+  }
+
+  // 우선 화면에 순서대로 깔아서 각 카드의 실제 높이를 측정한다
+  container.innerHTML = cards.map(c => cardHtml(c, pickedSet, false, allowMainToggle)).join("");
+  const nodes = Array.from(container.children);
+  const w = window.innerWidth;
+  const cols = w <= 620 ? 1 : (w <= 900 ? 2 : 3);
+
+  if (cols === 1) return; // 이미 세로 1열이 자연스러운 폭 - 그대로 둠
+
+  const colBoxes = [];
+  for (let i = 0; i < cols; i++) {
+    const box = document.createElement("div");
+    box.className = "masonry-col";
+    colBoxes.push(box);
+  }
+  const heights = new Array(cols).fill(0);
+  nodes.forEach(node => {
+    let idx = 0;
+    for (let i = 1; i < cols; i++) { if (heights[i] < heights[idx]) idx = i; }
+    colBoxes[idx].appendChild(node); // 기존 노드를 그대로 옮기므로 이벤트 핸들러는 나중에 다시 건다
+    heights[idx] += node.offsetHeight + 16;
+  });
+  container.innerHTML = "";
+  container.classList.add("masonry");
+  colBoxes.forEach(box => container.appendChild(box));
+}
+
+function wireOptClicks(container, pickedSet, otherSet, onChange) {
+  container.querySelectorAll(".opt").forEach(opt => {
+    if (opt.classList.contains("dim")) return; // 우리 회사로 이미 등록된 항목은 희망비즈니스로 선택 불가
+    opt.onclick = () => {
+      const k = opt.dataset.k;
+      pickedSet.has(k) ? pickedSet.delete(k) : pickedSet.add(k);
+      if (otherSet) otherSet.delete(k);
+      onChange();
+    };
+  });
+}
+
+/* 선택된 회사카테고리 항목 중 보조포지션 배지를 눌러 주포지션을 지정하는 배선.
+   보조포지션 배지에만 .pos-badge-btn이 붙으므로 이미 주포지션이거나(catPositionLabel에서 제외),
+   3단계 음영 항목(isDim이면 애초에 clickable 인자를 false로 넘김), 미선택 항목(배지 자체가 안 나옴)은
+   여기서 걸릴 요소가 없다.
+   .opt 전체에 걸린 wireOptClicks의 토글 클릭으로 이벤트가 번지지 않도록 stopPropagation한다. */
+function wireMainToggle(container) {
+  container.querySelectorAll(".pos-badge-btn").forEach(btn => {
+    btn.onclick = (e) => {
+      e.stopPropagation();
+      st.mainKey = btn.dataset.mk;
+      drawCatStep();
+    };
+  });
+}
+
+/* ===== 회사카테고리 주포지션 판정 =====
+   st.mainKey가 지정되어 있고 여전히 선택되어 있으면 그것이 주포지션.
+   지정된 적이 없거나(초기) 지정된 항목의 선택이 해제됐으면 남은 항목 중 가장 먼저 선택한 항목이 자동으로 주포지션이 된다. */
+function getMainKey() {
+  if (st.mainKey && st.cats.has(st.mainKey)) return st.mainKey;
+  return st.cats.size ? [...st.cats][0] : null;
+}
+
+function catPositionLabel(k, clickable) {
+  if (!st.cats.has(k)) return "";
+  const isMain = k === getMainKey();
+  const cls = "pos-badge " + (isMain ? "main" : "sub");
+  const text = isMain ? "주포지션" : "보조포지션";
+  if (!isMain && clickable) {
+    return '<button type="button" class="' + cls + ' pos-badge-btn" data-mk="' + k + '" title="주포지션으로 지정">' + text + '</button>';
+  }
+  return '<span class="' + cls + '">' + text + '</span>';
+}
+
+/* ===== STEP2: 회사카테고리 ===== */
+function drawCatStep() {
+  drawChipRow(document.getElementById("catGenreFilter"), GENRES, st.catGenreFilter, drawCatStep);
+
+  const genreScope = st.catGenreFilter.size ? [...st.catGenreFilter] : GENRES;
+  drawChipRow(document.getElementById("catModuleFilter"), moduleOptionsFor(genreScope, true), st.catModuleFilter, drawCatStep,
+    stage => moduleBadgeInfo(st.cats, genreScope, stage));
+
+  const q = st.catQ.trim();
+  const cards = collectCards(genreScope, st.catModuleFilter, q, null, false);
+  const el = document.getElementById("catArea");
+  renderCards(el, cards, st.cats, q ? '"' + q + '"에 해당하는 항목이 없습니다.' : '해당하는 항목이 없습니다.', true);
+  wireOptClicks(el, st.cats, st.wishes, () => {
+    drawCatStep();
+    document.getElementById("btnNext").disabled = !st.cats.size;
+    updateCountNote();
+  });
+  wireMainToggle(el);
+}
+
+/* ===== STEP3: 희망비즈니스 ===== */
+function drawWishStep() {
+  drawChipRow(document.getElementById("wishGenreFilter"), GENRES, st.wishGenreFilter, drawWishStep);
+
+  const genreScope = st.wishGenreFilter.size ? [...st.wishGenreFilter] : GENRES;
+  drawChipRow(document.getElementById("wishModuleFilter"), moduleOptionsFor(genreScope, false), st.wishModuleFilter, drawWishStep,
+    stage => moduleBadgeInfo(st.wishes, genreScope, stage, true));
+
+  const q = st.wishQ.trim();
+  const cards = collectCards(genreScope, st.wishModuleFilter, q, st.cats, true);
+  const el = document.getElementById("wishArea");
+  renderCards(el, cards, st.wishes, q ? '"' + q + '"에 해당하는 항목이 없습니다.' : '선택할 수 있는 파트너 유형이 없습니다.');
+  wireOptClicks(el, st.wishes, null, () => {
+    drawWishStep();
+    updateCountNote();
+  });
+}
+
+/* ===== STEP4: 완료 요약 ===== */
+function drawSummaryStep() {
+  const multi = st.genres.size > 1;
+  document.getElementById("sumGenre").innerHTML =
+    [...st.genres].map(g => '<span class="tag">' + g + '</span>').join("") || '<span class="sum-none">없음</span>';
+  document.getElementById("sumCat").innerHTML =
+    [...st.cats].map((k) => {
+      const p = parseKey(k);
+      const isMain = k === getMainKey();
+      const posText = isMain ? "주포지션" : "보조포지션";
+      return '<span class="tag ' + (isMain ? "pos-main" : "pos-sub") + '"><em>' +
+        (multi ? p[0] + " · " : "") + posText + '</em>' + p[1] + '</span>';
+    }).join("") || '<span class="sum-none">없음</span>';
+  document.getElementById("sumWish").innerHTML =
+    [...st.wishes].map(k => {
+      const p = parseKey(k);
+      return '<span class="tag"><em>' + p[0] + '</em>' + p[1] + '</span>';
+    }).join("") || '<span class="sum-none">선택하지 않음</span>';
+}
+
+/* ===== 검색창 배선 ===== */
+function wireSearchBox(boxId, inputId, clearId, onChange) {
+  const box = document.getElementById(boxId);
+  const input = document.getElementById(inputId);
+  const clearBtn = document.getElementById(clearId);
+  input.oninput = () => {
+    box.classList.toggle("has-val", !!input.value);
+    onChange(input.value);
+  };
+  clearBtn.onclick = () => {
+    input.value = "";
+    box.classList.remove("has-val");
+    onChange("");
+    input.focus();
+  };
+}
+
+/* ===== 하단 버튼 ===== */
+function resetAll() {
+  st.step = 1;
+  st.genres.clear(); st.cats.clear(); st.wishes.clear();
+  st.catGenreFilter.clear(); st.catModuleFilter.clear();
+  st.wishGenreFilter.clear(); st.wishModuleFilter.clear();
+  st.catQ = ""; st.wishQ = "";
+  st.mainKey = null;
+  document.getElementById("catSearch").value = "";
+  document.getElementById("catSearchBox").classList.remove("has-val");
+  document.getElementById("wishSearch").value = "";
+  document.getElementById("wishSearchBox").classList.remove("has-val");
+}
+
+document.getElementById("btnNext").onclick = () => {
+  if (st.step === 4) resetAll(); else st.step++;
+  render();
+};
+document.getElementById("btnBack").onclick = () => { st.step--; render(); };
+document.querySelectorAll(".edit").forEach(el => {
+  el.onclick = () => { st.step = +el.dataset.go; render(); };
+});
+
+wireSearchBox("catSearchBox", "catSearch", "catSearchClear", v => { st.catQ = v; drawCatStep(); });
+wireSearchBox("wishSearchBox", "wishSearch", "wishSearchClear", v => { st.wishQ = v; drawWishStep(); });
+
+let resizeTimer;
+window.addEventListener("resize", () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    if (st.step === 2) drawCatStep();
+    if (st.step === 3) drawWishStep();
+  }, 150);
+});
+
+render();
+</script>
+</body>
+</html>
