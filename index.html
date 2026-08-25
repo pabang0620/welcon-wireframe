@@ -708,7 +708,7 @@ function catPositionLabel(k, clickable) {
 
 /* ===== STEP2: 회사카테고리 ===== */
 function drawCatStep() {
-  drawChipRow(document.getElementById("catGenreFilter"), GENRES, st.catGenreFilter, drawCatStep);
+  drawChipRow(document.getElementById("catGenreFilter"), GENRES, st.catGenreFilter, drawCatStep, null, true);
 
   const genreScope = st.catGenreFilter.size ? [...st.catGenreFilter] : GENRES;
   drawChipRow(document.getElementById("catModuleFilter"), moduleOptionsFor(genreScope, true), st.catModuleFilter, drawCatStep,
