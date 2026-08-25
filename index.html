@@ -270,7 +270,7 @@ button, input { font-family: inherit; }
         <div class="sum-body" id="sumCat"></div>
       </div>
       <div class="sum-card">
-        <div class="sum-head"><span>찾는 파트너</span><span class="edit" data-go="3">수정</span></div>
+        <div class="sum-head"><span>희망 회사</span><span class="edit" data-go="3">수정</span></div>
         <div class="sum-body" id="sumWish"></div>
       </div>
     </div>
@@ -280,7 +280,7 @@ button, input { font-family: inherit; }
         <div class="chart-legend">
           <span class="lg-item"><span class="lg-swatch main"></span>주포지션</span>
           <span class="lg-item"><span class="lg-swatch sub"></span>보조포지션</span>
-          <span class="lg-item"><span class="lg-swatch wish"></span>필요한 포지션</span>
+          <span class="lg-item"><span class="lg-swatch wish"></span>희망 포지션</span>
         </div>
         <div class="chart-canvas-wrap" id="genreChartWrap"><canvas id="genreChartCanvas"></canvas></div>
       </div>
@@ -398,7 +398,7 @@ const DATA = {
 };
 
 const GENRES = Object.keys(DATA);
-const STEP_LABELS = ["", "활동 장르", "우리 회사", "찾는 파트너", "완료"];
+const STEP_LABELS = ["", "활동 장르", "우리 회사", "희망 회사", "완료"];
 const SEP = "||";
 
 /* ===== 상태 ===== */
@@ -784,7 +784,7 @@ let genreChartInstance = null;
 const CHART_SEG_META = {
   main: { label: "주포지션", color: "#4d4d4d" },
   sub: { label: "보조포지션", color: "#6b6b6b" },
-  wish: { label: "필요한 포지션", color: "#bfbfbf" }
+  wish: { label: "희망 포지션", color: "#bfbfbf" }
 };
 
 function drawGenreChart() {
