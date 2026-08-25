@@ -149,8 +149,6 @@ button, input { font-family: inherit; }
 }
 .pos-badge-btn:hover, .pos-badge-btn:focus-visible { background: #6d28d9; color: #fff; }
 
-.tag.pos-main { border-color: #6d28d9; color: #6d28d9; }
-.tag.pos-main em { color: #6d28d9; }
 .tag.pos-sub em { color: #999; }
 
 /* ===== STEP4: 완료 ===== */
@@ -169,6 +167,8 @@ button, input { font-family: inherit; }
 .sum-head .edit { color: #6d28d9; font-weight: 600; cursor: pointer; }
 .sum-body { padding: 14px 15px; display: flex; flex-wrap: wrap; gap: 6px; min-height: 60px; align-content: flex-start; }
 .tag { border: 1px solid #d5d5d5; background: #fff; font-size: 12px; padding: 5px 10px; }
+.tag.hl { background: #f7e2e9; border-color: #d4728e; color: #b6466a; }
+.tag.hl em { color: #c9607f; }
 .tag em { font-style: normal; color: #999; font-size: 11px; margin-right: 4px; }
 .sum-none { color: #999; font-size: 13px; }
 .sum-groups { display: flex; flex-direction: column; gap: 12px; width: 100%; }
@@ -183,9 +183,9 @@ button, input { font-family: inherit; }
 .chart-legend { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 16px; font-size: 12px; color: #444; }
 .lg-item { display: flex; align-items: center; gap: 6px; }
 .lg-swatch { width: 11px; height: 11px; display: inline-block; flex: none; }
-.lg-swatch.main { background: #4d4d4d; }
-.lg-swatch.sub { background: #6b6b6b; }
-.lg-swatch.wish { background: #bfbfbf; }
+.lg-swatch.main { background: #6d28d9; }
+.lg-swatch.sub { background: #8b5cf6; }
+.lg-swatch.wish { background: #767676; }
 
 .chart-canvas-wrap { position: relative; width: 100%; }
 
@@ -782,10 +782,21 @@ function computeGenreChartData() {
 let genreChartInstance = null;
 
 const CHART_SEG_META = {
-  main: { label: "주포지션", color: "#4d4d4d" },
-  sub: { label: "보조포지션", color: "#6b6b6b" },
-  wish: { label: "희망 포지션", color: "#bfbfbf" }
+  main: { label: "주포지션", color: "#6d28d9" },
+  sub: { label: "보조포지션", color: "#8b5cf6" },
+  wish: { label: "희망 포지션", color: "#767676" }
 };
+
+function clearChartHighlight() {
+  document.querySelectorAll(".tag.hl").forEach(el => el.classList.remove("hl"));
+}
+
+function highlightSummaryFor(genre, type) {
+  clearChartHighlight();
+  document.querySelectorAll('.tag[data-hl-type="' + type + '"]').forEach(el => {
+    if (el.dataset.hlGenre === genre) el.classList.add("hl");
+  });
+}
 
 function drawGenreChart() {
   const wrap = document.getElementById("genreChartWrap");
@@ -804,6 +815,7 @@ function drawGenreChart() {
     return;
   }
   canvas.style.display = "";
+  canvas.onmouseleave = clearChartHighlight;
   // 장르 하나당 막대 1개 - 장르 수(최대 8개)에 비례해 캔버스 높이를 잡는다.
   wrap.style.height = Math.max(120, data.length * 42) + "px";
 
@@ -821,8 +833,6 @@ function drawGenreChart() {
       rawCount: data.map(d => d[key]),
       rawDenom: data.map(d => d.denom),
       borderWidth: 0,
-      hoverBorderColor: "#b6466a",
-      hoverBorderWidth: 2,
       stack: "genre"
     };
   });
@@ -836,6 +846,13 @@ function drawGenreChart() {
       maintainAspectRatio: false,
       animation: { duration: 200 },
       interaction: { mode: "nearest", intersect: true },
+      onHover: (evt, elements) => {
+        if (!elements.length) { clearChartHighlight(); return; }
+        const el = elements[0];
+        const type = ["main", "sub", "wish"][el.datasetIndex];
+        const genre = data[el.index].genre;
+        highlightSummaryFor(genre, type);
+      },
       scales: {
         x: { stacked: true, min: 0, max: 100, grid: { color: "#f0f0f0" }, ticks: { callback: v => v + "%" } },
         y: { stacked: true, grid: { display: false } }
@@ -867,6 +884,7 @@ function sumGroup(label, list, tagFn) {
 }
 
 function drawSummaryStep() {
+  clearChartHighlight();
   drawGenreChart();
 
   /* 장르 카드: 활동장르(st.genres + 2단계에서 필터를 끄고 추가 선택한 st.cats 장르, 중복
@@ -889,7 +907,8 @@ function drawSummaryStep() {
   const subKeys = catKeys.filter(k => k !== mainKey);
   const posTag = cls => k => {
     const p = parseKey(k);
-    return '<span class="tag ' + cls + '"><em>' + p[0] + ' · </em>' + p[1] + '</span>';
+    const hlType = cls === "pos-main" ? "main" : "sub";
+    return '<span class="tag ' + cls + '" data-hl-genre="' + p[0] + '" data-hl-type="' + hlType + '"><em>' + p[0] + ' · </em>' + p[1] + '</span>';
   };
   const catHtml =
     sumGroup("주포지션", mainKeys, posTag("pos-main")) +
@@ -901,7 +920,7 @@ function drawSummaryStep() {
   document.getElementById("sumWish").innerHTML =
     [...st.wishes].map(k => {
       const p = parseKey(k);
-      return '<span class="tag"><em>' + p[0] + '</em>' + p[1] + '</span>';
+      return '<span class="tag" data-hl-genre="' + p[0] + '" data-hl-type="wish"><em>' + p[0] + '</em>' + p[1] + '</span>';
     }).join("") || '<span class="sum-none">선택하지 않음</span>';
 }
 
