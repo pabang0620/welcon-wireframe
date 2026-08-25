@@ -167,8 +167,6 @@ button, input { font-family: inherit; }
 .sum-head .edit { color: #6d28d9; font-weight: 600; cursor: pointer; }
 .sum-body { padding: 14px 15px; display: flex; flex-wrap: wrap; gap: 6px; min-height: 60px; align-content: flex-start; }
 .tag { border: 1px solid #d5d5d5; background: #fff; font-size: 12px; padding: 5px 10px; }
-.tag.hl { background: #f7e2e9; border-color: #d4728e; color: #b6466a; }
-.tag.hl em { color: #c9607f; }
 .tag em { font-style: normal; color: #999; font-size: 11px; margin-right: 4px; }
 .sum-none { color: #999; font-size: 13px; }
 .sum-groups { display: flex; flex-direction: column; gap: 12px; width: 100%; }
@@ -185,7 +183,7 @@ button, input { font-family: inherit; }
 .lg-swatch { width: 11px; height: 11px; display: inline-block; flex: none; }
 .lg-swatch.main { background: #6d28d9; }
 .lg-swatch.sub { background: #8b5cf6; }
-.lg-swatch.wish { background: #767676; }
+.lg-swatch.wish { background: #b6466a; }
 
 .chart-canvas-wrap { position: relative; width: 100%; }
 
@@ -765,7 +763,8 @@ function genreItemCount(genre) {
 function computeGenreChartData() {
   const mk = getMainKey();
   const catGenres = [...st.cats].map(k => parseKey(k)[0]);
-  const chartGenres = [...new Set([...st.genres, ...catGenres])];
+  const wishGenres = [...st.wishes].map(k => parseKey(k)[0]);
+  const chartGenres = [...new Set([...st.genres, ...catGenres, ...wishGenres])];
   return chartGenres.map(g => {
     let main = 0, sub = 0, wish = 0;
     st.cats.forEach(k => {
@@ -782,19 +781,43 @@ function computeGenreChartData() {
 let genreChartInstance = null;
 
 const CHART_SEG_META = {
-  main: { label: "주포지션", color: "#6d28d9" },
+  main: { label: "주포지션", color: "#6d28d9", hlBg: "#4c1d95", hlText: "#fff" },
   sub: { label: "보조포지션", color: "#8b5cf6" },
-  wish: { label: "희망 포지션", color: "#767676" }
+  wish: { label: "희망 포지션", color: "#b6466a" }
 };
 
+function hexToRgba(hex, alpha) {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return "rgba(" + r + ", " + g + ", " + b + ", " + alpha + ")";
+}
+
 function clearChartHighlight() {
-  document.querySelectorAll(".tag.hl").forEach(el => el.classList.remove("hl"));
+  document.querySelectorAll(".tag.hl").forEach(el => {
+    el.classList.remove("hl");
+    el.style.borderColor = "";
+    el.style.color = "";
+    el.style.background = "";
+    const em = el.querySelector("em");
+    if (em) em.style.color = "";
+  });
 }
 
 function highlightSummaryFor(genre, type) {
   clearChartHighlight();
+  const meta = CHART_SEG_META[type];
+  const color = meta.color;
+  const bg = meta.hlBg || hexToRgba(color, 0.12);
+  const textColor = meta.hlText || color;
   document.querySelectorAll('.tag[data-hl-type="' + type + '"]').forEach(el => {
-    if (el.dataset.hlGenre === genre) el.classList.add("hl");
+    if (el.dataset.hlGenre !== genre) return;
+    el.classList.add("hl");
+    el.style.borderColor = meta.hlBg || color;
+    el.style.color = textColor;
+    el.style.background = bg;
+    const em = el.querySelector("em");
+    if (em) em.style.color = textColor;
   });
 }
 
