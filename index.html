@@ -177,15 +177,15 @@ button, input { font-family: inherit; }
 .sum-group .sum-none { display: block; }
 
 /* ===== STEP4: 장르별 포지션 막대그래프 ===== */
-.chart-card { border: 1px solid #e0e0e0; background: #fff; margin-bottom: 18px; }
+.chart-card { border: 1px solid #e0e0e0; background: #fff; margin-top: 32px; margin-bottom: 18px; }
 .chart-head { padding: 12px 15px; background: #fafafa; border-bottom: 1px solid #e0e0e0; font-size: 12.5px; font-weight: 700; color: #444; }
 .chart-body { padding: 18px 15px 14px; }
 .chart-legend { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 16px; font-size: 12px; color: #444; }
 .lg-item { display: flex; align-items: center; gap: 6px; }
 .lg-swatch { width: 11px; height: 11px; display: inline-block; flex: none; }
-.lg-swatch.main { background: #6d28d9; }
-.lg-swatch.sub { background: #b39ddb; }
-.lg-swatch.wish { background: #767676; }
+.lg-swatch.main { background: #4d4d4d; }
+.lg-swatch.sub { background: #6b6b6b; }
+.lg-swatch.wish { background: #bfbfbf; }
 
 .chart-canvas-wrap { position: relative; width: 100%; }
 
@@ -782,9 +782,9 @@ function computeGenreChartData() {
 let genreChartInstance = null;
 
 const CHART_SEG_META = {
-  main: { label: "주포지션", color: "#6d28d9" },
-  sub: { label: "보조포지션", color: "#b39ddb" },
-  wish: { label: "필요한 포지션", color: "#767676" }
+  main: { label: "주포지션", color: "#4d4d4d" },
+  sub: { label: "보조포지션", color: "#6b6b6b" },
+  wish: { label: "필요한 포지션", color: "#bfbfbf" }
 };
 
 function drawGenreChart() {
@@ -821,6 +821,8 @@ function drawGenreChart() {
       rawCount: data.map(d => d[key]),
       rawDenom: data.map(d => d.denom),
       borderWidth: 0,
+      hoverBorderColor: "#b6466a",
+      hoverBorderWidth: 2,
       stack: "genre"
     };
   });
@@ -833,6 +835,7 @@ function drawGenreChart() {
       responsive: true,
       maintainAspectRatio: false,
       animation: { duration: 200 },
+      interaction: { mode: "nearest", intersect: true },
       scales: {
         x: { stacked: true, min: 0, max: 100, grid: { color: "#f0f0f0" }, ticks: { callback: v => v + "%" } },
         y: { stacked: true, grid: { display: false } }
@@ -873,8 +876,8 @@ function drawSummaryStep() {
   const actGenres = [...new Set([...st.genres, ...catGenres])];
   const wishGenres = [...new Set([...st.wishes].map(k => parseKey(k)[0]))];
   const wishGenreBlock = wishGenres.length
-    ? sumGroup("협업", wishGenres, genreTag)
-    : '<div class="sum-group"><div class="sum-group-label">협업</div><span class="sum-none">선택하지 않음</span></div>';
+    ? sumGroup("희망", wishGenres, genreTag)
+    : '<div class="sum-group"><div class="sum-group-label">희망</div><span class="sum-none">선택하지 않음</span></div>';
   const genreHtml = sumGroup("활동", actGenres, genreTag) + wishGenreBlock;
   document.getElementById("sumGenre").innerHTML =
     genreHtml ? '<div class="sum-groups">' + genreHtml + '</div>' : '<span class="sum-none">없음</span>';
