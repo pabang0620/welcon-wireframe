@@ -7,10 +7,10 @@
 <style>
 /* ===== 기본 ===== */
 * { box-sizing: border-box; border-radius: 0; margin: 0; padding: 0; }
-html, body { background: #f4f4f4; }
+html, body { background: #f6f6f7; }
 body {
   font-family: "Pretendard", -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
-  color: #1a1a1a; -webkit-font-smoothing: antialiased; font-size: 14px; line-height: 1.5;
+  color: #1a1a1a; -webkit-font-smoothing: antialiased; font-size: 14px; line-height: 1.55;
 }
 button, input { font-family: inherit; }
 .accent { color: #6d28d9; }
@@ -38,9 +38,9 @@ button, input { font-family: inherit; }
 .page { max-width: 1120px; margin: 0 auto; padding: 36px 32px 140px; }
 .screen { display: none; }
 .screen.active { display: block; }
-.title { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 6px; }
+.title { font-size: 24px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.35; margin-bottom: 8px; }
 .req { color: #d93025; }
-.desc { font-size: 13.5px; color: #606060; margin-bottom: 28px; }
+.desc { max-width: 760px; font-size: 14px; color: #555; line-height: 1.65; margin-bottom: 30px; }
 
 /* ===== STEP1: 장르 타일 ===== */
 .genre-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
@@ -56,14 +56,14 @@ button, input { font-family: inherit; }
 }
 
 /* ===== 필터 칩 (장르 / 공통모듈) ===== */
-.filter-label { font-size: 11.5px; color: #999; margin-bottom: 7px; }
-.filter-label .filter-hint { font-size: 11px; color: #b3b3b3; font-weight: 400; margin-left: 8px; }
+.filter-label { font-size: 12px; font-weight: 700; color: #666; margin-bottom: 8px; }
+.filter-label .filter-hint { font-size: 11.5px; color: #999; font-weight: 400; margin-left: 8px; }
 .chips { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 22px; }
-.chip { border: 1px solid #d5d5d5; background: #fff; color: #444; padding: 7px 14px; font-size: 12.5px; cursor: pointer; }
+.chip { border: 1px solid #d5d5d5; background: #fff; color: #444; padding: 8px 14px; min-height: 34px; font-size: 12.5px; line-height: 1.35; cursor: pointer; }
 .chip:hover { border-color: #999; }
-.chip.has { background: #f0f0f0; border-color: #bbb; }
+.chip.has { background: #f5f0fc; border-color: #d8c7f5; color: #6d28d9; }
 .chip.on { background: #1a1a1a; border-color: #1a1a1a; color: #fff; }
-.chip.on.has { background: #f0f0f0; border-color: #bbb; color: #444; }
+.chip.on.has { background: #1a1a1a; border-color: #1a1a1a; color: #fff; }
 .chip-badge { display: inline-block; font-size: 10px; font-weight: 800; padding: 0 5px; margin-left: 6px; min-width: 14px; text-align: center; vertical-align: middle; }
 .chip-badge.main { background: #6d28d9; color: #fff; }
 .chip-badge.sub { background: #ddd; color: #444; }
@@ -71,7 +71,7 @@ button, input { font-family: inherit; }
 /* ===== 검색창 ===== */
 .search-box {
   display: flex; align-items: center; border: 1.5px solid #d5d5d5; background: #fff;
-  padding: 11px 14px; max-width: 420px; margin-bottom: 24px;
+  padding: 12px 14px; max-width: 480px; margin-bottom: 26px;
 }
 .search-box:focus-within { border-color: #6d28d9; }
 .search-box input { flex: 1; border: none; outline: none; font-size: 13.5px; background: transparent; }
@@ -92,10 +92,10 @@ button, input { font-family: inherit; }
 .card-area.masonry { display: flex; align-items: flex-start; gap: 16px; }
 .masonry-col { display: flex; flex-direction: column; gap: 16px; flex: 1 1 0; min-width: 0; }
 
-.group { border: 1px solid #e2e2e2; background: #fff; overflow: hidden; }
+.group { border: 1px solid #dedede; background: #fff; overflow: hidden; }
 .group-title {
   font-size: 12.5px; font-weight: 700; color: #fff; background: #6d28d9; letter-spacing: 0.02em;
-  padding: 9px 13px; display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 14px; display: flex; justify-content: space-between; align-items: center;
 }
 .group-title .g-badge {
   background: #fff; color: #6d28d9; font-size: 10.5px; font-weight: 800;
@@ -106,20 +106,20 @@ button, input { font-family: inherit; }
 .group.full .group-body { grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); }
 
 .opt {
-  display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 12px 13px; cursor: pointer;
+  display: flex; flex-wrap: wrap; align-items: flex-start; gap: 10px; min-height: 50px; padding: 13px 14px; cursor: pointer;
   border-right: 1px solid #f0f0f0; border-bottom: 1px solid #f0f0f0;
 }
 .opt:hover { background: #fafafa; }
 .opt .box {
-  width: 18px; height: 18px; border: 1.5px solid #bbb; flex: none; background: #fff;
+  width: 18px; height: 18px; border: 1.5px solid #bbb; flex: none; background: #fff; margin-top: 2px;
   display: grid; place-items: center;
 }
 .opt .box::after { content: ""; width: 9px; height: 9px; background: #6d28d9; transform: scale(0); transition: transform .12s; }
 .opt.on .box { border-color: #6d28d9; }
 .opt.on .box::after { transform: scale(1); }
-.opt .label { flex: 1; font-size: 13.5px; }
+.opt .label { flex: 1; min-width: 0; font-size: 13.5px; line-height: 1.45; word-break: keep-all; overflow-wrap: anywhere; }
 .opt.on .label { font-weight: 600; }
-.opt .sub { display: block; font-size: 11px; color: #999; font-weight: 400; margin-top: 2px; }
+.opt .sub { display: block; font-size: 11px; color: #888; font-weight: 400; margin-top: 4px; }
 /* 기타 항목 선택 시 나타나는 직접입력란 - 체크박스 폭만큼 들여써 라벨과 정렬 */
 .opt-other { flex: 1 1 100%; margin: 6px 0 0 28px; cursor: default; }
 .opt-other-input {
@@ -131,19 +131,18 @@ button, input { font-family: inherit; }
 .empty { border: 1px dashed #ddd; padding: 50px 16px; text-align: center; color: #999; font-size: 13px; }
 
 /* ===== 우리 회사(재선택 재개) 음영 표시 + 주/보조 배지 ===== */
-.opt.dim { cursor: not-allowed; background: #fafafa; }
+.opt.dim { cursor: pointer; background: #fff; }
 .opt.dim:hover { background: #fafafa; }
 .opt.dim .box { border-color: #bbb; }
-.opt.dim .box::after { content: ""; width: 9px; height: 9px; background: #999; transform: scale(1); }
-.opt.dim .label { color: #999; }
+.opt.dim .label { color: #1a1a1a; }
 .own-tag {
-  display: inline-block; font-size: 10.5px; font-weight: 700; color: #767676; background: #eee;
-  padding: 1.5px 6px; margin-left: 6px; vertical-align: middle;
+  display: inline-block; font-size: 10.5px; font-weight: 700; color: #666; background: #f0f0f0;
+  padding: 2px 6px; margin-left: 6px; vertical-align: 1px;
 }
-.pos-badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 1.5px 6px; margin-left: 6px; vertical-align: middle; }
+.pos-badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 6px; margin-left: 6px; vertical-align: 1px; }
 .pos-badge.main { background: #6d28d9; color: #fff; }
 .pos-badge.sub { background: #fff; color: #6d28d9; border: 1px solid #6d28d9; }
-/* 음영(재선택 불가) 항목 안에서는 자주색이 튀면 선택 가능 항목과 헷갈리므로 회색 계열로 대체 */
+/* 3단계에서 우리 회사로 고른 항목은 참고 배지만 중립색으로 보여준다. */
 .opt.dim .pos-badge.main { background: #767676; color: #fff; border: none; }
 .opt.dim .pos-badge.sub { background: #fff; color: #999; border: 1px solid #ccc; }
 
@@ -204,8 +203,20 @@ button, input { font-family: inherit; }
 .btn.primary:disabled { background: #e5e5e5; border-color: #e5e5e5; color: #aaa; cursor: not-allowed; }
 
 @media (max-width: 900px) {
+  .gnb-in { align-items: flex-start; flex-direction: column; gap: 14px; }
   .genre-grid { grid-template-columns: repeat(2, 1fr); }
   .sum-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 620px) {
+  .gnb-in, .page, .footer-in { padding-left: 20px; padding-right: 20px; }
+  .stepper { width: 100%; justify-content: space-between; gap: 4px; }
+  .step-node { gap: 6px; }
+  .step-node .step-label { display: none; }
+  .step-line { flex: 1; width: auto; }
+  .genre-grid { grid-template-columns: 1fr; }
+  .filter-label .filter-hint { display: block; margin: 3px 0 0; }
+  .btn { padding: 11px 22px; }
 }
 
 </style>
@@ -228,8 +239,8 @@ button, input { font-family: inherit; }
   </section>
 
   <section class="screen" data-s="2">
-    <h1 class="title">귀사가 하는 일을 선택해 주세요 <span class="req">*</span></h1>
-    <p class="desc">여러 역할을 함께 수행하는 경우 모두 선택해 주세요. 가장 대표적인 역할 하나가 주포지션이 되며, 보조포지션 배지를 누르면 주포지션을 바꿀 수 있습니다.</p>
+    <h1 class="title">기업에서 귀하가 하는 일을 선택해 주세요 <span class="req">*</span></h1>
+    <p class="desc">가장 대표적인 역할 하나가 주포지션이 되며, 보조포지션 배지를 누르면 주포지션을 바꿀 수 있습니다.</p>
     <div id="catGenreFilterWrap">
       <div class="filter-label">장르 <span class="filter-hint">선택하면 해당 장르의 항목만 보입니다.</span></div>
       <div class="chips" id="catGenreFilter"></div>
@@ -244,8 +255,8 @@ button, input { font-family: inherit; }
   </section>
 
   <section class="screen" data-s="3">
-    <h1 class="title">희망하는 비즈니스에 필요한 포지션을 선택해주세요.</h1>
-    <p class="desc">찾고 있는 파트너 유형을 선택해 주세요. 다른 장르의 기업도 선택할 수 있습니다.</p>
+    <h1 class="title">귀하가 찾고 있는 파트너 유형을 선택해 주세요. <span class="req">*</span></h1>
+    <p class="desc">다른 장르의 기업도 선택할 수 있습니다.</p>
     <div class="filter-label">장르 <span class="filter-hint">선택하면 해당 장르의 항목만 보입니다.</span></div>
     <div class="chips" id="wishGenreFilter"></div>
     <div class="filter-label">공통모듈 <span class="filter-hint">선택하면 해당 공통모듈의 항목만 보입니다.</span></div>
@@ -509,10 +520,9 @@ function drawGenreStep() {
    badgeFn(v)가 주어지면 칩 안에 선택 현황 카운트 배지를 얹는다(클릭=필터 토글과는 별개 채널).
    prependOnAdd: true면 칩을 켤 때 selectedSet 맨 앞으로 재배치(3단계 장르 칩 전용 - 방금 켠
    장르의 카드가 목록 최상단에 오도록). 끌 때는 순서를 건드리지 않는다.
-   markHas: true면 badgeFn 카운트가 1 이상인 칩에 .has 클래스(연회색)를 붙여 필터가 꺼진
-   상태에서도 "여기서 골랐다"를 표시한다(3단계 장르·공통모듈 칩 전용). 기본은 CSS 소스순서상
-   .on이 .has를 이겨 검은 배경을 유지하지만, .chip.on.has 규칙이 있는 칩(3단계 장르)은 .has가
-   .on을 이겨 필터 on/off 무관하게 회색을 유지한다.
+   markHas: true면 badgeFn 카운트가 1 이상인 칩에 .has 클래스(연한 강조색)를 붙여 필터가 꺼진
+   상태에서도 "여기서 골랐다"를 표시한다(3단계 장르·공통모듈 칩 전용). .on.has는 현재
+   필터 상태가 우선되어 검은 배경을 유지한다.
    hideBadge: true면 count가 있어도 숫자 배지 DOM을 그리지 않는다(3단계 장르 칩 전용, .has
    판정용 count 계산 자체는 그대로 수행된다). */
 function drawChipRow(container, options, selectedSet, onToggle, badgeFn, prependOnAdd, markHas, hideBadge) {
@@ -617,17 +627,21 @@ function cardHtml(card, pickedSet, isFull, allowMainToggle, otherText) {
   const body = card.items.map(o => {
     const isOn = pickedSet.has(o.k);
     const isDim = !!o.dim;
-    const posBadge = catPositionLabel(o.k, !isDim && isOn && allowMainToggle);
+    const posBadge = allowMainToggle ? catPositionLabel(o.k, !isDim && isOn) : "";
     const extra = isDim ? '<span class="own-tag">우리 회사</span>' + posBadge : posBadge;
-    // 기타 항목을 선택했을 때만(음영 항목은 제외) 그 자리에 직접입력란을 띄운다
-    const showOther = o.stage === "기타" && isOn && !isDim;
     const otherVal = otherText ? (otherText[card.genre] || "") : "";
+    const otherName = otherVal.trim();
+    const labelText = o.stage === "기타" && otherName
+      ? "기타: " + escAttr(otherName.length > 24 ? otherName.slice(0, 24) + "..." : otherName)
+      : o.item;
+    // 기타 항목을 선택했을 때 그 자리에 직접입력란을 띄운다.
+    const showOther = o.stage === "기타" && isOn;
     const otherHtml = showOther
       ? '<div class="opt-other"><input type="text" class="opt-other-input" data-k="' + o.k +
         '" placeholder="직접 입력해 주세요" value="' + escAttr(otherVal) + '"></div>'
       : "";
     return '<div class="opt' + (isOn ? " on" : "") + (isDim ? " dim" : "") + '" data-k="' + o.k + '">' +
-      '<div class="box"></div><div class="label">' + o.item + extra + '<span class="sub">' + o.stage + '</span></div>' + otherHtml +
+      '<div class="box"></div><div class="label">' + labelText + extra + '<span class="sub">' + o.stage + '</span></div>' + otherHtml +
     '</div>';
   }).join("");
   return '<div class="group' + (isFull ? " full" : "") + '"><div class="group-title">' + card.genre + badge + '</div>' +
@@ -676,29 +690,30 @@ function renderCards(container, cards, pickedSet, emptyMsg, allowMainToggle, oth
 /* pickedSet이 st.cats일 때(2단계)만, 새로 선택한 항목의 장르를 st.wishGenreFilter에도
    반영한다. 2단계는 catGenreFilter가 비어 있으면 GENRES 전체가 열려 1단계에서 고르지
    않은 장르의 항목도 선택할 수 있는데, 그 장르가 3단계 장르 필터에 없으면 3단계에서
-   해당 항목이 아예 안 보인다(음영표시도, 파트너 선택도 불가). 그래서 여기서 미리 열어
-   둔다. add()만 쓰고(뒤에 붙음, prependOnAdd 재정렬과 무관) 해제 시에는 자동으로 빼지
+   해당 항목이 아예 안 보인다. 그래서 여기서 미리 열고, 방금 선택한 장르가 3단계 목록
+   최상단에 오도록 맨 앞으로 재배치한다. 해제 시에는 자동으로 빼지
    않는다(사용자가 3단계에서 직접 끈 걸 되살리지 않기 위함). */
-function wireOptClicks(container, pickedSet, otherSet, onChange) {
+function wireOptClicks(container, pickedSet, onChange) {
   container.querySelectorAll(".opt").forEach(opt => {
-    if (opt.classList.contains("dim")) return; // 우리 회사로 이미 등록된 항목은 희망비즈니스로 선택 불가
     opt.onclick = () => {
       const k = opt.dataset.k;
       const wasSelected = pickedSet.has(k);
       wasSelected ? pickedSet.delete(k) : pickedSet.add(k);
-      if (otherSet) otherSet.delete(k);
       if (!wasSelected && pickedSet === st.cats) {
-        st.wishGenreFilter.add(parseKey(k)[0]);
+        const genre = parseKey(k)[0];
+        const rest = [...st.wishGenreFilter].filter(x => x !== genre);
+        st.wishGenreFilter.clear();
+        st.wishGenreFilter.add(genre);
+        rest.forEach(x => st.wishGenreFilter.add(x));
       }
       onChange();
     };
   });
 }
 
-/* 기타 직접입력란 배선 - 입력란 클릭은 부모 .opt의 토글 클릭으로 번지지 않게 막고,
-   타이핑(input)은 상태값만 갱신하고 화면을 다시 그리지 않는다(재렌더 시 포커스가
-   날아가 타이핑이 끊기므로 절대 여기서 onChange/drawXxxStep을 호출하지 않는다). */
-function wireOtherInputs(container, otherText) {
+/* 기타 직접입력란 배선 - 입력란 클릭은 부모 .opt의 토글 클릭으로 번지지 않게 막는다.
+   타이핑 중에는 상태값만 갱신하고, Enter를 누르면 입력값을 항목명처럼 반영하기 위해 다시 그린다. */
+function wireOtherInputs(container, otherText, onCommit) {
   container.querySelectorAll(".opt-other").forEach(wrap => {
     wrap.onclick = e => e.stopPropagation();
   });
@@ -707,12 +722,19 @@ function wireOtherInputs(container, otherText) {
       const genre = parseKey(input.dataset.k)[0];
       otherText[genre] = input.value;
     };
+    input.onkeydown = e => {
+      if (e.key !== "Enter") return;
+      e.preventDefault();
+      const genre = parseKey(input.dataset.k)[0];
+      otherText[genre] = input.value;
+      if (onCommit) onCommit();
+    };
   });
 }
 
 /* 선택된 회사카테고리 항목 중 보조포지션 배지를 눌러 주포지션을 지정하는 배선.
    보조포지션 배지에만 .pos-badge-btn이 붙으므로 이미 주포지션이거나(catPositionLabel에서 제외),
-   3단계 음영 항목(isDim이면 애초에 clickable 인자를 false로 넘김), 미선택 항목(배지 자체가 안 나옴)은
+   3단계 참고 표시 항목, 미선택 항목(배지 자체가 안 나옴)은
    여기서 걸릴 요소가 없다.
    .opt 전체에 걸린 wireOptClicks의 토글 클릭으로 이벤트가 번지지 않도록 stopPropagation한다. */
 function wireMainToggle(container) {
@@ -756,19 +778,19 @@ function drawCatStep() {
   const cards = collectCards(genreScope, st.catModuleFilter, q, null, false);
   const el = document.getElementById("catArea");
   renderCards(el, cards, st.cats, q ? '"' + q + '"에 해당하는 항목이 없습니다.' : '해당하는 항목이 없습니다.', true, st.catOtherText);
-  wireOptClicks(el, st.cats, st.wishes, () => {
+  wireOptClicks(el, st.cats, () => {
     drawCatStep();
     document.getElementById("btnNext").disabled = !st.cats.size;
     updateCountNote();
   });
   wireMainToggle(el);
-  wireOtherInputs(el, st.catOtherText);
+  wireOtherInputs(el, st.catOtherText, drawCatStep);
 }
 
 /* ===== STEP3: 희망비즈니스 ===== */
 function drawWishStep() {
   drawChipRow(document.getElementById("wishGenreFilter"), GENRES, st.wishGenreFilter, drawWishStep,
-    g => (st.genres.has(g) ? null : genreBadgeInfo(st.wishes, g)), true, true, true);
+    g => genreBadgeInfo(st.wishes, g), true, true, true);
 
   const genreScope = st.wishGenreFilter.size ? [...st.wishGenreFilter] : GENRES;
   drawChipRow(document.getElementById("wishModuleFilter"), moduleOptionsFor(genreScope, true), st.wishModuleFilter, drawWishStep,
@@ -778,11 +800,11 @@ function drawWishStep() {
   const cards = collectCards(genreScope, st.wishModuleFilter, q, st.cats, false);
   const el = document.getElementById("wishArea");
   renderCards(el, cards, st.wishes, q ? '"' + q + '"에 해당하는 항목이 없습니다.' : '선택할 수 있는 파트너 유형이 없습니다.', false, st.wishOtherText);
-  wireOptClicks(el, st.wishes, null, () => {
+  wireOptClicks(el, st.wishes, () => {
     drawWishStep();
     updateCountNote();
   });
-  wireOtherInputs(el, st.wishOtherText);
+  wireOtherInputs(el, st.wishOtherText, drawWishStep);
 }
 
 /* ===== STEP4: 장르별 포지션 분포 (전체 항목 대비 커버리지 막대) =====
@@ -885,8 +907,11 @@ function drawGenreChart() {
   wrap.style.height = Math.max(120, data.length * 42) + "px";
 
   // 분모(denom, 그 장르의 DATA 전체 항목수)가 0인 경우(실제로는 발생하지 않음)는
-  // 0으로 나누기 방지를 위해 0%로 처리한다.
+  // 0으로 나누기 방지를 위해 0%로 처리한다. 같은 항목을 우리 회사와 희망 파트너 양쪽에
+  // 고를 수 있으므로 누적률은 100%를 넘을 수 있다.
   const toPct = (val, denom) => (denom > 0 ? (val / denom) * 100 : 0);
+  const maxStackPct = data.reduce((max, d) => Math.max(max, toPct(d.main + d.sub + d.wish, d.denom)), 0);
+  const chartMax = Math.max(100, Math.ceil(maxStackPct / 10) * 10);
 
   const datasets = ["main", "sub", "wish"].map(key => {
     const meta = CHART_SEG_META[key];
@@ -919,7 +944,7 @@ function drawGenreChart() {
         highlightSummaryFor(genre, type);
       },
       scales: {
-        x: { stacked: true, min: 0, max: 100, grid: { color: "#f0f0f0" }, ticks: { callback: v => v + "%" } },
+        x: { stacked: true, min: 0, max: chartMax, grid: { color: "#f0f0f0" }, ticks: { callback: v => v + "%" } },
         y: { stacked: true, grid: { display: false } }
       },
       plugins: {
