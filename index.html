@@ -434,15 +434,27 @@ const st = {
   wishQ: "",
   catOtherText: {},
   wishOtherText: {},
+  catCustomItems: {},
+  wishCustomItems: {},
   mainKey: null
 };
 
 const key = (g, item) => g + SEP + item;
 const parseKey = k => k.split(SEP);
+const customItemsFor = (store, genre) => store[genre] || [];
+const cleanCustomName = value => value.trim().replace(/\s+/g, " ").replaceAll(SEP, " / ");
 
 function stagesOf(genre) {
   const d = DATA[genre];
   return STAGE_ORDER.filter(s => d[s]).concat(d["기타"] ? ["기타"] : []);
+}
+
+function dataItemExists(genre, item) {
+  const d = DATA[genre];
+  for (const stage in d) {
+    if (d[stage].indexOf(item) > -1) return true;
+  }
+  return false;
 }
 
 function matchesQuery(text, q) {
@@ -568,6 +580,8 @@ function stageOfKey(k) {
   const g = p[0], item = p[1];
   const d = DATA[g];
   for (const s in d) { if (d[s].indexOf(item) > -1) return s; }
+  if (customItemsFor(st.catCustomItems, g).indexOf(item) > -1) return "기타";
+  if (customItemsFor(st.wishCustomItems, g).indexOf(item) > -1) return "기타";
   return null;
 }
 
@@ -597,8 +611,9 @@ function moduleOptionsFor(genresScope, includeOther) {
 }
 
 /* ===== 공용: 장르별 카드 데이터 생성 ===== */
-function collectCards(genresScope, moduleFilter, q, dimSet, skipOther) {
+function collectCards(genresScope, moduleFilter, q, dimSet, skipOther, customStore) {
   const cards = [];
+  const customStores = Array.isArray(customStore) ? customStore : (customStore ? [customStore] : []);
   genresScope.forEach(g => {
     const items = [];
     stagesOf(g).forEach(stage => {
@@ -609,6 +624,19 @@ function collectCards(genresScope, moduleFilter, q, dimSet, skipOther) {
         if (!matchesQuery(item, q)) return;
         items.push({ k: k, item: item, stage: stage, dim: !!(dimSet && dimSet.has(k)) });
       });
+      if (stage === "기타" && customStore) {
+        const customItems = [];
+        customStores.forEach(store => {
+          customItemsFor(store, g).forEach(item => {
+            if (customItems.indexOf(item) === -1) customItems.push(item);
+          });
+        });
+        customItems.forEach(item => {
+          const k = key(g, item);
+          if (!matchesQuery(item, q)) return;
+          items.push({ k: k, item: item, stage: stage, dim: !!(dimSet && dimSet.has(k)), custom: true });
+        });
+      }
     });
     if (items.length) cards.push({ genre: g, items: items });
   });
@@ -630,12 +658,9 @@ function cardHtml(card, pickedSet, isFull, allowMainToggle, otherText) {
     const posBadge = allowMainToggle ? catPositionLabel(o.k, !isDim && isOn) : "";
     const extra = isDim ? '<span class="own-tag">우리 회사</span>' + posBadge : posBadge;
     const otherVal = otherText ? (otherText[card.genre] || "") : "";
-    const otherName = otherVal.trim();
-    const labelText = o.stage === "기타" && otherName
-      ? "기타: " + escAttr(otherName.length > 24 ? otherName.slice(0, 24) + "..." : otherName)
-      : o.item;
-    // 기타 항목을 선택했을 때 그 자리에 직접입력란을 띄운다.
-    const showOther = o.stage === "기타" && isOn;
+    const labelText = o.custom ? escAttr(o.item) : o.item;
+    // 기본 기타 항목을 선택했을 때만 새 항목 입력란을 띄운다.
+    const showOther = o.stage === "기타" && o.item === "기타" && isOn;
     const otherHtml = showOther
       ? '<div class="opt-other"><input type="text" class="opt-other-input" data-k="' + o.k +
         '" placeholder="직접 입력해 주세요" value="' + escAttr(otherVal) + '"></div>'
@@ -687,6 +712,13 @@ function renderCards(container, cards, pickedSet, emptyMsg, allowMainToggle, oth
   colBoxes.forEach(box => container.appendChild(box));
 }
 
+function putWishGenreFirst(genre) {
+  const rest = [...st.wishGenreFilter].filter(x => x !== genre);
+  st.wishGenreFilter.clear();
+  st.wishGenreFilter.add(genre);
+  rest.forEach(x => st.wishGenreFilter.add(x));
+}
+
 /* pickedSet이 st.cats일 때(2단계)만, 새로 선택한 항목의 장르를 st.wishGenreFilter에도
    반영한다. 2단계는 catGenreFilter가 비어 있으면 GENRES 전체가 열려 1단계에서 고르지
    않은 장르의 항목도 선택할 수 있는데, 그 장르가 3단계 장르 필터에 없으면 3단계에서
@@ -700,11 +732,7 @@ function wireOptClicks(container, pickedSet, onChange) {
       const wasSelected = pickedSet.has(k);
       wasSelected ? pickedSet.delete(k) : pickedSet.add(k);
       if (!wasSelected && pickedSet === st.cats) {
-        const genre = parseKey(k)[0];
-        const rest = [...st.wishGenreFilter].filter(x => x !== genre);
-        st.wishGenreFilter.clear();
-        st.wishGenreFilter.add(genre);
-        rest.forEach(x => st.wishGenreFilter.add(x));
+        putWishGenreFirst(parseKey(k)[0]);
       }
       onChange();
     };
@@ -713,7 +741,7 @@ function wireOptClicks(container, pickedSet, onChange) {
 
 /* 기타 직접입력란 배선 - 입력란 클릭은 부모 .opt의 토글 클릭으로 번지지 않게 막는다.
    타이핑 중에는 상태값만 갱신하고, Enter를 누르면 입력값을 항목명처럼 반영하기 위해 다시 그린다. */
-function wireOtherInputs(container, otherText, onCommit) {
+function wireOtherInputs(container, otherText, pickedSet, customStore, onCommit) {
   container.querySelectorAll(".opt-other").forEach(wrap => {
     wrap.onclick = e => e.stopPropagation();
   });
@@ -726,7 +754,14 @@ function wireOtherInputs(container, otherText, onCommit) {
       if (e.key !== "Enter") return;
       e.preventDefault();
       const genre = parseKey(input.dataset.k)[0];
-      otherText[genre] = input.value;
+      const value = cleanCustomName(input.value);
+      if (!value) return;
+      const list = customStore[genre] || (customStore[genre] = []);
+      if (!dataItemExists(genre, value) && list.indexOf(value) === -1) list.push(value);
+      pickedSet.delete(key(genre, "기타"));
+      pickedSet.add(key(genre, value));
+      otherText[genre] = "";
+      if (pickedSet === st.cats) putWishGenreFirst(genre);
       if (onCommit) onCommit();
     };
   });
@@ -775,7 +810,7 @@ function drawCatStep() {
     stage => moduleBadgeInfo(st.cats, genreScope, stage));
 
   const q = st.catQ.trim();
-  const cards = collectCards(genreScope, st.catModuleFilter, q, null, false);
+  const cards = collectCards(genreScope, st.catModuleFilter, q, null, false, st.catCustomItems);
   const el = document.getElementById("catArea");
   renderCards(el, cards, st.cats, q ? '"' + q + '"에 해당하는 항목이 없습니다.' : '해당하는 항목이 없습니다.', true, st.catOtherText);
   wireOptClicks(el, st.cats, () => {
@@ -784,7 +819,7 @@ function drawCatStep() {
     updateCountNote();
   });
   wireMainToggle(el);
-  wireOtherInputs(el, st.catOtherText, drawCatStep);
+  wireOtherInputs(el, st.catOtherText, st.cats, st.catCustomItems, drawCatStep);
 }
 
 /* ===== STEP3: 희망비즈니스 ===== */
@@ -797,20 +832,20 @@ function drawWishStep() {
     stage => moduleBadgeInfo(st.wishes, genreScope, stage, true), false, false);
 
   const q = st.wishQ.trim();
-  const cards = collectCards(genreScope, st.wishModuleFilter, q, st.cats, false);
+  const cards = collectCards(genreScope, st.wishModuleFilter, q, st.cats, false, [st.catCustomItems, st.wishCustomItems]);
   const el = document.getElementById("wishArea");
   renderCards(el, cards, st.wishes, q ? '"' + q + '"에 해당하는 항목이 없습니다.' : '선택할 수 있는 파트너 유형이 없습니다.', false, st.wishOtherText);
   wireOptClicks(el, st.wishes, () => {
     drawWishStep();
     updateCountNote();
   });
-  wireOtherInputs(el, st.wishOtherText, drawWishStep);
+  wireOtherInputs(el, st.wishOtherText, st.wishes, st.wishCustomItems, drawWishStep);
 }
 
 /* ===== STEP4: 장르별 포지션 분포 (전체 항목 대비 커버리지 막대) =====
    장르 1개당 가로 막대 1개. 분모는 선택 합계가 아니라 그 장르에 존재하는 DATA 전체
-   항목 수(모든 stage 배열 길이의 합, "기타" 포함 - 2단계에서 기타도 선택 가능하므로
-   분모에서 빼면 비율이 100%를 넘을 수 있음)다. 그래서 세 구간(주/보조/필요)의 합이
+   항목 수(모든 stage 배열 길이의 합 + 사용자가 추가한 기타 항목, "기타" 포함)다.
+   그래서 세 구간(주/보조/필요)의 합이
    항상 100%가 되지는 않고, 선택하지 않은 나머지는 트랙 배경(빈 공간)으로 남아 "전체 중
    내가 얼마나 커버했는가"를 보여준다. 미선택 잔여분을 위한 별도 세그먼트는 그리지 않는다.
    주포지션은 전체에서 정확히 1개뿐이라(D2) 나머지 장르는 main=0이 되는데, 값이 0인 구간은
@@ -821,6 +856,10 @@ function genreItemCount(genre) {
   const d = DATA[genre];
   let n = 0;
   for (const s in d) n += d[s].length;
+  n += [...new Set([
+    ...customItemsFor(st.catCustomItems, genre),
+    ...customItemsFor(st.wishCustomItems, genre)
+  ])].length;
   return n;
 }
 
@@ -973,14 +1012,9 @@ function sumGroup(label, list, tagFn) {
     list.map(tagFn).join("") + '</div></div>';
 }
 
-/* "기타" 태그에 직접입력값을 덧붙인다(예: "기타: 온라인 광고 대행"). 값이 없으면
-   그대로 "기타"만 표시하고, 값이 길면 16자에서 잘라 "..."을 붙여 태그가 늘어지지 않게 한다. */
-function otherLabel(item, text) {
-  if (item !== "기타") return item;
-  const t = (text || "").trim();
-  if (!t) return item;
-  const short = t.length > 16 ? t.slice(0, 16) + "..." : t;
-  return item + ": " + escAttr(short);
+function summaryLabel(item) {
+  const short = item.length > 18 ? item.slice(0, 18) + "..." : item;
+  return escAttr(short);
 }
 
 function drawSummaryStep() {
@@ -1008,7 +1042,7 @@ function drawSummaryStep() {
   const posTag = cls => k => {
     const p = parseKey(k);
     const hlType = cls === "pos-main" ? "main" : "sub";
-    const label = otherLabel(p[1], st.catOtherText[p[0]]);
+    const label = summaryLabel(p[1]);
     return '<span class="tag ' + cls + '" data-hl-genre="' + p[0] + '" data-hl-type="' + hlType + '"><em>' + p[0] + ' · </em>' + label + '</span>';
   };
   const catHtml =
@@ -1021,7 +1055,7 @@ function drawSummaryStep() {
   document.getElementById("sumWish").innerHTML =
     [...st.wishes].map(k => {
       const p = parseKey(k);
-      const label = otherLabel(p[1], st.wishOtherText[p[0]]);
+      const label = summaryLabel(p[1]);
       return '<span class="tag" data-hl-genre="' + p[0] + '" data-hl-type="wish"><em>' + p[0] + '</em>' + label + '</span>';
     }).join("") || '<span class="sum-none">선택하지 않음</span>';
 }
@@ -1051,6 +1085,7 @@ function resetAll() {
   st.wishGenreFilter.clear(); st.wishModuleFilter.clear();
   st.catQ = ""; st.wishQ = "";
   st.catOtherText = {}; st.wishOtherText = {};
+  st.catCustomItems = {}; st.wishCustomItems = {};
   st.mainKey = null;
   document.getElementById("catSearch").value = "";
   document.getElementById("catSearchBox").classList.remove("has-val");
