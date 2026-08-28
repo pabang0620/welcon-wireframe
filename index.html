@@ -623,11 +623,6 @@ function collectCards(genresScope, moduleFilter, q, dimSet, skipOther, customSto
     stagesOf(g).forEach(stage => {
       if (skipOther && stage === "기타") return;
       if (moduleFilter.size && !moduleFilter.has(stage)) return;
-      DATA[g][stage].forEach(item => {
-        const k = key(g, item);
-        if (!matchesQuery(item, q)) return;
-        items.push({ k: k, item: item, stage: stage, dim: !!(dimSet && dimSet.has(k)) });
-      });
       if (stage === "기타" && customStore) {
         const customItems = [];
         customStores.forEach(store => {
@@ -641,6 +636,11 @@ function collectCards(genresScope, moduleFilter, q, dimSet, skipOther, customSto
           items.push({ k: k, item: item, stage: stage, dim: !!(dimSet && dimSet.has(k)), custom: true });
         });
       }
+      DATA[g][stage].forEach(item => {
+        const k = key(g, item);
+        if (!matchesQuery(item, q)) return;
+        items.push({ k: k, item: item, stage: stage, dim: !!(dimSet && dimSet.has(k)) });
+      });
     });
     if (items.length) cards.push({ genre: g, items: items });
   });
