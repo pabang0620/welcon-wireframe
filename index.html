@@ -117,6 +117,8 @@ button, input { font-family: inherit; }
 .opt .box::after { content: ""; width: 9px; height: 9px; background: #6d28d9; transform: scale(0); transition: transform .12s; }
 .opt.on .box { border-color: #6d28d9; }
 .opt.on .box::after { transform: scale(1); }
+.opt.other-open { background: #fbf8ff; }
+.opt.other-open .box { border-color: #6d28d9; }
 .opt .label { flex: 1; min-width: 0; font-size: 13.5px; line-height: 1.45; word-break: keep-all; overflow-wrap: anywhere; }
 .opt.on .label { font-weight: 600; }
 .opt .sub { display: block; font-size: 11px; color: #888; font-weight: 400; margin-top: 4px; }
@@ -434,6 +436,8 @@ const st = {
   wishQ: "",
   catOtherText: {},
   wishOtherText: {},
+  catOtherOpen: {},
+  wishOtherOpen: {},
   catCustomItems: {},
   wishCustomItems: {},
   mainKey: null
@@ -649,23 +653,25 @@ function escAttr(s) {
     .replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
-function cardHtml(card, pickedSet, isFull, allowMainToggle, otherText) {
+function cardHtml(card, pickedSet, isFull, allowMainToggle, otherText, otherOpen) {
   const picked = card.items.filter(o => pickedSet.has(o.k)).length;
   const badge = picked ? '<span class="g-badge">' + picked + '</span>' : "";
   const body = card.items.map(o => {
     const isOn = pickedSet.has(o.k);
+    const isOtherInput = o.stage === "기타" && o.item === "기타";
+    const isOtherOpen = isOtherInput && !!(otherOpen && otherOpen[card.genre]);
     const isDim = !!o.dim;
     const posBadge = allowMainToggle ? catPositionLabel(o.k, !isDim && isOn) : "";
     const extra = isDim ? '<span class="own-tag">우리 회사</span>' + posBadge : posBadge;
     const otherVal = otherText ? (otherText[card.genre] || "") : "";
     const labelText = o.custom ? escAttr(o.item) : o.item;
     // 기본 기타 항목을 선택했을 때만 새 항목 입력란을 띄운다.
-    const showOther = o.stage === "기타" && o.item === "기타" && isOn;
+    const showOther = isOtherInput && isOtherOpen;
     const otherHtml = showOther
       ? '<div class="opt-other"><input type="text" class="opt-other-input" data-k="' + o.k +
         '" placeholder="직접 입력해 주세요" value="' + escAttr(otherVal) + '"></div>'
       : "";
-    return '<div class="opt' + (isOn ? " on" : "") + (isDim ? " dim" : "") + '" data-k="' + o.k + '">' +
+    return '<div class="opt' + (isOn ? " on" : "") + (isOtherOpen ? " other-open" : "") + (isDim ? " dim" : "") + '" data-k="' + o.k + '">' +
       '<div class="box"></div><div class="label">' + labelText + extra + '<span class="sub">' + o.stage + '</span></div>' + otherHtml +
     '</div>';
   }).join("");
@@ -674,7 +680,7 @@ function cardHtml(card, pickedSet, isFull, allowMainToggle, otherText) {
 }
 
 /* 카드 목록을 실제 DOM에 배치 - 카드 1개면 전체폭, 여러 개면 마쏘너리(짧은 열 우선) 배치 */
-function renderCards(container, cards, pickedSet, emptyMsg, allowMainToggle, otherText) {
+function renderCards(container, cards, pickedSet, emptyMsg, allowMainToggle, otherText, otherOpen) {
   container.classList.remove("single", "masonry");
   if (!cards.length) {
     container.innerHTML = '<div class="empty">' + emptyMsg + '</div>';
@@ -682,12 +688,12 @@ function renderCards(container, cards, pickedSet, emptyMsg, allowMainToggle, oth
   }
   if (cards.length === 1) {
     container.classList.add("single");
-    container.innerHTML = cardHtml(cards[0], pickedSet, true, allowMainToggle, otherText);
+    container.innerHTML = cardHtml(cards[0], pickedSet, true, allowMainToggle, otherText, otherOpen);
     return;
   }
 
   // 우선 화면에 순서대로 깔아서 각 카드의 실제 높이를 측정한다
-  container.innerHTML = cards.map(c => cardHtml(c, pickedSet, false, allowMainToggle, otherText)).join("");
+  container.innerHTML = cards.map(c => cardHtml(c, pickedSet, false, allowMainToggle, otherText, otherOpen)).join("");
   const nodes = Array.from(container.children);
   const w = window.innerWidth;
   const cols = w <= 620 ? 1 : (w <= 900 ? 2 : 3);
@@ -725,14 +731,20 @@ function putWishGenreFirst(genre) {
    해당 항목이 아예 안 보인다. 그래서 여기서 미리 열고, 방금 선택한 장르가 3단계 목록
    최상단에 오도록 맨 앞으로 재배치한다. 해제 시에는 자동으로 빼지
    않는다(사용자가 3단계에서 직접 끈 걸 되살리지 않기 위함). */
-function wireOptClicks(container, pickedSet, onChange) {
+function wireOptClicks(container, pickedSet, otherOpen, onChange) {
   container.querySelectorAll(".opt").forEach(opt => {
     opt.onclick = () => {
       const k = opt.dataset.k;
+      const p = parseKey(k);
+      if (p[1] === "기타") {
+        otherOpen[p[0]] = true;
+        onChange();
+        return;
+      }
       const wasSelected = pickedSet.has(k);
       wasSelected ? pickedSet.delete(k) : pickedSet.add(k);
       if (!wasSelected && pickedSet === st.cats) {
-        putWishGenreFirst(parseKey(k)[0]);
+        putWishGenreFirst(p[0]);
       }
       onChange();
     };
@@ -741,7 +753,7 @@ function wireOptClicks(container, pickedSet, onChange) {
 
 /* 기타 직접입력란 배선 - 입력란 클릭은 부모 .opt의 토글 클릭으로 번지지 않게 막는다.
    타이핑 중에는 상태값만 갱신하고, Enter를 누르면 입력값을 항목명처럼 반영하기 위해 다시 그린다. */
-function wireOtherInputs(container, otherText, pickedSet, customStore, onCommit) {
+function wireOtherInputs(container, otherText, otherOpen, pickedSet, customStore, onCommit) {
   container.querySelectorAll(".opt-other").forEach(wrap => {
     wrap.onclick = e => e.stopPropagation();
   });
@@ -755,16 +767,23 @@ function wireOtherInputs(container, otherText, pickedSet, customStore, onCommit)
       e.preventDefault();
       const genre = parseKey(input.dataset.k)[0];
       const value = cleanCustomName(input.value);
-      if (!value) return;
+      if (!value) {
+        alert("기타 항목을 입력해 주세요.");
+        input.focus();
+        return;
+      }
       const list = customStore[genre] || (customStore[genre] = []);
       if (!dataItemExists(genre, value) && list.indexOf(value) === -1) list.push(value);
       pickedSet.delete(key(genre, "기타"));
       pickedSet.add(key(genre, value));
       otherText[genre] = "";
+      delete otherOpen[genre];
       if (pickedSet === st.cats) putWishGenreFirst(genre);
       if (onCommit) onCommit();
     };
   });
+  const firstOpenInput = container.querySelector(".opt-other-input");
+  if (firstOpenInput) firstOpenInput.focus();
 }
 
 /* 선택된 회사카테고리 항목 중 보조포지션 배지를 눌러 주포지션을 지정하는 배선.
@@ -812,14 +831,14 @@ function drawCatStep() {
   const q = st.catQ.trim();
   const cards = collectCards(genreScope, st.catModuleFilter, q, null, false, st.catCustomItems);
   const el = document.getElementById("catArea");
-  renderCards(el, cards, st.cats, q ? '"' + q + '"에 해당하는 항목이 없습니다.' : '해당하는 항목이 없습니다.', true, st.catOtherText);
-  wireOptClicks(el, st.cats, () => {
+  renderCards(el, cards, st.cats, q ? '"' + q + '"에 해당하는 항목이 없습니다.' : '해당하는 항목이 없습니다.', true, st.catOtherText, st.catOtherOpen);
+  wireOptClicks(el, st.cats, st.catOtherOpen, () => {
     drawCatStep();
     document.getElementById("btnNext").disabled = !st.cats.size;
     updateCountNote();
   });
   wireMainToggle(el);
-  wireOtherInputs(el, st.catOtherText, st.cats, st.catCustomItems, drawCatStep);
+  wireOtherInputs(el, st.catOtherText, st.catOtherOpen, st.cats, st.catCustomItems, drawCatStep);
 }
 
 /* ===== STEP3: 희망비즈니스 ===== */
@@ -834,12 +853,12 @@ function drawWishStep() {
   const q = st.wishQ.trim();
   const cards = collectCards(genreScope, st.wishModuleFilter, q, st.cats, false, [st.catCustomItems, st.wishCustomItems]);
   const el = document.getElementById("wishArea");
-  renderCards(el, cards, st.wishes, q ? '"' + q + '"에 해당하는 항목이 없습니다.' : '선택할 수 있는 파트너 유형이 없습니다.', false, st.wishOtherText);
-  wireOptClicks(el, st.wishes, () => {
+  renderCards(el, cards, st.wishes, q ? '"' + q + '"에 해당하는 항목이 없습니다.' : '선택할 수 있는 파트너 유형이 없습니다.', false, st.wishOtherText, st.wishOtherOpen);
+  wireOptClicks(el, st.wishes, st.wishOtherOpen, () => {
     drawWishStep();
     updateCountNote();
   });
-  wireOtherInputs(el, st.wishOtherText, st.wishes, st.wishCustomItems, drawWishStep);
+  wireOtherInputs(el, st.wishOtherText, st.wishOtherOpen, st.wishes, st.wishCustomItems, drawWishStep);
 }
 
 /* ===== STEP4: 장르별 포지션 분포 (전체 항목 대비 커버리지 막대) =====
@@ -1085,6 +1104,7 @@ function resetAll() {
   st.wishGenreFilter.clear(); st.wishModuleFilter.clear();
   st.catQ = ""; st.wishQ = "";
   st.catOtherText = {}; st.wishOtherText = {};
+  st.catOtherOpen = {}; st.wishOtherOpen = {};
   st.catCustomItems = {}; st.wishCustomItems = {};
   st.mainKey = null;
   document.getElementById("catSearch").value = "";
