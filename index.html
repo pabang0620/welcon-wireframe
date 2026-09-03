@@ -541,7 +541,7 @@ function drawGenreStep() {
    필터 상태가 우선되어 검은 배경을 유지한다.
    hideBadge: true면 count가 있어도 숫자 배지 DOM을 그리지 않는다(3단계 장르 칩 전용, .has
    판정용 count 계산 자체는 그대로 수행된다). */
-function drawChipRow(container, options, selectedSet, onToggle, badgeFn, prependOnAdd, markHas, hideBadge) {
+function drawChipRow(container, options, selectedSet, onToggle, badgeFn, prependOnAdd, markHas, hideBadge, onValueToggle) {
   container.innerHTML = options.map(v => {
     const info = badgeFn ? badgeFn(v) : null;
     const badge = (!hideBadge && info && info.count) ? '<span class="chip-badge ' + info.level + '">' + info.count + '</span>' : "";
@@ -563,6 +563,7 @@ function drawChipRow(container, options, selectedSet, onToggle, badgeFn, prepend
           rest.forEach(x => selectedSet.add(x));
         }
       }
+      if (onValueToggle) onValueToggle(v, selectedSet.has(v));
       onToggle();
     };
   });
@@ -822,7 +823,8 @@ function catPositionLabel(k, clickable) {
 
 /* ===== STEP2: 회사카테고리 ===== */
 function drawCatStep() {
-  drawChipRow(document.getElementById("catGenreFilter"), GENRES, st.catGenreFilter, drawCatStep, null, true);
+  drawChipRow(document.getElementById("catGenreFilter"), GENRES, st.catGenreFilter, drawCatStep, null, true, false, false,
+    (g, isOn) => { if (isOn) { st.genres.add(g); st.wishGenreFilter.add(g); } });
 
   const genreScope = st.catGenreFilter.size ? [...st.catGenreFilter] : GENRES;
   drawChipRow(document.getElementById("catModuleFilter"), moduleOptionsFor(genreScope, true), st.catModuleFilter, drawCatStep,
