@@ -519,12 +519,12 @@ function drawGenreStep() {
         st.genres.delete(g);
         st.catGenreFilter.delete(g);
         st.wishGenreFilter.delete(g);
+        [...st.cats].forEach(k => { if (parseKey(k)[0] === g) st.cats.delete(k); });
       } else {
         st.genres.add(g);
         st.catGenreFilter.add(g);
         st.wishGenreFilter.add(g);
       }
-      [...st.cats].forEach(k => { if (!st.genres.has(parseKey(k)[0])) st.cats.delete(k); });
       st.catModuleFilter.clear();
       st.wishModuleFilter.clear();
       render();
