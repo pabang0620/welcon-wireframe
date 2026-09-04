@@ -432,6 +432,7 @@ const st = {
   catModuleFilter: new Set(),
   wishGenreFilter: new Set(),
   wishModuleFilter: new Set(),
+  filterAddedGenres: new Set(),
   catQ: "",
   wishQ: "",
   catOtherText: {},
@@ -519,6 +520,7 @@ function drawGenreStep() {
         st.genres.delete(g);
         st.catGenreFilter.delete(g);
         st.wishGenreFilter.delete(g);
+        st.filterAddedGenres.delete(g);
         [...st.cats].forEach(k => { if (parseKey(k)[0] === g) st.cats.delete(k); });
       } else {
         st.genres.add(g);
@@ -824,7 +826,20 @@ function catPositionLabel(k, clickable) {
 /* ===== STEP2: 회사카테고리 ===== */
 function drawCatStep() {
   drawChipRow(document.getElementById("catGenreFilter"), GENRES, st.catGenreFilter, drawCatStep, null, true, false, false,
-    (g, isOn) => { if (isOn) { st.genres.add(g); st.wishGenreFilter.add(g); } });
+    (g, isOn) => {
+      if (isOn) {
+        if (!st.genres.has(g)) st.filterAddedGenres.add(g);
+        st.genres.add(g);
+        st.wishGenreFilter.add(g);
+      } else {
+        if (st.filterAddedGenres.has(g)) {
+          st.filterAddedGenres.delete(g);
+          st.genres.delete(g);
+          st.wishGenreFilter.delete(g);
+          [...st.cats].forEach(k => { if (parseKey(k)[0] === g) st.cats.delete(k); });
+        }
+      }
+    });
 
   const genreScope = st.catGenreFilter.size ? [...st.catGenreFilter] : GENRES;
   drawChipRow(document.getElementById("catModuleFilter"), moduleOptionsFor(genreScope, true), st.catModuleFilter, drawCatStep,
@@ -1106,6 +1121,7 @@ function resetAll() {
   st.genres.clear(); st.cats.clear(); st.wishes.clear();
   st.catGenreFilter.clear(); st.catModuleFilter.clear();
   st.wishGenreFilter.clear(); st.wishModuleFilter.clear();
+  st.filterAddedGenres.clear();
   st.catQ = ""; st.wishQ = "";
   st.catOtherText = {}; st.wishOtherText = {};
   st.catOtherOpen = {}; st.wishOtherOpen = {};
