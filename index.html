@@ -663,7 +663,7 @@ function cardHtml(card, pickedSet, isFull, allowMainToggle, otherText, otherOpen
     const isOtherOpen = isOtherInput && !!(otherOpen && otherOpen[card.genre]);
     const isDim = !!o.dim;
     const posBadge = allowMainToggle ? catPositionLabel(o.k, !isDim && isOn) : "";
-    const extra = isDim ? '<span class="own-tag">우리 회사</span>' + posBadge : posBadge;
+    const extra = isDim ? '<span class="own-tag">하는 일</span>' + posBadge : posBadge;
     const otherVal = otherText ? (otherText[card.genre] || "") : "";
     const labelText = o.custom ? escAttr(o.item) : o.item;
     // 기본 기타 항목을 선택했을 때만 새 항목 입력란을 띄운다.
