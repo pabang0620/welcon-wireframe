@@ -1,231 +1,1395 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>WelCon 기업정보 등록</title>
-<style>
-/* ===== 기본 ===== */
-* { box-sizing: border-box; border-radius: 0; margin: 0; padding: 0; }
-html, body { background: #f6f6f7; }
-body {
-  font-family: "Pretendard", -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
-  color: #1a1a1a; -webkit-font-smoothing: antialiased; font-size: 14px; line-height: 1.55;
-}
-button, input { font-family: inherit; }
-.accent { color: #6d28d9; }
+<html lang="ko"><head>
 
-/* ===== 상단바 + 스테퍼 ===== */
-.gnb { background: #fff; border-bottom: 1px solid #e0e0e0; }
-.gnb-in { max-width: 1120px; margin: 0 auto; padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; }
-.logo { font-size: 17px; font-weight: 800; letter-spacing: -0.02em; }
-.logo span { color: #6d28d9; }
 
-.stepper { display: flex; align-items: center; gap: 6px; }
-.step-node { display: flex; align-items: center; gap: 8px; }
-.step-dot {
-  width: 24px; height: 24px; border: 1.5px solid #ccc; color: #999; background: #fff;
-  display: grid; place-items: center; font-size: 12px; font-weight: 700; flex: none;
-}
-.step-node.done .step-dot { background: #6d28d9; border-color: #6d28d9; color: #fff; }
-.step-node.now .step-dot { border-color: #6d28d9; color: #6d28d9; border-width: 2px; }
-.step-node .step-label { font-size: 12.5px; color: #999; white-space: nowrap; }
-.step-node.now .step-label { color: #6d28d9; font-weight: 700; }
-.step-node.done .step-label { color: #444; }
-.step-line { width: 34px; height: 1px; background: #ddd; }
 
-/* ===== 페이지 공통 ===== */
-.page { max-width: 1120px; margin: 0 auto; padding: 36px 32px 140px; }
-.screen { display: none; }
-.screen.active { display: block; }
-.title { font-size: 24px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.35; margin-bottom: 8px; }
-.req { color: #d93025; }
-.desc { max-width: 760px; font-size: 14px; color: #555; line-height: 1.65; margin-bottom: 30px; }
 
-/* ===== STEP1: 장르 타일 ===== */
-.genre-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-.genre-tile {
-  border: 1px solid #d5d5d5; background: #fff; padding: 22px 12px; text-align: center;
-  font-size: 15px; font-weight: 600; cursor: pointer; color: #1a1a1a; position: relative;
-}
-.genre-tile:hover { border-color: #999; }
-.genre-tile.on { border-color: #6d28d9; border-width: 2px; color: #6d28d9; background: #f5f0fc; }
-.genre-tile.on::after {
-  content: ""; position: absolute; top: 11px; right: 13px; width: 8px; height: 5px;
-  border-left: 2px solid #6d28d9; border-bottom: 2px solid #6d28d9; transform: rotate(-45deg);
-}
 
-/* ===== 필터 칩 (장르 / 공통모듈) ===== */
-.filter-label { font-size: 12px; font-weight: 700; color: #666; margin-bottom: 8px; }
-.filter-label .filter-hint { font-size: 11.5px; color: #999; font-weight: 400; margin-left: 8px; }
-.chips { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 22px; }
-.chip { border: 1px solid #d5d5d5; background: #fff; color: #444; padding: 8px 14px; min-height: 34px; font-size: 12.5px; line-height: 1.35; cursor: pointer; }
-.chip:hover { border-color: #999; }
-.chip.has { background: #f5f0fc; border-color: #d8c7f5; color: #6d28d9; }
-.chip.on { background: #1a1a1a; border-color: #1a1a1a; color: #fff; }
-.chip.on.has { background: #1a1a1a; border-color: #1a1a1a; color: #fff; }
-.chip-badge { display: inline-block; font-size: 10px; font-weight: 800; padding: 0 5px; margin-left: 6px; min-width: 14px; text-align: center; vertical-align: middle; }
-.chip-badge.main { background: #6d28d9; color: #fff; }
-.chip-badge.sub { background: #ddd; color: #444; }
 
-/* ===== 검색창 ===== */
-.search-box {
-  display: flex; align-items: center; border: 1.5px solid #d5d5d5; background: #fff;
-  padding: 12px 14px; max-width: 480px; margin-bottom: 26px;
-}
-.search-box:focus-within { border-color: #6d28d9; }
-.search-box input { flex: 1; border: none; outline: none; font-size: 13.5px; background: transparent; }
-.search-box .clear {
-  position: relative; border: none; background: #eee; width: 18px; height: 18px;
-  cursor: pointer; display: none; place-items: center; flex: none;
-}
-.search-box.has-val .clear { display: grid; }
-.search-box .clear::before, .search-box .clear::after {
-  content: ""; position: absolute; width: 9px; height: 1.5px; background: #777;
-}
-.search-box .clear::before { transform: rotate(45deg); }
-.search-box .clear::after { transform: rotate(-45deg); }
 
-/* ===== STEP2·3 결과 영역: 장르 카드가 마쏘너리로 배치, 카드 안 항목은 좌→우 흐름 ===== */
-.card-area { display: block; }
-.card-area.single { display: grid; grid-template-columns: 1fr; }
-.card-area.masonry { display: flex; align-items: flex-start; gap: 16px; }
-.masonry-col { display: flex; flex-direction: column; gap: 16px; flex: 1 1 0; min-width: 0; }
 
-.group { border: 1px solid #dedede; background: #fff; overflow: hidden; }
-.group-title {
-  font-size: 12.5px; font-weight: 700; color: #fff; background: #6d28d9; letter-spacing: 0.02em;
-  padding: 10px 14px; display: flex; justify-content: space-between; align-items: center;
-}
-.group-title .g-badge {
-  background: #fff; color: #6d28d9; font-size: 10.5px; font-weight: 800;
-  width: 16px; height: 16px; display: grid; place-items: center; flex: none;
-}
 
-.group-body { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
-.group.full .group-body { grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); }
 
-.opt {
-  display: flex; flex-wrap: wrap; align-items: flex-start; gap: 10px; min-height: 50px; padding: 13px 14px; cursor: pointer;
-  border-right: 1px solid #f0f0f0; border-bottom: 1px solid #f0f0f0;
-}
-.opt:hover { background: #fafafa; }
-.opt .box {
-  width: 18px; height: 18px; border: 1.5px solid #bbb; flex: none; background: #fff; margin-top: 2px;
-  display: grid; place-items: center;
-}
-.opt .box::after { content: ""; width: 9px; height: 9px; background: #6d28d9; transform: scale(0); transition: transform .12s; }
-.opt.on .box { border-color: #6d28d9; }
-.opt.on .box::after { transform: scale(1); }
-.opt.other-open { background: #fbf8ff; }
-.opt.other-open .box { border-color: #6d28d9; }
-.opt .label { flex: 1; min-width: 0; font-size: 13.5px; line-height: 1.45; word-break: keep-all; overflow-wrap: anywhere; }
-.opt.on .label { font-weight: 600; }
-.opt .sub { display: block; font-size: 11px; color: #888; font-weight: 400; margin-top: 4px; }
-/* 기타 항목 선택 시 나타나는 직접입력란 - 체크박스 폭만큼 들여써 라벨과 정렬 */
-.opt-other { flex: 1 1 100%; margin: 6px 0 0 28px; cursor: default; }
-.opt-other-input {
-  width: 100%; box-sizing: border-box; font: inherit; font-size: 12.5px; color: #333;
-  border: 1px solid #ccc; background: #fff; padding: 7px 9px;
-}
-.opt-other-input:focus { outline: none; border-color: #6d28d9; }
 
-.empty { border: 1px dashed #ddd; padding: 50px 16px; text-align: center; color: #999; font-size: 13px; }
 
-/* ===== 우리 회사(재선택 재개) 음영 표시 + 주/보조 배지 ===== */
-.opt.dim { cursor: pointer; background: #fff; }
-.opt.dim:hover { background: #fafafa; }
-.opt.dim .box { border-color: #bbb; }
-.opt.dim .label { color: #1a1a1a; }
-.own-tag {
-  display: inline-block; font-size: 10.5px; font-weight: 700; color: #666; background: #f0f0f0;
-  padding: 2px 6px; margin-left: 6px; vertical-align: 1px;
-}
-.pos-badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 6px; margin-left: 6px; vertical-align: 1px; }
-.pos-badge.main { background: #6d28d9; color: #fff; }
-.pos-badge.sub { background: #fff; color: #6d28d9; border: 1px solid #6d28d9; }
-/* 3단계에서 우리 회사로 고른 항목은 참고 배지만 중립색으로 보여준다. */
-.opt.dim .pos-badge.main { background: #767676; color: #fff; border: none; }
-.opt.dim .pos-badge.sub { background: #fff; color: #999; border: 1px solid #ccc; }
+	
 
-/* 보조포지션 배지 자체가 "주포지션으로 지정" 버튼을 겸한다.
-   평소엔 보조포지션과 동일한 외곽선 스타일, hover 시 주포지션 배지와 같은 채움 모양으로 바뀌어
-   클릭했을 때 어떻게 될지 미리 보여준다. */
-.pos-badge-btn {
-  font: inherit; line-height: normal; cursor: pointer;
-  appearance: none; -webkit-appearance: none; border-radius: 0; box-shadow: none;
-}
-.pos-badge-btn:hover, .pos-badge-btn:focus-visible { background: #6d28d9; color: #fff; }
+<meta charset="utf-8" name="viewport" content="width=device-width, intial-scale=1.0">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="format-detection" content="telephone=no">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="contextPath" content="">
 
-.tag.pos-sub em { color: #999; }
 
-/* ===== STEP4: 완료 ===== */
-.done-msg { display: flex; align-items: center; gap: 14px; padding-bottom: 28px; }
-.done-msg .ic { width: 40px; height: 40px; flex: none; border: 2px solid #6d28d9; display: grid; place-items: center; }
-.ic-check { width: 14px; height: 8px; border-left: 2.5px solid #6d28d9; border-bottom: 2.5px solid #6d28d9; transform: rotate(-45deg) translateY(-2px); }
-.done-msg .t { font-size: 18px; font-weight: 700; }
-.done-msg .d { font-size: 13px; color: #666; margin-top: 3px; }
+	
+		<title>회원가입 - 회원정보입력 및 사업자 인증</title>	
+		<meta id="meta_og_title" property="og:title" content="콘텐츠수출마케팅플랫폼">
+		<meta id="meta_og_url" property="og:url" content="https://welcon.kocca.kr">
+		<meta id="meta_og_type" property="og:type" content="website">
+		<meta id="meta_og_image" property="og:image" content="https://welcon.kocca.kr/static/frt/images/logo-og.png">
+		<meta id="meta_og_image_type" property="og:image:type" content="image/jpeg">
+		<meta id="meta_og_description" property="og:description" content="WelCon 콘텐츠수출마케팅플랫폼 웰콘, 콘텐츠수출마케팅플랫폼, 수출정보, 콘텐츠, 웰콘, 비즈매칭">
+		<meta id="meta_description" name="description" content="WelCon 콘텐츠수출마케팅플랫폼 웰콘, 콘텐츠수출마케팅플랫폼, 수출정보, 콘텐츠, 웰콘, 비즈매칭">	
+	
+	
 
-.sum-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-.sum-card { border: 1px solid #e0e0e0; background: #fff; }
-.sum-head {
-  padding: 12px 15px; background: #fafafa; border-bottom: 1px solid #e0e0e0;
-  font-size: 12.5px; font-weight: 700; color: #444; display: flex; justify-content: space-between;
-}
-.sum-head .edit { color: #6d28d9; font-weight: 600; cursor: pointer; }
-.sum-body { padding: 14px 15px; display: flex; flex-wrap: wrap; gap: 6px; min-height: 60px; align-content: flex-start; }
-.tag { border: 1px solid #d5d5d5; background: #fff; font-size: 12px; padding: 5px 10px; }
-.tag em { font-style: normal; color: #999; font-size: 11px; margin-right: 4px; }
-.sum-none { color: #999; font-size: 13px; }
-.sum-groups { display: flex; flex-direction: column; gap: 12px; width: 100%; }
-.sum-group-label { font-size: 11px; font-weight: 700; color: #999; letter-spacing: 0.02em; margin-bottom: 6px; }
-.sum-group .tag-row { display: flex; flex-wrap: wrap; gap: 6px; }
-.sum-group .sum-none { display: block; }
 
-/* ===== STEP4: 장르별 포지션 막대그래프 ===== */
-.chart-card { border: 1px solid #e0e0e0; background: #fff; margin-top: 32px; margin-bottom: 18px; }
-.chart-head { padding: 12px 15px; background: #fafafa; border-bottom: 1px solid #e0e0e0; font-size: 12.5px; font-weight: 700; color: #444; }
-.chart-body { padding: 18px 15px 14px; }
-.chart-legend { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 16px; font-size: 12px; color: #444; }
-.lg-item { display: flex; align-items: center; gap: 6px; }
-.lg-swatch { width: 11px; height: 11px; display: inline-block; flex: none; }
-.lg-swatch.main { background: #6d28d9; }
-.lg-swatch.sub { background: #8b5cf6; }
-.lg-swatch.wish { background: #b6466a; }
 
-.chart-canvas-wrap { position: relative; width: 100%; }
+<link rel="shortcut icon" href="https://welcon.kocca.kr/static/mng/images/favicon.png?v=20260825181323341">
 
-/* ===== 하단 고정바 ===== */
-.footer { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; border-top: 1px solid #e0e0e0; }
-.footer-in { max-width: 1120px; margin: 0 auto; padding: 14px 32px; display: flex; align-items: center; justify-content: space-between; }
-.count-note { font-size: 13px; color: #767676; }
-.btn-row { display: flex; gap: 8px; }
-.btn { padding: 12px 28px; font-size: 14.5px; font-weight: 700; cursor: pointer; border: 1px solid #d5d5d5; background: #fff; color: #333; }
-.btn.primary { background: #6d28d9; border-color: #6d28d9; color: #fff; }
-.btn.primary:disabled { background: #e5e5e5; border-color: #e5e5e5; color: #aaa; cursor: not-allowed; }
+<!-- 기존 css -->
+<link rel="stylesheet" type="text/css" href="https://welcon.kocca.kr/static/frt/css/ko/base.css?v=20260825181323341">
+<link rel="stylesheet" type="text/css" href="https://welcon.kocca.kr/static/cmm/css/new-sub.css">
+<!-- css -->
+<link rel="stylesheet" type="text/css" href="https://welcon.kocca.kr/static/wcdn2025/fonts/pretendard/pretendard-gov-subset.css?v=20260825181323341">
+<link rel="stylesheet" type="text/css" href="https://welcon.kocca.kr/static/wcdn2025/libs/swiper/swiper-bundle.min.css?v=20260825181323341">
+<link rel="stylesheet" type="text/css" href="https://welcon.kocca.kr/static/wcdn2025/libs/krds/css/component/output.css?v=20260825181323341">
+<link rel="stylesheet" type="text/css" href="https://welcon.kocca.kr/static/wcdn2025/libs/krds/css/common/common.css?v=20260825181323341">
+<link rel="stylesheet" type="text/css" href="https://welcon.kocca.kr/static/wcdn2025/libs/flag/css/flag-icon.css">
+<link rel="stylesheet" type="text/css" href="https://welcon.kocca.kr/static/wcdn2025/libs/fontawesome-free-7.0.1/css/all.css">
 
-@media (max-width: 900px) {
-  .gnb-in { align-items: flex-start; flex-direction: column; gap: 14px; }
-  .genre-grid { grid-template-columns: repeat(2, 1fr); }
-  .sum-grid { grid-template-columns: 1fr; }
-}
 
-@media (max-width: 620px) {
-  .gnb-in, .page, .footer-in { padding-left: 20px; padding-right: 20px; }
-  .stepper { width: 100%; justify-content: space-between; gap: 4px; }
-  .step-node { gap: 6px; }
-  .step-node .step-label { display: none; }
-  .step-line { flex: 1; width: auto; }
-  .genre-grid { grid-template-columns: 1fr; }
-  .filter-label .filter-hint { display: block; margin: 3px 0 0; }
-  .btn { padding: 11px 22px; }
-}
+<link rel="stylesheet" type="text/css" href="https://welcon.kocca.kr/static/wcdn2025/css/frt/root.css?v=20260825181323341">
+<link rel="stylesheet" type="text/css" href="https://welcon.kocca.kr/static/wcdn2025/css/frt/layout.css?v=20260825181323341">
+<link rel="stylesheet" type="text/css" href="https://welcon.kocca.kr/static/wcdn2025/css/frt/board.css?v=20260825181323341">
+<link rel="stylesheet" type="text/css" href="https://welcon.kocca.kr/static/wcdn2025/css/frt/search.css?v=20260825181323341">
+<link rel="stylesheet" type="text/css" href="https://welcon.kocca.kr/static/wcdn2025/css/frt/content.css">
+<link rel="stylesheet" type="text/css" href="https://welcon.kocca.kr/static/wcdn2025/css/frt/member.css">
 
-</style>
+<script type="text/javascript" async="" src="https://www.googletagmanager.com/gtag/js?id=G-ZK6LHHD86Q&amp;cx=c&amp;gtm=4e6921&amp;is_td=1&amp;v=3&amp;t=t&amp;pid=260878280&amp;gtm=45je6921v9105824573za20g&amp;seq=2&amp;exp=115938465~115938469~118897920~118897930~120213116~120385423~120469145~120469153~120914213&amp;dl=welcon.kocca.kr%2Fko%2Fsignup&amp;tdp=G-ZK6LHHD86Q;105824573;1;1;0&amp;mde=G-ZK6LHHD86Q;17_1;54_1;61_1;67_1&amp;csp=G-ZK6LHHD86Q;17_1_2&amp;z=0"></script><script type="text/javascript" async="" src="https://www.google-analytics.com/analytics.js"></script><script type="text/javascript" async="" src="https://www.googletagmanager.com/gtag/js?id=G-ZK6LHHD86Q&amp;cx=c&amp;gtm=4e6921"></script><script src="https://welcon.kocca.kr/static/wcdn2025/libs/jquery/jquery-3.7.1.min.js?v=20260825181323341"></script>
+<script src="https://welcon.kocca.kr/static/cmm/js/welcon/base/welcon.loader.js?v=20260825181323341"></script>
+<script src="https://welcon.kocca.kr/static/cmm/js/welcon/base/welcon.logger.js?v=20260825181323341"></script>
+<script src="https://welcon.kocca.kr/static/cmm/js/welcon/base/welcon.context.js?v=20260825181323341"></script>
+<script src="https://welcon.kocca.kr/static/cmm/js/welcon/base/welcon.config.js?v=20260825181323341"></script>
+<script src="https://welcon.kocca.kr/static/cmm/js/welcon/lib/jquery.shave.js?v=20260825181323341"></script>
+<script src="https://welcon.kocca.kr/static/cmm/js/welcon/lib/utils.js?v=20260825181323341"></script>
+
+<!-- script -->
+<script src="https://welcon.kocca.kr/static/wcdn2025/libs/swiper/swiper-bundle.min.js?v=20260825181323341"></script>
+<script src="https://welcon.kocca.kr/static/wcdn2025/js/util.js?v=20260825181323341"></script>
+<script src="https://welcon.kocca.kr/static/wcdn2025/js/util-additional.js?v=20260825181323341"></script>
+<script src="https://welcon.kocca.kr/static/wcdn2025/js/frt/custom-ui-script.js?v=20260825181323341"></script> 
+<script src="https://welcon.kocca.kr/static/wcdn2025/js/frt/common.js?v=20260825181323341"></script>
+<script src="https://welcon.kocca.kr/static/wcdn2025/js/frt/sub.js?v=20260825181323341"></script>
+<script src="https://welcon.kocca.kr/static/wcdn2025/js/frt/total-search-util.js?v=20260825181323341"></script>
+
+<script src="https://welcon.kocca.kr/static/wcdn2025/libs/jquery/jquery.validate.min.js?v=20260825181323341"></script>
+<script src="https://welcon.kocca.kr/static/wcdn2025/libs/jquery/custom-validate-script.js?v=20260825181323341"></script>
+<script src="https://welcon.kocca.kr/static/wcdn2025/libs/jquery/jquery.alphanum.js?v=20260825181323341"></script>
+<script src="https://welcon.kocca.kr/static/wcdn2025/libs/jquery/jquery.number.min.js?v=20260825181323341"></script> 
+<script src="https://welcon.kocca.kr/static/mng/js/additional-methods.js?v=20260825181323341"></script>
+
+<link href="https://welcon.kocca.kr/static/mng/css/popModal.min.css?v=20260825181323341" rel="stylesheet">
+<script src="https://welcon.kocca.kr/static/mng/js/popModal.js?v=20260825181323341'/&gt;"></script>
+
 </head>
-<body>
 
-<div class="gnb">
+<body>
+<div id="wrap">		
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+//<![CDATA[
+	
+/* ********************************************************
+ * 초기화 작업
+ ******************************************************** */
+$(document).ready(function(){
+
+	
+}); 
+
+
+/* ********************************************************
+ * 로그아웃
+ ******************************************************** */
+function actionLogout()
+{
+	document.headForm.action = "/welcon/logout.do";
+	document.headForm.target = "_top";
+	document.headForm.submit();
+}
+
+/* ********************************************************
+ * 페이지 이동
+ ******************************************************** */
+function goPageMove(menuNo, page, menuTop){
+	if (page.indexOf('http') == 0) {
+		var targetName = "_blank";
+		if ((page+"").indexOf("https://welcon.kocca.kr/emp") >= 0) targetName = "_emp"; // emp
+		window.open(page, targetName);
+		return;
+	}
+	
+	if (page.indexOf('/ko/') == 0 || page.indexOf('/en/') == 0) page = page.substring(3);
+		
+	//document.headForm.pageUrl.value = page;
+	document.headForm.siteMenuNo.value = menuNo;
+	document.headForm.siteTop.value = menuTop;
+	document.headForm.method = "post";
+	document.headForm.action = "/ko"+page;
+	document.headForm.submit();
+}
+function actionLogout(logoutUrl) {
+	doLogoutEmp();
+	document.logoutForm.action = logoutUrl;
+	document.logoutForm.submit();
+}
+function doLogoutEmp() {
+	var welconHome = window.open('about:blank', 'empHome', 'width=3,height=3,left=1000,top=500');
+	var varForm = document.forms["logoutEmpForm"];
+	varForm.action = "https://welcon.kocca.kr/emp/cmm/logoutFromWelcon.do";
+	varForm.target = "empHome";
+	varForm.submit();
+}
+
+//23.12.06 메뉴이동
+function goNaviPageMove(page){
+	if (page.indexOf('http') == 0) { // 마켓플레이스 바로가기 (2023.12.27)
+		var targetName = "_blank";
+		if ((page+"").indexOf("https://welcon.kocca.kr/emp") >= 0) targetName = "_emp"; // emp
+		window.open(page, targetName);
+		return;
+	}
+	
+	location.href = page;
+}
+
+function fnLocation(uri){
+	const contextPath = "";
+	location.href = contextPath + "/" + "ko" + "/" + uri;
+}
+
+//]]
+</script>
+<form name="headForm">
+	<input type="hidden" name="pageUrl">
+	<input type="hidden" name="returnUrl" value="">
+	<input type="hidden" name="siteMenuNo" value="">
+	<input type="hidden" name="siteTop" value="">
+<input type="hidden" name="" value=""></form>
+		
+<form id="logoutForm" name="logoutForm" action="/welcon/logout.do" method="POST">
+<input type="hidden" name="" value=""></form>
+
+
+
+<form id="logoutEmpForm" name="logoutEmpForm" action="/emp/cmm/logoutFromWelcon.do" method="POST">
+<input type="hidden" name="" value=""></form>
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+	  const skipLink = document.querySelector('.skip-link');
+	  const hasBreadcrumb = document.querySelector('#breadcrumb'); 
+
+	  // 서브 페이지에 breadcrumb가 존재할 때만 href를 변경
+	  if (hasBreadcrumb && skipLink) {
+	    skipLink.setAttribute('href', '#breadcrumb');
+	  }
+	});
+</script>
+
+
+<!-- 본문 바로가기 영역  -->
+<div id="krds-skip-link"><a href="#breadcrumb" class="skip-link">본문 바로가기</a></div>
+<!-- 본문 바로가기 영역 // --> 
+<!-- 헤더 영역 -->
+<header id="krds-header"> 
+    <!-- 헤더 컨텐츠 영역  -->
+    <div class="header-in"> 
+        <!-- 헤더 상단 기타메뉴 -->
+        <div class="header-container">
+            <!-- 헤더 utility--> 
+			<div class="header-utility-wrap"> 
+                <div class="header-utility"> 
+                     <ul class="utility-list">
+                            <li>
+                                <a href="/ko/support/about-welcon" class="krds-btn small text drop-btn"> 고객지원</a>
+                            </li>
+                            <li>
+                               <a href="/en/buyer/main" class="krds-btn small text " lang="en">English</a>
+                            </li>
+                           <!-- <li>
+                                <button type="button" class="krds-btn small text open-modal" data-target="modal_adjust_display"> <i class="svg-icon ico-view-mode"></i> 글자&middot;화면 설정 </button>
+                            </li> -->                                
+                        </ul>
+                </div>
+            </div>    
+            <!-- //헤더 utility-->
+            <div class="inner">     
+                <div class="header-branding">
+                    <h1 class="logo"> <a href="/"> <span class="sr-only">WelCon</span> </a> </h1>
+                    <!-- 메인메뉴 : 데스크탑 -->
+                    <nav class="krds-main-menu">
+                        <div class="inner">
+                            <ul class="gnb-menu" aria-label="메인 메뉴">
+                                <li>
+                                    <button type="button" class="gnb-main-trigger" data-trigger="gnb" data-gnb-no="gnb01" aria-controls="gnb-main-menu-qxz4dcy" aria-expanded="false" aria-haspopup="true">행사·사업신청</button>
+                                    <!-- gnb-toggle-wrap -->
+                                    <div class="gnb-toggle-wrap" id="gnb-main-menu-qxz4dcy"> 
+                                        <!-- gnb-main-list -->
+                                        <div class="gnb-main-list" data-has-submenu="true">
+                                            <ul>
+                                                <li>
+                                                    <button type="button" class="gnb-sub-trigger active" data-trigger="gnb" aria-controls="gnb-sub-menu-ngg67sl" aria-expanded="true" aria-haspopup="true">행사참가신청</button>
+                                                    <!-- gnb-sub-list -->
+                                                    <div class="gnb-sub-list active" id="gnb-sub-menu-ngg67sl">
+                                                        <div class="gnb-sub-content">
+                                                            <h2 class="sub-title"> 행사참가신청 <span class="line-divider"></span> <a href="/event/all" class="krds-btn link basic small"><span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
+                                                            <p class="txt">KOCCA가 주관 및 개최하는 국내외 콘텐츠 행사 참가 신청이 가능합니다.</p>
+                                                        </div>
+                                                    </div>
+                                                    <!-- //gnb-sub-list --> 
+                                                </li>
+                                                <li>
+                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-p0hohfh" aria-expanded="false" aria-haspopup="true">연간행사일정</button>
+                                                    <!-- gnb-sub-list -->
+                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-p0hohfh">
+                                                        <div class="gnb-sub-content">
+                                                            <h2 class="sub-title"> 연간행사일정<span class="line-divider"></span><a href="/event/schedule" class="krds-btn link basic small"> <span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
+                                                            <p class="txt">연간 KOCCA 해외진출 행사 및 마켓 일정을 한눈에 확인할 수 있습니다.</p>
+                                                        </div>
+                                                        <div class="gnb-sub-banner layer-bg01">
+                                                            <i class="svg-icon ico-layer01"></i>
+                                                            <a href="/ko/event/schedule">
+                                                            <div>
+                                                                <p class="banner-tit">2026년 연간 행사 일정</p>
+                                                                <p class="banner-txt">B2B/B2C/쇼케이스 등 포함한 일정 확인</p>
+                                                               <i class="svg-icon card-arrow"></i>
+                                                            </div>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                    <!-- //gnb-sub-list --> 
+                                                </li>
+                                                 <li>
+                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-ckljgy3" aria-expanded="false" aria-haspopup="true">해외마켓정보</button>
+                                                    <!-- gnb-sub-list -->
+                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-ckljgy3">
+                                                        <div class="gnb-sub-content">
+                                                            <h2 class="sub-title"> 해외마켓정보<span class="line-divider"></span><a href="/ko/ovsinfo" class="krds-btn link basic small"> <span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
+                                                            <p class="txt">해외 주요 콘텐츠 장르별 마켓의 특징, 콘텐츠 등을 분석한 정보를 제공합니다.</p>
+                                                        </div>                                                           
+                                                    </div>
+                                                    <!-- //gnb-sub-list --> 
+                                                </li>  
+                                                 <li>
+                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-ceur7cs" aria-expanded="false" aria-haspopup="true">지원사업정보</button>
+                                                    <!-- gnb-sub-list -->
+                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-ceur7cs">
+                                                        <div class="gnb-sub-content">
+                                                            <h2 class="sub-title"> 지원사업정보<span class="line-divider"></span><a href="/info/business" class="krds-btn link basic small"> <span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
+                                                            <p class="txt">콘텐츠 기업을 위한 KOCCA 및 유관기관의 해외진출 지원사업을 쉽게 확인할 수 있습니다.</p>
+                                                        </div>                                                            
+                                                    </div>
+                                                    <!-- //gnb-sub-list --> 
+                                                </li>  
+                                            </ul>
+                                        </div>
+                                        <!-- //gnb-main-list --> 
+                                    </div>
+                                    <!-- //gnb-toggle-wrap --> 
+                                </li>
+                                <li>
+                                    <button type="button" class="gnb-main-trigger" data-trigger="gnb" data-gnb-no="gnb02" aria-controls="gnb-main-menu-giizbxb" aria-expanded="false" aria-haspopup="true">상담·컨설팅</button>
+                                    <!-- gnb-toggle-wrap -->
+                                    <div class="gnb-toggle-wrap" id="gnb-main-menu-giizbxb"> 
+                                        <!-- gnb-main-list -->
+                                        <div class="gnb-main-list" data-has-submenu="true">
+                                            <ul>
+                                                <li>
+                                                    <button type="button" class="gnb-sub-trigger active" data-trigger="gnb" aria-controls="gnb-sub-menu-ztmqvno" aria-expanded="true" aria-haspopup="true">해외진출상담</button>
+                                                    <!-- gnb-sub-list -->
+                                                    <div class="gnb-sub-list between active" id="gnb-sub-menu-ztmqvno">
+                                                        <div class="gnb-sub-content">
+                                                            <h2 class="sub-title"> 해외진출상담<span class="line-divider"></span><a href="/business/counsel-guide" class="krds-btn link basic small"> <span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
+                                                            <p class="txt">국내 콘텐츠 기업을 위한 해외진출 전략 및 비즈니스 상담을 제공합니다.</p>
+                                                        </div>
+                                                        <div class="gnb-sub-banner layer-bg05">                                                             
+	                                                        <div class="layer-txt-box01">
+	                                                            <p class="consult-tit">해외진출상담?</p>
+	                                                            <p class="consult-txt">전문가에게 무료 상담을 받아보세요.</p>
+	                                                        </div>
+	                                                        <div class="layer-txt-box02">
+	                                                            <p class="consult-center">콘텐츠해외진출지원센터</p>
+	                                                            <p class="consult-num">02-6441-3621</p>
+	                                                        </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- //gnb-sub-list --> 
+                                                </li>
+                                                <li>
+                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-2elun3y" aria-expanded="false" aria-haspopup="true">해외진출역량진단</button>
+                                                    <!-- gnb-sub-list -->
+                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-2elun3y">
+                                                        <div class="gnb-sub-content">
+                                                            <h2 class="sub-title"> 해외진출역량진단<span class="line-divider"></span><a href="/business/level-test-intro" class="krds-btn link basic small"> <span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
+                                                            <p class="txt">기업의 해외진출 역량을 진단하고 단계별 개선 방향을 안내합니다.</p>
+                                                        </div>                                                           
+                                                    </div>
+                                                    <!-- //gnb-sub-list --> 
+                                                </li>
+                                                <li>
+                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-0ej25vu" aria-expanded="false" aria-haspopup="true">해외진출계약서식</button>
+                                                    <!-- gnb-sub-list -->
+                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-0ej25vu">
+                                                        <div class="gnb-sub-content">
+                                                            <h2 class="sub-title"> 해외진출계약서식<span class="line-divider"></span><a href="/business/contract-form" class="krds-btn link basic small"> <span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
+                                                            <p class="txt">해외 수출 및 진출에 필요한 표준 계약서식을 장르별로 제공합니다.</p>
+                                                        </div>                                                           
+                                                    </div>
+                                                    <!-- //gnb-sub-list --> 
+                                                </li>
+                                                <li>
+                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-qjrvqe5" aria-expanded="false" aria-haspopup="true">해외진출 FAQ</button>
+                                                    <!-- gnb-sub-list -->
+                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-qjrvqe5">
+                                                        <div class="gnb-sub-content">
+                                                            <h2 class="sub-title">해외진출 FAQ<span class="line-divider"></span><a href="/business/faq" class="krds-btn link basic small"> <span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
+                                                            <p class="txt">해외진출 과정에서 자주 묻는 세무, 회계, 계약, 법률 등의 실무 질문에 대한 핵심 정보를 제공합니다.</p>
+                                                        </div>                                                         
+                                                    </div>
+                                                    <!-- //gnb-sub-list --> 
+                                                </li> 
+                                                <li>
+                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-lp9xpk2" aria-expanded="false" aria-haspopup="true">해외진출 기초정보</button>
+                                                    <!-- gnb-sub-list -->
+                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-lp9xpk2">
+                                                        <div class="gnb-sub-content">
+                                                            <h2 class="sub-title">해외진출 기초정보<span class="line-divider"></span></h2>
+                                                            <ul>
+                                                                <li><a href="/ko/ovmk/company-info">기업정보</a></li>
+                                                                <li><a href="/ko/ovmk/media-info">매체정보</a></li>
+                                                                <li><a href="/ko/ovmk/biz-culture">비즈니스·문화 코드</a></li>
+                                                            </ul>
+                                                        </div>                                                                                                             
+                                                    </div>
+                                                    <!-- //gnb-sub-list --> 
+                                                </li>                                                   
+                                            </ul>
+                                        </div>
+                                        <!-- //gnb-main-list --> 
+                                    </div>
+                                    <!-- //gnb-toggle-wrap --> 
+                                </li>
+                                 <li>
+                                    <button type="button" class="gnb-main-trigger" data-trigger="gnb" data-gnb-no="gnb03" aria-controls="gnb-main-menu-m3t2ls1" aria-expanded="false" aria-haspopup="true">해외법률·정책</button>
+                                    <!-- gnb-toggle-wrap -->
+                                    <div class="gnb-toggle-wrap" id="gnb-main-menu-m3t2ls1"> 
+                                        <!-- gnb-main-list -->
+                                        <div class="gnb-main-list" data-has-submenu="true">
+                                            <ul>
+                                                <li>
+                                                    <button type="button" class="gnb-sub-trigger active" data-trigger="gnb" aria-controls="gnb-sub-menu-jx117ap" aria-expanded="true" aria-haspopup="true">콘텐츠 법령</button>
+                                                    <!-- gnb-sub-list -->
+                                                    <div class="gnb-sub-list between active" id="gnb-sub-menu-jx117ap">
+                                                        <div class="gnb-sub-content">
+                                                            <h2 class="sub-title">콘텐츠 법령<span class="line-divider"></span></h2>
+                                                            <ul>
+                                                                <li><a href="/law/l1">국가별 법령분류체계</a></li>
+                                                                <li><a href="/law/l2">기본법</a></li>
+                                                                <li><a href="/law/l3">시행령</a></li>
+                                                                <li><a href="/law/l4">규칙</a></li>
+                                                                <li><a href="/law/l5">가이드라인</a></li>
+                                                                <li><a href="/law/l6">분쟁사례</a></li>
+                                                                <li><a href="/law/l9">기타</a></li>
+                                                            </ul>
+                                                        </div>
+                                                        <div class="gnb-sub-banner layer-bg02">                
+                                                        	<p class="banner-txt02"><strong>콘텐츠 수출에 필수</strong>적인<br><strong>법률 및 정책 정보</strong>를<br>체계적으로 안내해 드립니다.</p>                  
+                                                        </div>                                                         
+                                                    </div>
+                                                    <!-- //gnb-sub-list --> 
+                                                </li>
+                                                <li>
+                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-6w7xd4e" aria-expanded="false" aria-haspopup="true">진출단계별 법규제정보</button>
+                                                    <!-- gnb-sub-list -->
+                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-6w7xd4e">
+                                                        <div class="gnb-sub-content">
+                                                            <h2 class="sub-title"> 진출단계별 법규제정보<span class="line-divider"></span><a href="/regulation" class="krds-btn link basic small"> <span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
+                                                            <p class="txt">해외 비즈니스 단계별로 필요한 법과 규제 정보를 제공합니다.</p>
+                                                        </div>                                                           
+                                                    </div>
+                                                    <!-- //gnb-sub-list --> 
+                                                </li>                                                   
+                                                <li>
+                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-4pss8dq" aria-expanded="false" aria-haspopup="true">기관·협회</button>
+                                                    <!-- gnb-sub-list -->
+                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-4pss8dq">
+                                                        <div class="gnb-sub-content">
+                                                            <h2 class="sub-title">기관·협회<span class="line-divider"></span></h2>
+                                                            <ul>
+                                                                <li><a href="/ko/ovmk/organ-support">기관</a></li> 
+                                                                <li><a href="/ko/ovmk/assoc-support">협회</a></li>
+                                                            </ul>
+                                                        </div>                                                                                                                   
+                                                    </div>
+                                                    <!-- //gnb-sub-list --> 
+                                                </li>  
+                                                <li>
+                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-rkgfcpa" aria-expanded="false" aria-haspopup="true">지원정책</button>
+                                                    <!-- gnb-sub-list -->
+                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-rkgfcpa">
+                                                        <div class="gnb-sub-content">
+                                                            <h2 class="sub-title">지원정책<span class="line-divider"></span><a href="/ko/ovmk/support-policy" class="krds-btn link basic small"> <span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
+                                                            <p class="txt">주요 국가의 콘텐츠산업 지원제도와 정부 정책을 제공합니다.</p>
+                                                        </div>                                                          
+                                                    </div>
+                                                    <!-- //gnb-sub-list --> 
+                                                </li>                                                                                                      
+                                            </ul>
+                                        </div>
+                                        <!-- //gnb-main-list --> 
+                                    </div>
+                                    <!-- //gnb-toggle-wrap --> 
+                                </li>
+                                <li>
+                                    <button type="button" class="gnb-main-trigger" data-trigger="gnb" data-gnb-no="gnb04" aria-controls="gnb-main-menu-wv5kk63" aria-expanded="false" aria-haspopup="true">해외동향·통계</button>
+                                    <!-- gnb-toggle-wrap -->
+                                    <div class="gnb-toggle-wrap" id="gnb-main-menu-wv5kk63"> 
+                                       <!-- gnb-main-list -->
+                                        <div class="gnb-main-list" data-has-submenu="true">
+                                            <ul>
+                                                <li>
+                                                    <button type="button" class="gnb-sub-trigger active" data-trigger="gnb" aria-controls="gnb-sub-menu-eld512d" aria-expanded="true" aria-haspopup="true">콘텐츠뉴스</button>
+                                                    <!-- gnb-sub-list -->
+                                                    <div class="gnb-sub-list between active" id="gnb-sub-menu-eld512d">
+                                                        <div class="gnb-sub-content">
+                                                            <h2 class="sub-title">콘텐츠뉴스<span class="line-divider"></span> <a href="/ko/info/news" class="krds-btn link basic small"><span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
+                                                            <p class="txt">해외 콘텐츠 관련 뉴스와 이슈를 모아 제공합니다.</p>
+                                                        </div>
+                                                        <div class="gnb-sub-banner layer-bg03">
+                                                            <a href="/ko/info/statistics">
+                                                            <div>
+                                                                <p class="banner-tit02">2025<br>해외 콘텐츠시장 분석(글로벌)<br>자료 다운로드</p>
+                                                                <p class="banner-txt03">글로벌 콘텐츠 시장 규모 및 전망을<br> 확인할 수 있습니다. </p>
+                                                               <i class="svg-icon card-arrow"></i>
+                                                            </div>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                    <!-- //gnb-sub-list --> 
+                                                </li>
+                                                <li>
+                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-0amwisc" aria-expanded="false" aria-haspopup="true">글로벌리포트</button>
+                                                    <!-- gnb-sub-list -->
+                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-0amwisc">
+                                                        <div class="gnb-sub-content">
+                                                            <h2 class="sub-title">글로벌리포트<span class="line-divider"></span><a href="/ko/info/report" class="krds-btn link basic small"> <span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
+                                                            <p class="txt">콘텐츠 산업동향과 심층 분석 리포트를 통합해 국가 및 장르별 시장 변화를 깊이 있게 제공합니다.</p>
+                                                        </div>                                                            
+                                                    </div>
+                                                    <!-- //gnb-sub-list --> 
+                                                </li>
+                                                <li>
+                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-56goh05" aria-expanded="false" aria-haspopup="true">글로벌트렌드</button>
+                                                    <!-- gnb-sub-list -->
+                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-56goh05">
+                                                        <div class="gnb-sub-content">
+                                                            <h2 class="sub-title">글로벌트렌드<span class="line-divider"></span><a href="/ko/info/trend" class="krds-btn link basic small"> <span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
+                                                            <p class="txt">전 세계 콘텐츠 트렌드, 한류 동향, 규제, 지재권, 이슈, 글로벌 마켓 정보를 한곳에서 제공합니다.</p>
+                                                        </div>
+                                                       
+                                                    </div>
+                                                    <!-- //gnb-sub-list --> 
+                                                </li> 
+                                                <li>
+                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-05rds6p" aria-expanded="false" aria-haspopup="true">해외시장통계</button>
+                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-05rds6p">
+                                                        <div class="gnb-sub-content">
+                                                            <h2 class="sub-title">해외시장통계<span class="line-divider"></span><a href="/ko/info/statistics" class="krds-btn link basic small"> <span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
+                                                            <p class="txt">국가별, 장르별 해외 콘텐츠 시장 규모와 산업 데이터를 제공합니다.</p>
+                                                        </div>                                                         
+                                                    </div>
+                                                </li> 
+                                            </ul>
+                                        </div>
+                                        <!-- //gnb-main-list --> 
+                                    </div>
+                                    <!-- //gnb-toggle-wrap --> 
+                                </li>
+                                <li>
+                                    <button type="button" class="gnb-main-trigger" data-trigger="gnb" data-gnb-no="gnb05" aria-controls="gnb-main-menu-b6b2nx4" aria-expanded="false" aria-haspopup="true">W·인사이트</button>
+                                    <!-- gnb-toggle-wrap -->
+                                    <div class="gnb-toggle-wrap" id="gnb-main-menu-b6b2nx4"> 
+                                        <!-- gnb-main-list -->
+                                        <div class="gnb-main-list" data-has-submenu="true">
+                                            <ul>
+                                                <li>
+                                                    <button type="button" class="gnb-sub-trigger active" data-trigger="gnb" aria-controls="gnb-sub-menu-49erycy" aria-expanded="true" aria-haspopup="true">WelCon 토픽</button>
+                                                    <!-- gnb-sub-list -->
+                                                    <div class="gnb-sub-list between active" id="gnb-sub-menu-49erycy">
+                                                        <div class="gnb-sub-content">
+                                                            <h2 class="sub-title">WelCon 토픽 <span class="line-divider"></span> <a href="/ko/ovmk/topic" class="krds-btn link basic small"><span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
+                                                            <p class="txt">콘텐츠 현안 분석과 콘텐츠 관련 정보를 통합해 주요 이슈를 깊이 있게 다룹니다.</p>
+                                                        </div>
+                                                        <div class="gnb-sub-banner layer-bg04">
+                                                            <a href="/ko/info/statistics">
+                                                            <div>
+                                                                <p class="banner-tit02">2025<br>해외 콘텐츠시장 분석(글로벌)<br>자료 다운로드</p>
+                                                                <p class="banner-txt03">글로벌 콘텐츠 시장 규모 및 전망을<br> 확인할 수 있습니다. </p>
+                                                               <i class="svg-icon card-arrow"></i>
+                                                            </div>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-t33lys9" aria-expanded="false" aria-haspopup="true">WelCon 인사이드</button>
+                                                    <!-- gnb-sub-list -->
+                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-t33lys9">
+                                                        <div class="gnb-sub-content">
+                                                            <h2 class="sub-title">WelCon 인사이드<span class="line-divider"></span><a href="/ko/ovmk/inside" class="krds-btn link basic small"> <span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
+                                                            <p class="txt">해외 전문가 및 기업 인터뷰와 콘텐츠 이용행태 분석을 통해 생생한 현장 인사이트를 전합니다.</p>
+                                                        </div>                                                           
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-hwprydh" aria-expanded="false" aria-haspopup="true">WelCon 포커스</button>
+                                                    <!-- gnb-sub-list -->
+                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-hwprydh">
+                                                        <div class="gnb-sub-content">
+                                                            <h2 class="sub-title">WelCon 포커스<span class="line-divider"></span><a href="/ko/ovmk/focus" class="krds-btn link basic small"> <span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
+                                                            <p class="txt">글로벌 콘텐츠 시장을 다룬 연구, 정책, 산업 보고서를 체계적으로 제공합니다.</p>
+                                                        </div>                                                          
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <!-- //gnb-main-list --> 
+                                    </div>
+                                    <!-- //gnb-toggle-wrap --> 
+                                </li>
+                                <li><a href="/support/office" class="gnb-main-trigger is-link " data-trigger="gnb">해외비즈니스센터</a> </li>
+                                <li><a href="https://welcon.kocca.kr/emp" class="gnb-main-trigger is-link" data-trigger="gnb" target="_blank" title="새 창 열림">마켓플레이스<i class="svg-icon ico-go"></i></a></li>
+                            </ul>
+                        </div>
+                    </nav>
+                    <!-- //메인메뉴 : 데스크탑 -->    
+                    <!-- 메인메뉴 : 데스크탑 //-->                       
+                </div>
+				
+	            	<div class="header-right">
+	                	<div class="header-actions">
+	                    	<button type="button" class="btn-navi sch open-modal" title="통합검색 레이어" data-target="popTotalSch" data-func="initPanel" id="totalSearch"> 통합검색</button>
+	                        <button type="button" class="btn-navi all" aria-controls="mobile-nav">전체메뉴</button>
+	                        <a href="https://welcon.kocca.kr/cmm/login.do" class="btn-navi login">로그인</a>
+	                        <button type="button" onclick="goUrl('/ko/signup');" class="btn-navi join">회원가입</button>                        
+	                   </div>              
+	               </div>
+				
+	            
+            </div>
+        </div>
+        <!-- //헤더 상단 기타메뉴 --> 
+    </div>
+    <!-- //헤더 컨텐츠 영역  --> 
+    
+    <!-- 메인메뉴 : 모바일 -->
+    <div id="mobile-nav" class="krds-main-menu-mobile" style="display: none;">
+        <div class="gnb-wrap"> 
+            <!-- gnb-header -->
+            <div class="gnb-header"> 
+                <!-- gnb-utils -->
+                <div class="gnb-utils">
+                    <ul class="utility-list">
+                        <!-- <li>
+                            <button type="button" class="krds-btn small text open-modal" data-target="modal_adjust_display"> <i class="svg-icon ico-view-mode"></i> 글자&middot;화면 설정 </button>
+                        </li> -->
+                        <li>
+                           <a href="/en/buyer/main" class="krds-btn small text " lang="en">English</a>
+                        </li>         
+                    </ul>
+                </div>
+                <!-- //gnb-utils --> 
+                <!-- gnb-login -->
+                <div class="gnb-login"> 
+                	
+                	
+                    	<button type="button" class="krds-btn large text" onclick="location.href='https://welcon.kocca.kr/cmm/login.do';"><i class="svg-icon ico-log"></i> 로그인</button>
+                    	<button type="button" class="krds-btn large text" onclick="fnLocation('signup');return false;"><i class="svg-icon ico-join"></i> 회원가입</button>
+                	    
+                </div>
+                <!-- //gnb-login --> 
+                <!-- gnb-service-menu -->
+                <div class="gnb-service-menu"> 
+                    <a href="/ko/support/office" class="link bsinesscenter">해외비즈니스센터</a> 
+                    <a href="https://welcon.kocca.kr/emp" class="link marketplace">마켓플레이스</a> 
+                </div>
+                <!-- gnb-service-menu --> 
+                <!-- 검색 -->
+                <!-- <div class="sch-input">
+                    <input type="text" class="krds-input" placeholder="K-콘텐츠 해외진출의 모든 것!" title="찾고자 하는 메뉴명 입력" />
+                    <button type="button" class="krds-btn medium icon ico-search"> <span class="sr-only">검색</span> <i class="svg-icon ico-sch"></i> </button>
+                </div> -->
+                <!-- //검색 --> 
+            </div>
+            <!-- //gnb-header --> 
+            
+            <!-- gnb-body -->
+            <div class="gnb-body"> 
+                <!-- gnb-menu -->
+                <div class="gnb-menu">
+                    <div class="menu-wrap">
+                        <ul role="tablist">
+                            <li role="none"> <a href="#mGnb-anchor1" class="gnb-main-trigger active" role="tab" aria-selected="false" aria-controls="mGnb-anchor1" id="tab-0">행사·사업신청</a> </li>
+                            <li role="none"> <a href="#mGnb-anchor2" class="gnb-main-trigger" role="tab" aria-selected="false" aria-controls="mGnb-anchor2" id="tab-1">상담·컨설팅</a> </li>
+                            <li role="none"> <a href="#mGnb-anchor3" class="gnb-main-trigger" role="tab" aria-selected="false" aria-controls="mGnb-anchor3" id="tab-2">해외법률·정책</a> </li>
+                            <li role="none"> <a href="#mGnb-anchor4" class="gnb-main-trigger" role="tab" aria-selected="false" aria-controls="mGnb-anchor4" id="tab-3">해외동향·통계</a> </li>
+                            <li role="none"> <a href="#mGnb-anchor5" class="gnb-main-trigger" role="tab" aria-selected="false" aria-controls="mGnb-anchor5" id="tab-4">W·인사이트</a> </li>
+                            <li role="none"> <a href="#mGnb-anchor6" class="gnb-main-trigger" role="tab" aria-selected="false" aria-controls="mGnb-anchor6" id="tab-5">고객지원</a> </li>
+                            
+                        </ul>
+                    </div>
+                    <div class="submenu-wrap">
+                        <div class="gnb-sub-list" id="mGnb-anchor1" role="tabpanel" aria-labelledby="tab-0">
+                            <h2 class="sub-title">행사·사업신청</h2>
+                            <ul>
+                                <li><a href="/ko/event/all" class="gnb-sub-trigger">행사참가신청</a></li>
+                                <li><a href="/ko/event/schedule" class="gnb-sub-trigger">연간행사일정</a></li>
+                                <li><a href="/ko/ovsinfo" class="gnb-sub-trigger">해외마켓정보</a></li>
+                                <li><a href="/ko/info/business" class="gnb-sub-trigger">지원사업정보</a></li>
+                            </ul>
+                        </div>
+                        <div class="gnb-sub-list" id="mGnb-anchor2" role="tabpanel" aria-labelledby="tab-1">
+                            <h2 class="sub-title">상담·컨설팅</h2>
+                            <ul>
+                                <li><a href="/ko/business/counsel-guide" class="gnb-sub-trigger">해외진출상담</a></li>
+                                <li><a href="/ko/business/level-test-intro" class="gnb-sub-trigger">해외진출역량진단</a></li>
+                                <li><a href="/ko/business/contract-form" class="gnb-sub-trigger">해외진출계약서식</a></li>
+                                <li><a href="/ko/business/faq" class="gnb-sub-trigger">해외진출 FAQ</a></li>
+                                <li><a href="#" class="gnb-sub-trigger has-depth3" aria-expanded="false">해외진출기초정보</a>
+                                      <div class="depth3-wrap">
+                                        <ul>
+                                            <li><a href="/ko/ovmk/company-info" class="depth3-trigger">기업정보</a></li>
+                                            <li><a href="/ko/ovmk/media-info" class="depth3-trigger">매체정보</a></li>
+                                            <li><a href="/ko/ovmk/biz-culture" class="depth3-trigger">비즈니스·문화 코드</a></li>
+                                        </ul>
+                                    </div>        
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="gnb-sub-list" id="mGnb-anchor3" role="tabpanel" aria-labelledby="tab-2">
+                            <h2 class="sub-title">해외법률·정책</h2>
+                            <ul>
+                                <li><a href="#" class="gnb-sub-trigger has-depth3" aria-expanded="false">콘텐츠 법령</a>
+                                      <div class="depth3-wrap">
+                                        <ul>
+                                            <li><a href="/ko/law/l1" class="depth3-trigger">국가별 법령분류체계</a></li>
+                                            <li><a href="/ko/law/l2" class="depth3-trigger">기본법</a></li>
+                                            <li><a href="/ko/law/l3" class="depth3-trigger">시행령</a></li>
+                                            <li><a href="/ko/law/l4" class="depth3-trigger">규칙</a></li>
+                                            <li><a href="/ko/law/l5" class="depth3-trigger">가이드라인</a></li>
+                                            <li><a href="/ko/law/l6" class="depth3-trigger">분쟁사례</a></li>
+                                            <li><a href="/ko/law/l9" class="depth3-trigger">기타</a></li>
+                                        </ul>
+                                    </div>        
+                                </li>
+                                <li><a href="/ko/regulation" class="gnb-sub-trigger">진출단계별 법규제정보</a></li>
+                                 <li><a href="#" class="gnb-sub-trigger has-depth3" aria-expanded="false">기관·협회</a>
+                                      <div class="depth3-wrap">
+                                        <ul>
+                                            <li><a href="/ko/ovmk/organ-support" class="depth3-trigger">기관</a></li>
+                                            <li><a href="/ko/ovmk/assoc-support" class="depth3-trigger">협회</a></li>
+                                        </ul>
+                                    </div>        
+                                </li>
+                                <li><a href="/ko/ovmk/support-policy" class="gnb-sub-trigger">지원정책</a></li>                                   
+                            </ul>
+                        </div>
+                        <div class="gnb-sub-list" id="mGnb-anchor4" role="tabpanel" aria-labelledby="tab-3">
+                            <h2 class="sub-title">해외동향·통계</h2>
+                            <ul>
+                                <li><a href="/ko/info/news" class="gnb-sub-trigger">콘텐츠뉴스</a></li>
+                                <li><a href="/ko/info/report" class="gnb-sub-trigger">글로벌리포트</a></li>
+                                <li><a href="/ko/info/trend" class="gnb-sub-trigger">글로벌트렌드</a></li>
+                                <li><a href="/ko/info/statistics" class="gnb-sub-trigger">해외시장통계</a></li>
+                            </ul>
+                        </div>
+                        <div class="gnb-sub-list" id="mGnb-anchor5" role="tabpanel" aria-labelledby="tab-4">
+                            <h2 class="sub-title">W·인사이트</h2>
+                            <ul>
+                                <li><a href="/ko/ovmk/topic" class="gnb-sub-trigger">WelCon 토픽</a></li>
+                                <li><a href="/ko/ovmk/inside" class="gnb-sub-trigger">WelCon 인사이드</a></li>
+                                <li><a href="/ko/ovmk/focus" class="gnb-sub-trigger">WelCon 포커스</a></li>
+                            </ul>
+                        </div>
+                        <div class="gnb-sub-list" id="mGnb-anchor6" role="tabpanel" aria-labelledby="tab-5">
+                            <h2 class="sub-title">고객지원</h2>
+                            <ul>
+                                <li><a href="/ko/support/about-welcon" class="gnb-sub-trigger">WelCon 소개</a></li>
+                                <li><a href="/ko/support/notice" class="gnb-sub-trigger">공지사항</a></li>
+                                <li><a href="/ko/support/newsletter" class="gnb-sub-trigger">뉴스레터</a></li>
+                                <li><a href="/ko/support/qna-guide" class="gnb-sub-trigger">문의하기</a></li>
+                            </ul>
+                        </div>
+                        
+                    </div>
+                </div>
+                <!-- //gnb-menu --> 
+                <!-- gnb-bottom -->
+                
+                <!-- //gnb-bottom --> 
+            </div>
+            <!-- //gnb-body --> 
+            
+            <!-- gnb-close -->
+            <button type="button" class="krds-btn medium icon" id="close-nav"> <span class="sr-only">전체메뉴 닫기</span> <i class="svg-icon ico-popup-close"></i> </button>
+            <!-- //gnb-close --> 
+        </div>
+    </div>
+    
+    <!-- //메인메뉴 : 모바일 --> 
+</header>
+<!-- //헤더 영역 --> 
+
+
+
+
+
+	<!--S. sub_container-->
+	<div id="sub_container"> 
+        <!--S. sub-content-->
+        <div class="sub_content"> 
+				
+            <!--S. sub-contents-area -->
+        	<div class="sub-contents-area"> 
+            	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+<script>
+/* ********************************************************
+ * 초기화 작업
+ ******************************************************** */
+$(document).ready(function() {
+	$('#aChkPhone').on('click', function() {
+		location.href = '../../../0908/index.html';
+	});
+	$('#aChkIpin').on('click', function() {
+		location.href = '../../../0908/index.html';
+	});
+	$('#aChkDid').on('click', function() {
+		location.href = '../../../0908/index.html';
+	});
+
+});
+</script>
+<form name="form_phone" method="post">
+	<input type="hidden" name="m" value="checkplusSerivce">
+	<input type="hidden" name="EncodeData" value="AgAFQkQ2NjnO8ZnArC5jmz0qDFeu7D4NysACdCSjishvQeV1LqmuqgFH4kzf0TnbNhQGB96vkXuYCAnjjU5N+lmGb9RPUWBw/BFp7b1QoNwosgawzlskshBiit3gFCWMlsKipY6x1NNUlaWewBzj1wFGvu5g2NWIqebnLnhOPeslYkw3kwyZnEeWdbNBtSTg8N7d0jpB+8JFL7rz49QYHMZto8N/dTIJZ2HfvbZa3ZGoZsFyu39TbMJVucRlIKHq7qPztIl6OY6Jcv9sOrbYs7565OERhqBIkPREVZ3CQBWVCqJUlH8hrEV7mVTV5xRyXM+v5wQNi+syC+1C6DB1XcqAh0IvMWmA48RIXYq0wBD3RvyAfmB17rfbyyyCtxrI+ZLIg2MQPYdps4UA3l/+PDOZHkkjAu6b+wS+K6MnUPTQt6U43GwIXGQK4ph0wa4e/jxDSDI12zW1a2knavYZcIw4BimEYzblJ9TAdxaIfn39vru9TdYtpw==">
+<input type="hidden" name="" value=""></form>
+<form name="form_ipin" method="post">
+	<input type="hidden" name="m" value="pubmain">
+	<input type="hidden" name="enc_data" value="AgAEQ0gyMpMygHX6+/z4zFcL7gx2CQmwnvjH0Q8TES4A034Z4sIpdNU2MKE4QoBHw/vFHaRPzbptOcb7HjRe3qsuz/90Ng+8vwLy5tEkA8HMFGNk4CM8fxgv8TO1wPZY4YhNdkFsVNeKn/fxyhA228WH52zvWUSp5ucueE496yViTDeTDJmcVuw8oTMALMgapYhSfbffq5hiMSAyQhHKgzuq2aS3VSOI1WrrGk9ee4K3xDKhiwuMw965f9znSBBe1ziArg9sGy0yX19b+ag22MS8rDbtJ4/WPXb9v5vYKlk1I0gEslV+">
+	<input type="hidden" name="param_r1" value="">
+	<input type="hidden" name="param_r2" value="">
+	<input type="hidden" name="param_r3" value="">
+<input type="hidden" name="" value=""></form>
+<form name="form_did" method="get">
+	
+	<input type="hidden" name="svcCode" value="welcon.1">
+	<input type="hidden" name="testBed" value="">
+<input type="hidden" name="" value=""></form>
+
+
+<script>
+/* ********************************************************
+ * 초기화 작업
+ ******************************************************** */
+$(document).ready(function(){
+	// title
+	document.title = "회원가입 - 개인인증";
+
+
+
+
+});	
+/* ********************************************************
+ * 페이지 이동
+ ******************************************************** */
+function fnMove(val) {
+	$("input[name='_target']").prop("name", val);
+	var authTypeCd = $('#authTypeCd').val();
+	if (authTypeCd == "") {
+		alert("회원인증을 하시기 바랍니다.");
+		 return;
+	}
+	if ($('#dupDnYn').val() == "Y") {
+		var msg = "";
+		if ("H" == authTypeCd) {
+			msg = "동일 휴대폰 번호로 가입된 회원정보가 존재합니다.";
+			
+		} else if ("I" == authTypeCd) {
+			msg = "해당 인증정보로 등록된 회원이 존재합니다.";
+			
+		} else if ("D" == authTypeCd) {
+			msg = "해당 인증정보로 등록된 회원이 존재합니다.";
+		}
+		
+		alert(msg);
+		 return;
+	}
+	var varForm	= document.forms["signUp"];
+	$(varForm).submit();
+}
+/* ********************************************************
+ * 전화번호 중복 체크
+ ******************************************************** */
+function fnPhoneDuplChk() {
+	
+	var phoneDi = $("#di").val();
+	//console.log("phoneDi : "+phoneDi);
+	if(phoneDi != "") {
+		$.ajax({
+			url : "/cmm/phoneAuthDuplChk-data.do",
+			type: "POST",
+			data : {"di": phoneDi},
+			success: function(data, status, jqXHR) {				
+				if (data.resultStr != "0") {
+					$("#dupDnYn").val("Y");
+					alert("해당 인증정보로 등록된 회원이 존재합니다.");
+					return false;
+				} else {
+					$("#dupDnYn").val("N");
+					$("#authTypeCd").val("H");
+					fnMove('_target3');
+				}
+			},
+			error: function(jqXHR, e){
+				WELCON.Util.showAjaxError(jqXHR, e);
+				//WELCON.Util.hideProgress();
+			}
+		});
+	} else {
+		alert("휴대폰 인증을 해주세요.");
+	}
+}
+
+/* ********************************************************
+ * IPIN 인증 중복 체크
+ ******************************************************** */
+function fnIpinDuplChk() {
+	var di = $("#di").val();
+	if(di != "") {
+		$.ajax({
+			url : "/cmm/ipinAuthDuplChk-data.do",
+			type: "POST",
+			data : {"di": di},
+			success: function(data, status, jqXHR) {				
+				if (data.resultStr != "0") {
+					$("#dupDnYn").val("Y");
+					alert("해당 인증정보로 등록된 회원이 존재합니다.");
+					return false;
+				} else {
+					$("#dupDnYn").val("N");
+					$("#authTypeCd").val("I");
+					fnMove('_target3');
+				}
+			},
+			error: function (jqXHR, status, error) {
+				alert("서버와 통신 중 에러가 발생하였습니다.");
+			}
+		});
+	} else {
+		alert("IPIN 인증을 해주세요.");
+	}
+}
+
+/* ********************************************************
+ * 모바일 신분증 인증 중복 체크 - trxcode 로 VP 값을 조회 후 ci 값을 꺼내어 사용 (2024.11)
+ ******************************************************** */
+function fnDidDuplChk(trxToken) {
+	if(trxToken != "") {
+		var trxTokenValue = trxToken.split("=")[1];
+		$.ajax({
+			url : "/cmm/didAuthDuplChk-data.do",
+			type: "POST",
+			data : {"di": trxTokenValue},
+			success: function(data, status, jqXHR) {
+				if (data.resultData.duplCnt != "0") {
+					$("#dupDnYn").val("Y");
+					alert("해당 인증정보로 등록된 회원이 존재합니다.");
+					return false;
+				} else {
+					
+					// 생년월일로 나이 체크 (2023.11.02)
+					var age = data.resultData.age;
+					$("#age").val(parseInt(age));
+					if (isAllowedAge()) {
+						$("#dupDnYn").val("N");
+						$("#authTypeCd").val("D");
+						$("#name").val(data.resultData.name);
+						$("#phone").val(data.resultData.telno);
+						$("#di").val(data.resultData.ci); 
+						$("#birthDate").val(data.resultData.birth);
+						
+						fnMove('_target3');
+					}
+				}
+			},
+			error: function (jqXHR, status, error) {
+				alert("서버와 통신 중 에러가 발생하였습니다.");
+			}
+		});
+	} else {
+		alert("모바일 신분증 인증을 해주세요.");
+	}
+}
+
+
+/* ********************************************************
+ * 인증 후 작업
+ ******************************************************** */
+function popupsubmitPhone(){
+	$("#dupDnYn").val("N");
+	
+	// 나이 체크 (2023.11.02)
+	if (!isAllowedAge()) return false;
+	
+	//휴대폰 중복 체크
+	fnPhoneDuplChk();
+}
+function popupsubmitIpin(){
+	$("#dupDnYn").val("N");
+	
+	// 나이 체크 (2023.11.02)
+	if (!isAllowedAge()) return false;
+	
+	//IPIN 중복 체크
+	fnIpinDuplChk();
+}
+function popupsubmitDid(result){
+	$("#dupDnYn").val("N");
+	
+	// 모바일 신분증 인증 중복 체크
+	fnDidDuplChk(result.data);
+}
+
+function isAllowedAge() { // 나이 체크 
+	var age = $("#age").val();
+	if (isNaN(parseInt(age)) || parseInt(age) < 14) {
+		alert("14세 미만은 회원가입이 불가합니다.");
+		return false;
+	}
+	return true;
+}
+</script>
+
+
+
+
+
+<script>
+//<![CDATA[
+$(document).ready(function(){
+	initNavi();
+});
+
+function initNavi() {
+	var title = $(".page-title-wrap").children('h2').html();
+	var selfLink = $("#naviSelfLink");
+	selfLink.text(title);
+	selfLink.attr("href", "/ko/signup"); 
+}
+//]]
+</script>
+
+
+	<nav class="breadcrumb-wrap" aria-label="현재 경로" id="breadcrumb">
+		<ol class="breadcrumb">
+			<li class="home"><a href="/" class="txt">Home</a></li>
+		
+			
+			
+				<li><a href="/ko/signup" id="naviSelfLink" class="txt">
+	
+	회원가입</a></li>
+			
+		
+		</ol>
+	</nav>
+
+
+
+
+<div class="page-title-wrap">
+	<h2>
+	
+	회원가입</h2>
+</div>
+
+<form id="signUp" action="/ko/signup" method="post" enctype="multipart/form-data">
+
+
+
+
+
+	
+	 
+
+
+
+
+
+<input type="hidden" name="_page" value="2">
+<input type="hidden" name="_target">
+<input type="hidden" name="member.name" id="name" value="">
+<input type="hidden" name="member.phone" id="phone" value="">
+<input type="hidden" name="member.expertPublicationYn" id="expertPublicationYn" value="N">
+
+
+
+<input type="hidden" name="authTypeCd" id="authTypeCd" value=""> 
+<input type="hidden" name="dupDnYn" id="dupDnYn" value=""> 
+<input type="hidden" name="di" id="di" value="">
+<input type="hidden" name="birthDate" id="birthDate" value=""> 
+<input type="hidden" name="age" id="age" value=""> 
+
+<!-- S.conts-area -->
+<!-- S.conts-area -->
+<div class="conts-area">
+    <!-- 회원정보입력 및 사업자 인증 단계 영역 -->
+    <div class="terms-agree-box">
+        <p class="terms-step-tit">회원정보입력 및 사업자 인증</p>
+        <!-- 스텝 영역 -->
+        <ol class="krds-step-wrap">
+            <li class="done"> <span> <i class="step">STEP 1</i> <span class="step-tit">약관동의</span> </span> </li>
+            <li class="done"> <span> <em class="sr-only">STEP 2</em> <i class="step">STEP 2</i> <span class="step-tit">개인인증</span> </span> </li>
+            <li class="active"> <span> <i class="step">STEP 3</i> <span class="step-tit">회원정보입력 및 사업자 인증</span> </span> </li>
+            <li> <span> <i class="step">STEP 4</i> <span class="step-tit">기업정보입력</span> </span> </li>
+            <li> <span> <i class="step">STEP 5</i> <span class="step-tit">가입완료</span> </span> </li>
+        </ol>
+        <!-- //스텝 영역 -->
+
+        <!--
+          아래 .wc-wizard 스코프의 위저드 마크업(id/class/data-* 전부)과 <script>는
+          welcon-wireframe/index.html 원본을 그대로 옮긴 것이다(로직/셀렉터 무변경).
+          .gnb(자체 로고+스테퍼 바)는 실제 헤더 + 위 krds-step-wrap이 그 역할을 대신하므로
+          시각적으로만 숨겼다 - JS가 #stepper에 렌더링하므로 DOM에서 제거하지 않는다.
+        -->
+        <style>
+        .wc-wizard {
+          --wc-text: #1E2124;
+          --wc-text-sub: #464C53;
+          --wc-border: #58616A;
+          --wc-border-light: #B1B8BE;
+          --wc-box-bg: #F7F7F8;
+          --wc-purple: #4F0099;
+          --wc-purple-dark: #350066;
+          --wc-purple-light-bg: #F8F0FF;
+          --wc-purple-border: #8400FF;
+        }
+        .wc-wizard { font-family: "Pretendard", -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif; color: var(--wc-text); font-size: 1.4rem; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+        .wc-wizard, .wc-wizard *, .wc-wizard *::before, .wc-wizard *::after { box-sizing: border-box; }
+        .wc-wizard button, .wc-wizard input { font-family: inherit; }
+        .wc-wizard button { -webkit-appearance: none; appearance: none; border-radius: 0; }
+        .wc-wizard .accent { color: var(--wc-purple); }
+
+        /* ===== 상단바 + 스테퍼 (실제 헤더+krds-step-wrap이 대체하므로 숨김. #stepper는 JS 렌더 대상이라 DOM 유지) ===== */
+        .wc-wizard .gnb { background: #fff; border-bottom: 0.1rem solid var(--wc-border-light); }
+        .wc-wizard .gnb-in { max-width: 112rem; margin: 0 auto; padding: 1.6rem 3.2rem; display: flex; align-items: center; justify-content: space-between; }
+        .wc-wizard .logo { font-size: 1.7rem; font-weight: 800; letter-spacing: -0.02em; }
+        .wc-wizard .logo span { color: var(--wc-purple); }
+
+        .wc-wizard .stepper { display: flex; align-items: center; gap: 0.6rem; }
+        .wc-wizard .step-node { display: flex; align-items: center; gap: 0.8rem; }
+        .wc-wizard .step-dot {
+          width: 2.4rem; height: 2.4rem; border: 0.15rem solid var(--wc-border-light); color: var(--wc-text-sub); background: #fff;
+          display: grid; place-items: center; font-size: 1.2rem; font-weight: 700; flex: none; border-radius: 50%;
+        }
+        .wc-wizard .step-node.done .step-dot { background: var(--wc-purple); border-color: var(--wc-purple); color: #fff; }
+        .wc-wizard .step-node.now .step-dot { border-color: var(--wc-purple); color: var(--wc-purple); border-width: 0.2rem; }
+        .wc-wizard .step-node .step-label { font-size: 1.25rem; color: var(--wc-text-sub); white-space: nowrap; }
+        .wc-wizard .step-node.now .step-label { color: var(--wc-purple); font-weight: 700; }
+        .wc-wizard .step-node.done .step-label { color: var(--wc-text); }
+        .wc-wizard .step-line { width: 3.4rem; height: 0.1rem; background: var(--wc-border-light); }
+
+        /* ===== 페이지 공통 ===== */
+        .wc-wizard .page { max-width: 112rem; margin: 0 auto; padding: 3.6rem 3.2rem; }
+        .wc-wizard .screen { display: none; }
+        .wc-wizard .screen.active { display: block; }
+        .wc-wizard .title { font-size: 2.4rem; font-weight: 700; letter-spacing: -0.02em; line-height: 1.35; margin-bottom: 0.8rem; color: var(--wc-text); }
+        .wc-wizard .req { color: #d93025; }
+        .wc-wizard .desc { max-width: 76rem; font-size: 1.7rem; color: var(--wc-text-sub); line-height: 1.65; margin-bottom: 3rem; }
+
+        /* ===== STEP1: 장르 타일 ===== */
+        .wc-wizard .genre-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+        .wc-wizard .genre-tile {
+          border: 0.1rem solid var(--wc-border-light); background: #fff; padding: 2.6rem 1.6rem; text-align: center;
+          font-size: 1.7rem; font-weight: 600; cursor: pointer; color: var(--wc-text); position: relative; border-radius: 0.8rem;
+        }
+        .wc-wizard .genre-tile:hover { border-color: var(--wc-border); }
+        .wc-wizard .genre-tile.on { border-color: var(--wc-purple); border-width: 0.2rem; color: var(--wc-purple); background: var(--wc-purple-light-bg); }
+        .wc-wizard .genre-tile.on::after {
+          content: ""; position: absolute; top: 1.1rem; right: 1.3rem; width: 0.8rem; height: 0.5rem;
+          border-left: 0.2rem solid var(--wc-purple); border-bottom: 0.2rem solid var(--wc-purple); transform: rotate(-45deg);
+        }
+
+        /* ===== 필터 칩 (장르 / 공통모듈) ===== */
+        .wc-wizard .filter-label { font-size: 1.35rem; font-weight: 700; color: var(--wc-text-sub); margin-bottom: 0.8rem; }
+        .wc-wizard .filter-label .filter-hint { font-size: 1.15rem; color: var(--wc-border); font-weight: 400; margin-left: 0.8rem; }
+        .wc-wizard .chips { display: flex; flex-wrap: wrap; gap: 0.7rem; margin-bottom: 2.2rem; }
+        .wc-wizard .chip { border: 0.1rem solid var(--wc-border-light); background: #fff; color: var(--wc-text-sub); padding: 1rem 1.8rem; min-height: 3.4rem; font-size: 1.4rem; line-height: 1.35; cursor: pointer; border-radius: 0.6rem; }
+        .wc-wizard .chip:hover { border-color: var(--wc-border); }
+        .wc-wizard .chip.has { background: var(--wc-purple-light-bg); border-color: var(--wc-purple-border); color: var(--wc-purple-dark); }
+        .wc-wizard .chip.on { background: var(--wc-purple); border-color: var(--wc-purple); color: #fff; }
+        .wc-wizard .chip.on.has { background: var(--wc-purple); border-color: var(--wc-purple); color: #fff; }
+        .wc-wizard .chip-badge { display: inline-block; font-size: 1rem; font-weight: 800; padding: 0 0.5rem; margin-left: 0.6rem; min-width: 1.4rem; text-align: center; vertical-align: middle; border-radius: 50%; }
+        .wc-wizard .chip-badge.main { background: var(--wc-purple); color: #fff; }
+        .wc-wizard .chip-badge.sub { background: var(--wc-border-light); color: var(--wc-text); }
+
+        /* ===== 검색창 ===== */
+        .wc-wizard .search-box {
+          display: flex; align-items: center; border: 0.15rem solid var(--wc-border-light); background: #fff;
+          padding: 1.2rem 1.4rem; max-width: 48rem; margin-bottom: 2.6rem; border-radius: 0.6rem;
+        }
+        .wc-wizard .search-box:focus-within { border-color: var(--wc-purple); }
+        .wc-wizard .search-box input { flex: 1; border: none; outline: none; font-size: 1.35rem; background: transparent; color: var(--wc-text); }
+        .wc-wizard .search-box .clear {
+          position: relative; border: none; background: var(--wc-box-bg); width: 1.8rem; height: 1.8rem;
+          cursor: pointer; display: none; place-items: center; flex: none; border-radius: 50%;
+        }
+        .wc-wizard .search-box.has-val .clear { display: grid; }
+        .wc-wizard .search-box .clear::before, .wc-wizard .search-box .clear::after {
+          content: ""; position: absolute; width: 0.9rem; height: 0.15rem; background: var(--wc-text-sub);
+        }
+        .wc-wizard .search-box .clear::before { transform: rotate(45deg); }
+        .wc-wizard .search-box .clear::after { transform: rotate(-45deg); }
+
+        /* ===== STEP2·3 결과 영역: 장르 카드가 마쏘너리로 배치, 카드 안 항목은 좌→우 흐름 ===== */
+        .wc-wizard .card-area { display: block; }
+        .wc-wizard .card-area.single { display: grid; grid-template-columns: 1fr; }
+        .wc-wizard .card-area.masonry { display: flex; align-items: flex-start; gap: 1.6rem; }
+        .wc-wizard .masonry-col { display: flex; flex-direction: column; gap: 1.6rem; flex: 1 1 0; min-width: 0; }
+
+        .wc-wizard .group { border: 0.1rem solid var(--wc-border-light); background: #fff; overflow: hidden; border-radius: 1.2rem; }
+        .wc-wizard .group-title {
+          font-size: 1.4rem; font-weight: 700; color: #fff; background: var(--wc-purple); letter-spacing: 0.02em;
+          padding: 1.4rem 2rem; display: flex; justify-content: space-between; align-items: center; border-radius: 1.2rem 1.2rem 0 0;
+        }
+        .wc-wizard .group-title .g-badge {
+          background: #fff; color: var(--wc-purple); font-size: 1.05rem; font-weight: 800;
+          width: 1.6rem; height: 1.6rem; display: grid; place-items: center; flex: none;
+        }
+
+        .wc-wizard .group-body { display: grid; grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr)); }
+        .wc-wizard .group.full .group-body { grid-template-columns: repeat(auto-fill, minmax(21rem, 1fr)); }
+
+        .wc-wizard .opt {
+          display: flex; flex-wrap: wrap; align-items: flex-start; align-content: flex-start; gap: 1rem; min-height: 5rem; padding: 1.8rem 2rem; cursor: pointer;
+          border-right: 0.1rem solid var(--wc-box-bg); border-bottom: 0.1rem solid var(--wc-box-bg);
+        }
+        .wc-wizard .opt:hover { background: var(--wc-box-bg); }
+        .wc-wizard .opt .box {
+          width: 1.8rem; height: 1.8rem; border: 0.15rem solid var(--wc-border-light); flex: none; background: #fff; margin-top: 0.2rem;
+          display: grid; place-items: center; border-radius: 0.4rem;
+        }
+        .wc-wizard .opt .box::after { content: ""; width: 0.9rem; height: 0.9rem; background: var(--wc-purple); transform: scale(0); transition: transform .12s; }
+        .wc-wizard .opt.on .box { border-color: var(--wc-purple); }
+        .wc-wizard .opt.on .box::after { transform: scale(1); }
+        .wc-wizard .opt.other-open { background: var(--wc-purple-light-bg); }
+        .wc-wizard .opt.other-open .box { border-color: var(--wc-purple); }
+        .wc-wizard .opt .label { flex: 1; min-width: 0; font-size: 1.6rem; line-height: 1.45; word-break: keep-all; overflow-wrap: anywhere; color: var(--wc-text); }
+        .wc-wizard .opt.on .label { font-weight: 600; }
+        /* 태그(주/보조포지션, 하는 일)를 라벨 텍스트에서 분리해 항상 같은 위치의 별도 줄로 고정 - 태그가
+           붙었다 뗐다 해도 박스 높이가 줄마다 들쭉날쭉해지지 않도록 함 */
+        .wc-wizard .opt-meta { flex: 1 1 100%; margin-left: 2.8rem; display: flex; align-items: center; flex-wrap: wrap; gap: 0.6rem; min-height: 1.9rem; }
+        .wc-wizard .opt .sub { font-size: 1.3rem; color: var(--wc-text-sub); font-weight: 400; }
+        /* 기타 항목 선택 시 나타나는 직접입력란 - 라벨을 새 요소로 밀어내리지 않고 라벨이
+           있던 자리를 그대로 대체한다. 그래서 줄 수·박스 높이가 절대 안 늘어나고, 카드 폭이
+           좁아도 항상 체크박스 바로 오른쪽(원래 라벨 자리)에 들어간다. */
+        .wc-wizard .opt-other-input {
+          width: 100%; box-sizing: border-box; font: inherit; font-size: 1.25rem; color: var(--wc-text);
+          border: 0.1rem solid var(--wc-border-light); background: #fff; padding: 0.5rem 0.8rem; border-radius: 0.6rem;
+        }
+        .wc-wizard .opt-other-input:focus { outline: none; border-color: var(--wc-purple); }
+
+        .wc-wizard .empty { border: 0.1rem dashed var(--wc-border-light); padding: 5rem 1.6rem; text-align: center; color: var(--wc-text-sub); font-size: 1.3rem; border-radius: 0.8rem; }
+
+        /* ===== 우리 회사(재선택 재개) 음영 표시 + 주/보조 배지 ===== */
+        .wc-wizard .opt.dim { cursor: pointer; background: #fff; }
+        .wc-wizard .opt.dim:hover { background: var(--wc-box-bg); }
+        .wc-wizard .opt.dim .box { border-color: var(--wc-border-light); }
+        .wc-wizard .opt.dim .label { color: var(--wc-text); }
+        .wc-wizard .own-tag {
+          display: inline-block; font-size: 0.95rem; font-weight: 700; color: var(--wc-text-sub); background: var(--wc-box-bg);
+          padding: 0.15rem 0.5rem; border-radius: 0.4rem; white-space: nowrap;
+        }
+        .wc-wizard .pos-badge { display: inline-block; font-size: 0.9rem; font-weight: 700; padding: 0.15rem 0.5rem; border-radius: 0.4rem; white-space: nowrap; }
+        .wc-wizard .pos-badge.main { background: var(--wc-purple); color: #fff; }
+        .wc-wizard .pos-badge.sub-pos { background: #fff; color: var(--wc-purple); border: 0.1rem solid var(--wc-purple); }
+        /* 3단계에서 우리 회사로 고른 항목은 참고 배지만 중립색으로 보여준다. */
+        .wc-wizard .opt.dim .pos-badge.main { background: var(--wc-border); color: #fff; border: none; }
+        .wc-wizard .opt.dim .pos-badge.sub-pos { background: #fff; color: var(--wc-border); border: 0.1rem solid var(--wc-border-light); }
+
+        /* 보조포지션 배지 자체가 "주포지션으로 지정" 버튼을 겸한다. */
+        .wc-wizard .pos-badge-btn {
+          font-family: inherit; line-height: normal; cursor: pointer;
+          appearance: none; -webkit-appearance: none; border-radius: 0.4rem; box-shadow: none;
+        }
+        .wc-wizard .pos-badge-btn:hover, .wc-wizard .pos-badge-btn:focus-visible { background: var(--wc-purple); color: #fff; }
+
+        .wc-wizard .tag.pos-sub em { color: var(--wc-border); }
+
+        /* ===== STEP4: 완료 ===== */
+        .wc-wizard .done-msg { display: flex; align-items: center; gap: 1.4rem; padding-bottom: 2.8rem; }
+        .wc-wizard .done-msg .ic { width: 4rem; height: 4rem; flex: none; border: 0.2rem solid var(--wc-purple); display: grid; place-items: center; border-radius: 50%; }
+        .wc-wizard .ic-check { width: 1.4rem; height: 0.8rem; border-left: 0.25rem solid var(--wc-purple); border-bottom: 0.25rem solid var(--wc-purple); transform: rotate(-45deg) translateY(-0.2rem); }
+        .wc-wizard .done-msg .t { font-size: 2.2rem; font-weight: 700; color: var(--wc-text); }
+        .wc-wizard .done-msg .d { font-size: 1.5rem; color: var(--wc-text-sub); margin-top: 0.3rem; }
+
+        .wc-wizard .sum-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.6rem; }
+        .wc-wizard .sum-card { border: 0.1rem solid var(--wc-border-light); background: #fff; border-radius: 1.2rem; overflow: hidden; }
+        .wc-wizard .sum-head {
+          padding: 1.8rem 2.2rem; background: var(--wc-box-bg); border-bottom: 0.1rem solid var(--wc-border-light);
+          font-size: 1.4rem; font-weight: 700; color: var(--wc-text-sub); display: flex; justify-content: space-between; border-radius: 1.2rem 1.2rem 0 0;
+        }
+        .wc-wizard .sum-head .edit { color: var(--wc-purple); font-weight: 600; cursor: pointer; }
+        .wc-wizard .sum-body { padding: 2rem 2.2rem; display: flex; flex-wrap: wrap; gap: 0.6rem; min-height: 6rem; align-content: flex-start; }
+        .wc-wizard .tag { border: 0.1rem solid var(--wc-border-light); background: #fff; font-size: 1.35rem; padding: 0.5rem 1rem; color: var(--wc-text); border-radius: 0.6rem; }
+        .wc-wizard .tag em { font-style: normal; color: var(--wc-border); font-size: 1.1rem; margin-right: 0.4rem; }
+        .wc-wizard .sum-none { color: var(--wc-border); font-size: 1.3rem; }
+        .wc-wizard .sum-groups { display: flex; flex-direction: column; gap: 1.2rem; width: 100%; }
+        .wc-wizard .sum-group-label { font-size: 1.1rem; font-weight: 700; color: var(--wc-border); letter-spacing: 0.02em; margin-bottom: 0.6rem; }
+        .wc-wizard .sum-group .tag-row { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+        .wc-wizard .sum-group .sum-none { display: block; }
+        /* 장르별 소그룹 - 보조포지션/희망 파트너처럼 항목이 여러 장르에 걸쳐 많아질 수 있는
+           카드는 장르 소제목으로 나눠 한눈에 훑기 쉽게 한다 */
+        .wc-wizard .sum-subgroup { margin-top: 1rem; }
+        .wc-wizard .sum-subgroup:first-child { margin-top: 0.6rem; }
+        .wc-wizard .sum-subgroup-label { font-size: 1.05rem; font-weight: 600; color: var(--wc-text-sub); margin-bottom: 0.5rem; }
+
+        /* ===== STEP4: 장르별 포지션 막대그래프 ===== */
+        .wc-wizard .chart-card { border: 0.1rem solid var(--wc-border-light); background: #fff; margin-top: 3.2rem; margin-bottom: 1.8rem; border-radius: 1.2rem; overflow: hidden; }
+        .wc-wizard .chart-head { padding: 1.8rem 2.2rem; background: var(--wc-box-bg); border-bottom: 0.1rem solid var(--wc-border-light); font-size: 1.4rem; font-weight: 700; color: var(--wc-text-sub); border-radius: 1.2rem 1.2rem 0 0; }
+        .wc-wizard .chart-body { padding: 2.4rem 2.2rem 2rem; }
+        .wc-wizard .chart-legend { display: flex; flex-wrap: wrap; gap: 1.6rem; margin-bottom: 1.6rem; font-size: 1.2rem; color: var(--wc-text-sub); }
+        .wc-wizard .lg-item { display: flex; align-items: center; gap: 0.6rem; }
+        .wc-wizard .lg-swatch { width: 1.1rem; height: 1.1rem; display: inline-block; flex: none; }
+        /* Chart.js 막대 색은 verbatim JS(CHART_SEG_META)에 #6d28d9/#8b5cf6로 하드코딩돼 있어
+           범례 스와치도 브랜드 퍼플 대신 그 값을 그대로 맞춰 범례-그래프 색상 불일치를 막는다 */
+        .wc-wizard .lg-swatch.main { background: #6d28d9; }
+        .wc-wizard .lg-swatch.sub { background: #8b5cf6; }
+        .wc-wizard .lg-swatch.wish { background: #b6466a; }
+
+        .wc-wizard .chart-canvas-wrap { position: relative; width: 100%; }
+
+        /* ===== 하단 고정바 ===== */
+        .wc-wizard .footer { position: static; background: #fff; border-top: 0.1rem solid var(--wc-border-light); margin-top: 3.6rem; }
+        .wc-wizard .footer-in { max-width: 112rem; margin: 0 auto; padding: 1.4rem 3.2rem; display: flex; align-items: center; justify-content: space-between; }
+        .wc-wizard .count-note { font-size: 1.3rem; color: var(--wc-text-sub); }
+        .wc-wizard .btn-row { display: flex; gap: 0.8rem; }
+        .wc-wizard .btn {
+          background-color: var(--wc-purple-light-bg); border-radius: 0.8rem; font-size: 2.4rem; color: var(--wc-purple-dark);
+          border: 0.1rem solid var(--wc-purple-border); font-weight: 600; padding: 1.3rem 3.1rem; cursor: pointer;
+          /* 실제 사이트 layout.css의 unscoped .btn{height:4rem;display:inline-flex;width:auto;gap:...}이
+             specificity 밀려도 재정의 안 한 속성은 그대로 새어 들어오므로 전부 명시적으로 재선언한다 */
+          height: auto; width: auto; display: inline-flex; align-items: center; justify-content: center; gap: 0; line-height: normal;
+        }
+        .wc-wizard .btn.primary {
+          background-color: var(--wc-purple); border-radius: 0.8rem; font-size: 2.4rem; color: #fff;
+          border: none; font-weight: 600; padding: 1.3rem 3.1rem; cursor: pointer;
+          height: auto; width: auto; display: inline-flex; align-items: center; justify-content: center; gap: 0; line-height: normal;
+        }
+        .wc-wizard .btn.primary:disabled { background: var(--wc-border-light); border-color: var(--wc-border-light); color: #fff; cursor: not-allowed; }
+
+        @media (max-width: 900px) {
+          .wc-wizard .gnb-in { align-items: flex-start; flex-direction: column; gap: 1.4rem; }
+          .wc-wizard .genre-grid { grid-template-columns: repeat(2, 1fr); }
+          .wc-wizard .sum-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 620px) {
+          .wc-wizard .gnb-in, .wc-wizard .page, .wc-wizard .footer-in { padding-left: 2rem; padding-right: 2rem; }
+          .wc-wizard .stepper { width: 100%; justify-content: space-between; gap: 0.4rem; }
+          .wc-wizard .step-node { gap: 0.6rem; }
+          .wc-wizard .step-node .step-label { display: none; }
+          .wc-wizard .step-line { flex: 1; width: auto; }
+          .wc-wizard .genre-grid { grid-template-columns: 1fr; }
+          .wc-wizard .filter-label .filter-hint { display: block; margin: 0.3rem 0 0; }
+          .wc-wizard .btn { padding: 1.1rem 2.2rem; }
+        }
+        </style>
+
+        <div class="wc-wizard">
+<div class="gnb" style="display:none" aria-hidden="true">
   <div class="gnb-in">
     <div class="logo">Wel<span>Con</span></div>
     <div class="stepper" id="stepper"></div>
@@ -251,7 +1415,7 @@ button, input { font-family: inherit; }
     <div class="chips" id="catModuleFilter"></div>
     <div class="search-box" id="catSearchBox">
       <input type="text" id="catSearch" placeholder="항목 이름으로 검색 (예: 배급사, 유통)">
-      <button class="clear" id="catSearchClear"></button>
+      <button type="button" class="clear" id="catSearchClear"></button>
     </div>
     <div id="catArea"></div>
   </section>
@@ -265,7 +1429,7 @@ button, input { font-family: inherit; }
     <div class="chips" id="wishModuleFilter"></div>
     <div class="search-box" id="wishSearchBox">
       <input type="text" id="wishSearch" placeholder="항목 이름으로 검색">
-      <button class="clear" id="wishSearchClear"></button>
+      <button type="button" class="clear" id="wishSearchClear"></button>
     </div>
     <div id="wishArea"></div>
   </section>
@@ -311,12 +1475,27 @@ button, input { font-family: inherit; }
   <div class="footer-in">
     <div class="count-note" id="countNote"></div>
     <div class="btn-row">
-      <button class="btn" id="btnBack" style="display:none">이전</button>
-      <button class="btn primary" id="btnNext">다음</button>
+      <button type="button" class="btn" id="btnBack" style="display:none">이전</button>
+      <button type="button" class="btn primary" id="btnNext">다음</button>
     </div>
   </div>
 </div>
+        </div>
 
+        <div id="prevErrorsMsgGroup" class="textc">
+
+		</div>
+
+    </div>
+    <!-- //회원정보입력 및 사업자 인증 단계 영역 -->
+
+
+
+
+
+
+</div>
+<!-- E.conts-area -->
 <script>
 /*!
  * Chart.js v4.5.1
@@ -484,7 +1663,6 @@ function render() {
   if (st.step === 4) drawSummaryStep();
 
   updateCountNote();
-  window.scrollTo(0, 0);
 }
 
 function drawStepper() {
@@ -501,17 +1679,15 @@ function drawStepper() {
 }
 
 function updateCountNote() {
-  const note = document.getElementById("countNote");
-  note.textContent =
-    st.step === 2 ? st.cats.size + "개 선택됨" :
-    st.step === 3 ? st.wishes.size + "개 선택됨" : "";
+  // "N개 선택됨" 카운트 노출은 지웠다 - 항상 빈 채로 둔다.
+  document.getElementById("countNote").textContent = "";
 }
 
 /* ===== STEP1: 장르 ===== */
 function drawGenreStep() {
   const el = document.getElementById("genreGrid");
   el.innerHTML = GENRES.map(g =>
-    '<button class="genre-tile ' + (st.genres.has(g) ? "on" : "") + '" data-g="' + g + '">' + g + '</button>'
+    '<button type="button" class="genre-tile ' + (st.genres.has(g) ? "on" : "") + '" data-g="' + g + '">' + g + '</button>'
   ).join("");
   el.querySelectorAll(".genre-tile").forEach(btn => {
     btn.onclick = () => {
@@ -548,7 +1724,7 @@ function drawChipRow(container, options, selectedSet, onToggle, badgeFn, prepend
     const info = badgeFn ? badgeFn(v) : null;
     const badge = (!hideBadge && info && info.count) ? '<span class="chip-badge ' + info.level + '">' + info.count + '</span>' : "";
     const cls = "chip" + (selectedSet.has(v) ? " on" : "") + ((markHas && info && info.count) ? " has" : "");
-    return '<button class="' + cls + '" data-v="' + v + '">' + v + badge + '</button>';
+    return '<button type="button" class="' + cls + '" data-v="' + v + '">' + v + badge + '</button>';
   }).join("");
   container.querySelectorAll(".chip").forEach(btn => {
     btn.onclick = () => {
@@ -670,12 +1846,17 @@ function cardHtml(card, pickedSet, isFull, allowMainToggle, otherText, otherOpen
     const labelText = o.custom ? escAttr(o.item) : o.item;
     // 기본 기타 항목을 선택했을 때만 새 항목 입력란을 띄운다.
     const showOther = isOtherInput && isOtherOpen;
-    const otherHtml = showOther
-      ? '<div class="opt-other"><input type="text" class="opt-other-input" data-k="' + o.k +
-        '" placeholder="직접 입력해 주세요" value="' + escAttr(otherVal) + '"></div>'
-      : "";
+    // 입력란을 라벨 옆에 "추가"하지 않고 라벨 자리를 그대로 "대체"한다 - 같은 슬롯을 쓰므로
+    // 줄이 하나 늘어날 일이 없고, 카드 폭이 좁아도 무조건 체크박스 오른쪽 자리에 들어간다.
+    const labelHtml = showOther
+      ? '<input type="text" class="opt-other-input" data-k="' + o.k +
+        '" placeholder="직접 입력해 주세요" value="' + escAttr(otherVal) + '">'
+      : labelText;
+    // 기타 항목은 라벨이 이미 "기타"라서 하단 단계뱃지에 "기타"를 또 보여줄 필요가 없다.
+    const subHtml = isOtherInput ? "" : '<span class="sub">' + o.stage + '</span>';
     return '<div class="opt' + (isOn ? " on" : "") + (isOtherOpen ? " other-open" : "") + (isDim ? " dim" : "") + '" data-k="' + o.k + '">' +
-      '<div class="box"></div><div class="label">' + labelText + extra + '<span class="sub">' + o.stage + '</span></div>' + otherHtml +
+      '<div class="box"></div><div class="label' + (showOther ? " has-input" : "") + '">' + labelHtml + '</div>' +
+      '<div class="opt-meta">' + subHtml + extra + '</div>' +
     '</div>';
   }).join("");
   return '<div class="group' + (isFull ? " full" : "") + '"><div class="group-title">' + card.genre + badge + '</div>' +
@@ -744,6 +1925,8 @@ function wireOptClicks(container, pickedSet, otherOpen, onChange) {
         onChange();
         return;
       }
+      // 기타 입력창이 열려 있는 상태에서 다른 항목을 클릭하면 입력창은 다시 닫는다.
+      for (const g in otherOpen) delete otherOpen[g];
       const wasSelected = pickedSet.has(k);
       wasSelected ? pickedSet.delete(k) : pickedSet.add(k);
       if (!wasSelected && pickedSet === st.cats) {
@@ -757,10 +1940,8 @@ function wireOptClicks(container, pickedSet, otherOpen, onChange) {
 /* 기타 직접입력란 배선 - 입력란 클릭은 부모 .opt의 토글 클릭으로 번지지 않게 막는다.
    타이핑 중에는 상태값만 갱신하고, Enter를 누르면 입력값을 항목명처럼 반영하기 위해 다시 그린다. */
 function wireOtherInputs(container, otherText, otherOpen, pickedSet, customStore, onCommit) {
-  container.querySelectorAll(".opt-other").forEach(wrap => {
-    wrap.onclick = e => e.stopPropagation();
-  });
   container.querySelectorAll(".opt-other-input").forEach(input => {
+    input.onclick = e => e.stopPropagation();
     input.oninput = () => {
       const genre = parseKey(input.dataset.k)[0];
       otherText[genre] = input.value;
@@ -815,7 +1996,9 @@ function getMainKey() {
 function catPositionLabel(k, clickable) {
   if (!st.cats.has(k)) return "";
   const isMain = k === getMainKey();
-  const cls = "pos-badge " + (isMain ? "main" : "sub");
+  // DOM 클래스명은 "sub-pos"를 쓴다 - 그냥 "sub"이면 .opt .sub(하위 단계 텍스트) 선택자와
+  // 이름이 겹쳐서 그쪽 폰트 크기(1.3rem, specificity가 더 높음)가 배지에 새어 들어온다.
+  const cls = "pos-badge " + (isMain ? "main" : "sub-pos");
   const text = isMain ? "주포지션" : "보조포지션";
   if (!isMain && clickable) {
     return '<button type="button" class="' + cls + ' pos-badge-btn" data-mk="' + k + '" title="주포지션으로 지정">' + text + '</button>';
@@ -987,8 +2170,14 @@ function drawGenreChart() {
   // 0으로 나누기 방지를 위해 0%로 처리한다. 같은 항목을 우리 회사와 희망 파트너 양쪽에
   // 고를 수 있으므로 누적률은 100%를 넘을 수 있다.
   const toPct = (val, denom) => (denom > 0 ? (val / denom) * 100 : 0);
-  const maxStackPct = data.reduce((max, d) => Math.max(max, toPct(d.main + d.sub + d.wish, d.denom)), 0);
-  const chartMax = Math.max(100, Math.ceil(maxStackPct / 10) * 10);
+  // "우리 회사가 하는 일"(주+보조)과 "희망 파트너"는 서로 다른 질문이라 같은 막대에
+  // 이어 붙이면 헷갈린다 - 하는 일은 왼쪽 가장자리(0%)에서 오른쪽으로, 희망 파트너는
+  // 오른쪽 가장자리(0%)에서 왼쪽으로 자라나게 해서 둘 다 "가장자리에서 시작해 가운데로
+  // 다가오는" 모양으로 만든다. 같은 픽셀 폭을 공유하는 축 2개(x=하는 일, x2=희망 파트너를
+  // reverse)를 겹쳐 그리는 방식으로 구현한다.
+  const mainSubMaxPct = data.reduce((max, d) => Math.max(max, toPct(d.main + d.sub, d.denom)), 0);
+  const wishMaxPct = data.reduce((max, d) => Math.max(max, toPct(d.wish, d.denom)), 0);
+  const chartMax = Math.max(100, Math.ceil(Math.max(mainSubMaxPct, wishMaxPct) / 10) * 10);
 
   const datasets = ["main", "sub", "wish"].map(key => {
     const meta = CHART_SEG_META[key];
@@ -1000,7 +2189,10 @@ function drawGenreChart() {
       rawCount: data.map(d => d[key]),
       rawDenom: data.map(d => d.denom),
       borderWidth: 0,
-      stack: "genre"
+      // main/sub는 왼쪽 축(x)에서 이어 쌓이는 "genre" 스택, wish는 오른쪽 가장자리가
+      // 0%인 별도 축(x2)에 배정해 방향만 반대로 자라게 한다.
+      stack: key === "wish" ? "wish" : "genre",
+      xAxisID: key === "wish" ? "x2" : "x"
     };
   });
 
@@ -1021,7 +2213,16 @@ function drawGenreChart() {
         highlightSummaryFor(genre, type);
       },
       scales: {
-        x: { stacked: true, min: 0, max: chartMax, grid: { color: "#f0f0f0" }, ticks: { callback: v => v + "%" } },
+        x: {
+          stacked: true, min: 0, max: chartMax, position: "bottom",
+          grid: { color: "#f0f0f0" }, ticks: { callback: v => v + "%" }
+        },
+        // 같은 자리(bottom)에 겹쳐 그리되 0이 오른쪽에 오도록 뒤집는다 - 하는 일 축(x)과
+        // 픽셀 폭이 같아야 두 막대의 % 스케일이 시각적으로 일치한다.
+        x2: {
+          stacked: true, min: 0, max: chartMax, reverse: true, position: "bottom",
+          grid: { display: false }, ticks: { display: false }
+        },
         y: { stacked: true, grid: { display: false } }
       },
       plugins: {
@@ -1055,6 +2256,23 @@ function summaryLabel(item) {
   return escAttr(short);
 }
 
+/* 키 목록을 장르별로 묶어 소그룹 HTML로 반환한다 (보조포지션/희망 파트너처럼 여러 장르에
+   걸쳐 항목이 많아질 수 있는 카드용) - 장르 소제목이 이미 있으므로 tagFn은 장르 접두어
+   없는 라벨만 넣는 걸 권장한다. */
+function sumSubgroupsByGenre(keys, tagFn) {
+  const byGenre = {};
+  const order = [];
+  keys.forEach(k => {
+    const g = parseKey(k)[0];
+    if (!byGenre[g]) { byGenre[g] = []; order.push(g); }
+    byGenre[g].push(k);
+  });
+  return order.map(g =>
+    '<div class="sum-subgroup"><div class="sum-subgroup-label">' + g + '</div><div class="tag-row">' +
+      byGenre[g].map(tagFn).join("") + '</div></div>'
+  ).join("");
+}
+
 function drawSummaryStep() {
   clearChartHighlight();
   drawGenreChart();
@@ -1077,25 +2295,32 @@ function drawSummaryStep() {
   const catKeys = [...st.cats];
   const mainKeys = catKeys.filter(k => k === mainKey);
   const subKeys = catKeys.filter(k => k !== mainKey);
-  const posTag = cls => k => {
+  const posTag = (cls, withGenre) => k => {
     const p = parseKey(k);
     const hlType = cls === "pos-main" ? "main" : "sub";
     const label = summaryLabel(p[1]);
-    return '<span class="tag ' + cls + '" data-hl-genre="' + p[0] + '" data-hl-type="' + hlType + '"><em>' + p[0] + ' · </em>' + label + '</span>';
+    const prefix = withGenre ? '<em>' + p[0] + ' · </em>' : "";
+    return '<span class="tag ' + cls + '" data-hl-genre="' + p[0] + '" data-hl-type="' + hlType + '">' + prefix + label + '</span>';
   };
-  const catHtml =
-    sumGroup("주포지션", mainKeys, posTag("pos-main")) +
-    sumGroup("보조포지션", subKeys, posTag("pos-sub"));
+  // 주포지션은 항상 1개뿐이라 장르 접두어를 그대로 두고, 보조포지션은 여러 장르에 걸쳐
+  // 늘어날 수 있으니 장르별 소그룹으로 나눠 접두어 없이 보여준다.
+  const subGroupHtml = subKeys.length
+    ? '<div class="sum-group"><div class="sum-group-label">보조포지션</div>' + sumSubgroupsByGenre(subKeys, posTag("pos-sub", false)) + '</div>'
+    : "";
+  const catHtml = sumGroup("주포지션", mainKeys, posTag("pos-main", true)) + subGroupHtml;
   document.getElementById("sumCat").innerHTML =
     catHtml ? '<div class="sum-groups">' + catHtml + '</div>' : '<span class="sum-none">없음</span>';
 
-  /* 찾는 파트너 카드: 기존 그대로 */
+  /* 찾는 파트너 카드: 장르별로 묶어서 보여준다 */
+  const wishKeys = [...st.wishes];
+  const wishTag = k => {
+    const p = parseKey(k);
+    const label = summaryLabel(p[1]);
+    return '<span class="tag" data-hl-genre="' + p[0] + '" data-hl-type="wish">' + label + '</span>';
+  };
+  const wishHtml = sumSubgroupsByGenre(wishKeys, wishTag);
   document.getElementById("sumWish").innerHTML =
-    [...st.wishes].map(k => {
-      const p = parseKey(k);
-      const label = summaryLabel(p[1]);
-      return '<span class="tag" data-hl-genre="' + p[0] + '" data-hl-type="wish"><em>' + p[0] + '</em>' + label + '</span>';
-    }).join("") || '<span class="sum-none">선택하지 않음</span>';
+    wishHtml ? '<div class="sum-groups"><div class="sum-group">' + wishHtml + '</div></div>' : '<span class="sum-none">선택하지 않음</span>';
 }
 
 /* ===== 검색창 배선 ===== */
@@ -1156,5 +2381,533 @@ window.addEventListener("resize", () => {
 
 render();
 </script>
-</body>
-</html>
+<input type="hidden" name="" value=""></form>
+
+<form name="listForm" id="listForm" method="post" action="/">
+	<input type="hidden" name="pageIndex" value="">
+	<input type="hidden" name="searchPageUnit" value="">
+	<input type="hidden" name="searchCondition" value="">
+	<input type="hidden" name="searchKeyword" value="">
+<input type="hidden" name="" value=""></form>
+
+            </div>
+        	<!--E. sub-contents-area--> 
+    	</div>
+    	<!--E. sub-content--> 
+	</div>
+	<!--E. sub_container-->
+	
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+	
+	
+		
+	
+
+
+
+
+
+
+	<!-- 푸터 영역 -->
+    <footer id="krds-footer">
+        <div class="f-btm">
+            <div class="f-btm-box">
+                    <ul class="f-menu">
+                        <li><a href="/ko/support/privacy-policy" class="krds-btn small text col-violet" target="_blank" title="새 창 열림">개인정보처리방침</a></li>
+                        <li><a href="/ko/support/terms-of-use" class="krds-btn small text">이용약관</a></li>
+                        <li><a href="/ko/support/information-utilization-policy" class="krds-btn small text">정보활용방침</a></li>
+                        <li><a href="/ko/support/sitemap" class="krds-btn small text">사이트맵</a></li>
+                        <li><a href="https://kocca.kr" class="krds-btn small text col-violet" target="_blank" title="새 창 열림">한국콘텐츠진흥원</a></li>
+                        <li><a href="javascript:void(0);" class="krds-btn small text link site-tit" role="button" aria-expanded="false" aria-controls="related-list">관련기관 바로가기</a>
+                            <div class="Relativ-view" id="related-list" style="display:none">
+                                <ul class="realtive-list">
+                                    <li><a target="_blank" href="https://www.mcst.go.kr" title="문화체육관광부(새 창 열림)">문화체육관광부</a></li>
+									<li><a target="_blank" href="https://www.kotra.or.kr" title="대한무역투자진흥공사(새 창 열림)">대한무역투자진흥공사</a></li>
+									<li><a target="_blank" href="http://kofice.or.kr" title="한국국제문화교류진흥원(새 창 열림)">한국국제문화교류진흥원</a></li>
+									<li><a target="_blank" href="https://www.kf.or.kr" title="한국국제교류재단(새 창 열림)">한국국제교류재단</a></li>
+									<li><a target="_blank" href="https://www.kcisa.kr" title="한국문화정보원(새 창 열림)">한국문화정보원</a></li>
+									<li><a target="_blank" href="https://www.kita.net" title="한국무역협회(새 창 열림)">한국무역협회</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>             
+            </div>
+        </div>
+        <div class="inner">            
+            <!-- f-cnt 영역 -->
+            <div class="f-cnt">
+                <!-- f-info-left 영역 -->
+                <div class="f-info-left">
+                    <div class="f-logo"> <span class="f-kocca">KOCCA</span> <span class="f-welcon">WelCon</span> </div>
+                    <div class="f-left-box">
+                        <ul class="info-txt">
+                            <li class="col-violet"><span>Helpdesk</span> 1566-9984</li>
+                            <li class="col-violet">welcon@kocca.kr</li>
+                        </ul> 
+                        <p class="info-addr">58326 전남광주통합특별시 나주시 교육길 35 (빛가람동 351) 한국콘텐츠진흥원<br>
+                        <span>사업자등록번호 105-82-17272</span></p>
+                    </div>
+                    <!-- 모바일에서f-menu-->
+                    <div class="m-f-btm-box">
+                            <ul class="f-menu">
+                                <li><a href="/ko/support/privacy-policy" class="krds-btn small text col-violet" target="_blank" title="새 창 열림">개인정보처리방침</a></li>
+                                <li><a href="/ko/support/terms-of-use" class="krds-btn small text">이용약관</a></li>
+                                <li><a href="/ko/support/information-utilization-policy" class="krds-btn small text">정보활용방침</a></li>
+                                <li><a href="/ko/support/sitemap" class="krds-btn small text">사이트맵</a></li>
+                                <li><a href="https://kocca.kr" class="krds-btn small text col-violet" target="_blank" title="새 창 열림">한국콘텐츠진흥원</a></li>
+                            </ul>             
+                    </div>
+                    <!-- //모바일에서f-menu-->
+                </div>
+                <!-- f-info-right 영역 -->
+                <div class="f-info-right">
+                    <div class="link-sns">
+                      <a href="https://www.linkedin.com/company/kocca-welcon" class="krds-btn xlarge icon border" target="_blank" title="새 창 열림">
+                        <span class="sr-only">링크드인</span>
+                        <i class="svg-icon ico-linkdin"></i>
+                      </a>
+                     <a href="https://www.instagram.com/kocca_official" class="krds-btn xlarge icon border" target="_blank" title="새 창 열림">
+                        <span class="sr-only">인스타그램</span>
+                        <i class="svg-icon ico-instagram"></i>
+                      </a>
+                      <a href="https://www.youtube.com/channel/UC3IS4moogXMW0eJSVYzBdig" class="krds-btn xlarge icon border" target="_blank" title="새 창 열림">
+                        <span class="sr-only">유튜브</span>
+                        <i class="svg-icon ico-youtube"></i>
+                      </a>                      
+                      
+                      <a href="https://blog.naver.com/koccablog15" class="krds-btn xlarge icon border" target="_blank" title="새 창 열림">
+                        <span class="sr-only">블로그</span>
+                        <i class="svg-icon ico-blog"></i>
+                      </a>
+                    </div>
+                    <div class="">
+                        <a href="http://webwatch.or.kr" title="새창" target="_blank" class="f-mark">
+                        <img src="https://welcon.kocca.kr/static/wcdn2025/img/frt/main/WA_Mark.png" alt="과학기술정보통신부 WA(WEB접근성) 품질인증 마크, 웹와치(WebWatch) 2026.7.30 ~ 2027.7.29" title="WA 품질인증 마크, 웹와치(WebWatch) 2026.7.30 ~ 2027.7.29" width="120">
+                        </a>
+                    </div>
+                </div>                 
+            </div>
+            <!-- //f-cnt 영역 -->
+            <div class="f-copy">
+            	<div class="f-cleft">본 페이지에 게시된 이메일 주소가 자동 수집되는 것을 거부하며, 이를 위반시 정보통신법에 의해 처벌됨을 유념하시기 바랍니다.</div>
+                <div class="f-cright">COPYRIGHT ⓒ 한국콘텐츠진흥원. ALL RIGHTS RESERVED.</div>
+            </div>   
+        </div>
+    </footer>
+    <!-- //푸터 영역 --> 
+
+
+
+<script>
+function fnGoInstt(value) {
+	var href = "";
+	href = $("#site").val();
+
+	if(href != "") {
+		window.open(href, "", "")
+	} else {
+		alert("이동할 사이트를 선택해 주세요.");
+	}
+}
+</script>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+//<![CDATA[
+$(document).ready(function(){
+    $("#panelCloseBtn").click(function() {
+        $("#panelSearchKeyword").val("");
+    });
+
+    $("#panelSearchBtn").click(function() {
+        const keyword = $("#panelSearchKeyword").val();
+        searchUtil.goSearhPage(keyword);
+    });
+    
+    $("#panelDeleteAllKeywordBtn").click(function() {
+        searchUtil.deleteAllKeyword(true);
+    });
+
+    $("#panelSearchKeyword").on("keydown", function(e) {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            searchUtil.goSearhPage($(this).val());
+        }
+    });
+});
+
+function initPanel() {
+    searchUtil.htmlPanelRecentlyKeywords();
+}
+//]]
+</script>
+<div class="modal-wrap"> 
+    <!-- 모달 : 통합 검색 -->
+    <div id="popTotalSch" class="krds-modal search-header-modal fade" data-type="right-sheet" aria-labelledby="tit_total_sch"> 
+        <!-- modal-dialog -->
+        <div class="modal-dialog">
+            <div class="modal-content"> 
+                <!-- modal title -->
+                <div class="modal-header sr-only">
+                    <h2 id="tit_total_sch" class="modal-title">Search</h2>
+                </div>
+                <!-- //modal title --> 
+                <!-- modal contents -->
+                <div class="modal-conts"> 
+                    <!-- 통합검색 -->
+                    <div class="pop-total-serch-wrap"> 
+                        <!-- 통합검색 정보입력 영역 -->
+                        <div class="pop-sch-top"> 
+                            <div class="search-total-tit">
+                                <h2 class="modal-title">Search</h2>
+                                <p>모두의 K-콘텐츠, 해외진출로 가치를 높이다.</p>
+                            </div>
+                            <!-- 검색어 입력 폼 -->
+                            <div class="sch-form-box">
+                                <label for="panelSearchKeyword" class="sr-only">검색어를 입력해주세요.</label>
+                                <div class="sch-input">
+                                    <input type="text" class="form-input" id="panelSearchKeyword" placeholder="검색어를 입력해주세요.">
+                                    <button type="button" class="btn ico-search" id="panelSearchBtn"> <span class="sr-only">검색</span> <i class="svg-icon ico-sch"></i> </button>
+                                </div>
+                            </div>
+                            <!-- //검색어 입력 폼 --> 
+                        </div>
+                        <!-- //통합검색 정보입력 영역 --> 
+                        <!-- 검색어 리스트 -->
+                        <div class="search-text"> 
+                            <!-- 검색어 입력 전 -->
+                            <ul class="sch-info-list">
+                                <li class="sch-info-item word-popular">
+                                    <h3 class="tit">인기검색어</h3>
+                                    <ol class="list" id="panelPopularKeywordsWrap">
+                                        
+                                            <li>
+                                                
+                                                
+                                                
+                                                
+
+                                                
+                                                
+                                                    
+                                                    
+                                                    
+                                                
+                                                <span class="ranking-txt">중국</span> <span class="ranking-state down"><em class="sr-only">하락</em>1</span>
+                                            </li>
+                                        
+                                            <li>
+                                                
+                                                
+                                                
+                                                
+
+                                                
+                                                
+                                                    
+                                                    
+                                                    
+                                                
+                                                <span class="ranking-txt">MESAM</span> <span class="ranking-state down"><em class="sr-only">하락</em>2</span>
+                                            </li>
+                                        
+                                            <li>
+                                                
+                                                
+                                                
+                                                
+
+                                                
+                                                
+                                                    
+                                                    
+                                                    
+                                                
+                                                <span class="ranking-txt">디자이너협회</span> <span class="ranking-state down"><em class="sr-only">하락</em>3</span>
+                                            </li>
+                                        
+                                            <li>
+                                                
+                                                
+                                                
+                                                
+
+                                                
+                                                
+                                                    
+                                                    
+                                                    
+                                                
+                                                <span class="ranking-txt">아르헨티나 </span> <span class="ranking-state down"><em class="sr-only">하락</em>4</span>
+                                            </li>
+                                        
+                                            <li>
+                                                
+                                                
+                                                
+                                                
+
+                                                
+                                                
+                                                    
+                                                    
+                                                    
+                                                
+                                                <span class="ranking-txt">전시회</span> <span class="ranking-state down"><em class="sr-only">하락</em>5</span>
+                                            </li>
+                                        
+                                            <li>
+                                                
+                                                
+                                                
+                                                
+
+                                                
+                                                
+                                                    
+                                                    
+                                                    
+                                                
+                                                <span class="ranking-txt">CNICIF</span> <span class="ranking-state down"><em class="sr-only">하락</em>6</span>
+                                            </li>
+                                        
+                                            <li>
+                                                
+                                                
+                                                
+                                                
+
+                                                
+                                                
+                                                    
+                                                    
+                                                    
+                                                
+                                                <span class="ranking-txt">uae</span> <span class="ranking-state down"><em class="sr-only">하락</em>7</span>
+                                            </li>
+                                        
+                                            <li>
+                                                
+                                                
+                                                
+                                                
+
+                                                
+                                                
+                                                    
+                                                    
+                                                    
+                                                
+                                                <span class="ranking-txt">GeneralDirectorateofCinema</span> <span class="ranking-state down"><em class="sr-only">하락</em>8</span>
+                                            </li>
+                                        
+                                            <li>
+                                                
+                                                
+                                                
+                                                
+
+                                                
+                                                
+                                                    
+                                                    
+                                                    
+                                                
+                                                <span class="ranking-txt">멕시코</span> <span class="ranking-state down"><em class="sr-only">하락</em>9</span>
+                                            </li>
+                                        
+                                            <li>
+                                                
+                                                
+                                                
+                                                
+
+                                                
+                                                
+                                                    
+                                                    
+                                                    
+                                                
+                                                <span class="ranking-txt">UniversoHQ</span> <span class="ranking-state down"><em class="sr-only">하락</em>10</span>
+                                            </li>
+                                        
+                                    </ol>
+                                </li>
+                                <li class="sch-info-item word-lately">
+                                    <h3 class="tit">최근검색어</h3>
+                                    <ul class="list" aria-live="polite" id="panelRecentlyKeywordsWrap">
+                                        <!-- 
+                                        <li> <span class="word-txt">안전보건교육</span>
+                                            <button type="button" class="krds-btn small icon"> <span class="sr-only">삭제</span> <i class="svg-icon ico-delete-fill"></i> </button>
+                                        </li> -->
+                                    </ul>
+                                    <button type="button" class="krds-btn medium text" id="panelDeleteAllKeywordBtn">최근검색어 전체 삭제 <i class="svg-icon ico-delete-fill"></i></button>
+                                </li>
+                            </ul>
+                            <!-- //검색어 입력 전 --> 
+                        </div>
+                        <!-- //검색어 리스트 --> 
+                    </div>
+                    <!-- //통합검색 --> 
+                </div>
+                <!-- //modal contents --> 
+                <!-- close button -->
+                <button type="button" class="btn-close close-modal" id="panelCloseBtn"> <span class="sr-only">닫기</span> <i class="svg-icon ico-popup-close"></i> </button>
+                <!-- //close button --> 
+            </div>
+        </div>
+        <!-- //modal-dialog -->
+        <div class="modal-back"></div>
+    </div>
+    <!-- //모달 : 통합 검색 --> 
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+$(document).ready(function() {
+	$('form').each(function(idx, elmt) {
+		var csrfElmt = elmt[''];
+		if (csrfElmt == null || csrfElmt.length == 0) {
+			$(this).append($('<input/>', {type: 'hidden', name: '', value: ''}));
+		}
+	});
+	
+	$.ajaxSetup({
+		beforeSend: function(xhr) {
+			xhr.setRequestHeader('AJAX', true);
+			var csrfHeader = '';
+			var csrfToken = '';
+			if (typeof(csrfToken) != 'undefined' && csrfToken != '')
+			xhr.setRequestHeader(csrfHeader, csrfToken);
+		}
+	});
+});
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 구글 집계-->  
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-46196130-22"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-46196130-22');
+</script>
+
+
+<script>
+$(document).on('click', 'section[id^="artiBzmNotice_"]', function(e) {
+	
+	const $target = $(e.target);
+	
+    if ($target.hasClass('modal-back') || $target.closest('.close-modal').length > 0) {
+        $(this).removeClass('shown in');
+
+        let $nextSection = $(this).closest('.modal-wrap').next('.modal-wrap').find('section');
+        
+        if ($nextSection.is('[id^="artiBzmNotice_"]')) {
+            $nextSection.addClass('shown in');
+            $nextSection.focus();
+        } else {
+            // 비즈매칭이 더 없으면 관심항목(0번) 호출
+            showFavoritePopup(0);
+        }
+    }
+});
+
+
+// '신청서 작성 바로가기' 외 영역 클릭 시 팝업 닫기
+$(document).on("click", "section[id^='diMyFavoriteWrap_']", function(e){	
+	
+	const $target = $(e.target);
+	
+	if ($target.hasClass('modal-back') || $target.closest('.close-modal').length > 0) {
+		$(this).removeClass('shown in');
+		
+		// 다음 팝업 띄우기
+		let nxtIdx = $(this).data('idx');
+		nxtIdx = nxtIdx + 1;
+		showFavoritePopup(nxtIdx);
+	}
+});
+
+</script>
+
+
+
+<div class="gnb-backdrop"></div></body></html>
