@@ -621,7 +621,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	                	<div class="header-actions">
 	                    	<button type="button" class="btn-navi sch open-modal" title="통합검색 레이어" data-target="popTotalSch" data-func="initPanel" id="totalSearch"> 통합검색</button>
 	                        <button type="button" class="btn-navi all" aria-controls="mobile-nav">전체메뉴</button>
-	                        <a href="https://welcon.kocca.kr/cmm/login.do" class="btn-navi login">로그인</a>
+	                        <a href="login.html" class="btn-navi login">로그인</a>
 	                        <button type="button" onclick="goUrl('/ko/signup');" class="btn-navi join">회원가입</button>                        
 	                   </div>              
 	               </div>
@@ -654,7 +654,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <div class="gnb-login"> 
                 	
                 	
-                    	<button type="button" class="krds-btn large text" onclick="location.href='https://welcon.kocca.kr/cmm/login.do';"><i class="svg-icon ico-log"></i> 로그인</button>
+                    	<button type="button" class="krds-btn large text" onclick="location.href='login.html';"><i class="svg-icon ico-log"></i> 로그인</button>
                     	<button type="button" class="krds-btn large text" onclick="fnLocation('signup');return false;"><i class="svg-icon ico-join"></i> 회원가입</button>
                 	    
                 </div>
@@ -1156,7 +1156,7 @@ function initNavi() {
           --wc-purple-light-bg: #F8F0FF;
           --wc-purple-border: #8400FF;
         }
-        .wc-wizard { font-family: "Pretendard", -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif; color: var(--wc-text); font-size: 1.4rem; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+        .wc-wizard { font-family: "Pretendard GOV", "Pretendard", -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif; color: var(--wc-text); font-size: 1.5rem; line-height: 1.55; -webkit-font-smoothing: antialiased; }
         .wc-wizard, .wc-wizard *, .wc-wizard *::before, .wc-wizard *::after { box-sizing: border-box; }
         .wc-wizard button, .wc-wizard input { font-family: inherit; }
         .wc-wizard button { -webkit-appearance: none; appearance: none; border-radius: 0; }
@@ -1172,19 +1172,26 @@ function initNavi() {
         .wc-wizard .step-node { display: flex; align-items: center; gap: 0.8rem; }
         .wc-wizard .step-dot {
           width: 2.4rem; height: 2.4rem; border: 0.15rem solid var(--wc-border-light); color: var(--wc-text-sub); background: #fff;
-          display: grid; place-items: center; font-size: 1.2rem; font-weight: 700; flex: none; border-radius: 50%;
+          display: grid; place-items: center; font-size: 1.3rem; font-weight: 700; flex: none; border-radius: 50%;
         }
         .wc-wizard .step-node.done .step-dot { background: var(--wc-purple); border-color: var(--wc-purple); color: #fff; }
         .wc-wizard .step-node.now .step-dot { border-color: var(--wc-purple); color: var(--wc-purple); border-width: 0.2rem; }
-        .wc-wizard .step-node .step-label { font-size: 1.25rem; color: var(--wc-text-sub); white-space: nowrap; }
+        .wc-wizard .step-node .step-label { font-size: 1.4rem; color: var(--wc-text-sub); white-space: nowrap; }
         .wc-wizard .step-node.now .step-label { color: var(--wc-purple); font-weight: 700; }
         .wc-wizard .step-node.done .step-label { color: var(--wc-text); }
         .wc-wizard .step-line { width: 3.4rem; height: 0.1rem; background: var(--wc-border-light); }
 
         /* ===== 페이지 공통 ===== */
         .wc-wizard .page { max-width: 112rem; margin: 0 auto; padding: 3.6rem 3.2rem; }
+        /* "공통모듈" 버튼을 누르기 전까지 보이는 안내 영역 */
+        .wc-wizard .module-trigger-wrap { text-align: center; padding: 6rem 2rem; }
+        .wc-wizard .module-filter-btn-lg { font-size: 1.7rem; padding: 1.3rem 3.1rem; border-radius: 0.8rem; }
         .wc-wizard .screen { display: none; }
         .wc-wizard .screen.active { display: block; }
+        /* STEP2·3(screen-fill)은 .split-layout이 남은 높이를 정확히 채우게 해서, 모달
+           자체가 또 스크롤되는 이중 스크롤바가 생기지 않도록 한다 - 스크롤은 사이드바/본문
+           패널 안에서만 일어난다. */
+        .wc-wizard .screen.screen-fill.active { display: flex; flex-direction: column; height: 100%; }
         .wc-wizard .title { font-size: 2.4rem; font-weight: 700; letter-spacing: -0.02em; line-height: 1.35; margin-bottom: 0.8rem; color: var(--wc-text); }
         .wc-wizard .req { color: #d93025; }
         .wc-wizard .desc { max-width: 76rem; font-size: 1.7rem; color: var(--wc-text-sub); line-height: 1.65; margin-bottom: 3rem; }
@@ -1203,10 +1210,31 @@ function initNavi() {
         }
 
         /* ===== 필터 칩 (장르 / 공통모듈) ===== */
-        .wc-wizard .filter-label { font-size: 1.35rem; font-weight: 700; color: var(--wc-text-sub); margin-bottom: 0.8rem; }
-        .wc-wizard .filter-label .filter-hint { font-size: 1.15rem; color: var(--wc-border); font-weight: 400; margin-left: 0.8rem; }
-        .wc-wizard .chips { display: flex; flex-wrap: wrap; gap: 0.7rem; margin-bottom: 2.2rem; }
-        .wc-wizard .chip { border: 0.1rem solid var(--wc-border-light); background: #fff; color: var(--wc-text-sub); padding: 1rem 1.8rem; min-height: 3.4rem; font-size: 1.4rem; line-height: 1.35; cursor: pointer; border-radius: 0.6rem; }
+        .wc-wizard .filter-label { font-size: 1.5rem; font-weight: 700; color: var(--wc-text-sub); margin-bottom: 0.8rem; }
+        /* 장르/공통모듈/검색창을 모달 스크롤 중에도 항상 상단에 붙여둔다 - .modal-body가
+           스크롤 컨테이너이므로 그 안에서 sticky가 작동한다 */
+        .wc-wizard .sticky-filters { position: sticky; top: -2rem; margin: -2rem -2.4rem 1.6rem; padding: 1.8rem 2.4rem 1.4rem; background: #fff; z-index: 20; border-bottom: 0.1rem solid var(--wc-border-light); }
+
+        /* 지금까지 고른 항목 - 스크롤해도 항상 화면 아래에 붙어 따라다닌다(.modal-body가
+           스크롤 컨테이너라 그 안에서 sticky bottom이 먹는다). 장르별로 묶어서 보여준다. */
+        .wc-wizard .picked-bar { position: sticky; bottom: -2rem; margin: 2rem -2.4rem -2rem; padding: 1.4rem 2.4rem; background: #fff; border-top: 0.1rem solid var(--wc-border-light); box-shadow: 0 -0.4rem 1.2rem rgba(0,0,0,0.06); z-index: 20; }
+        .wc-wizard .picked-bar:empty { display: none; }
+        .wc-wizard .picked-bar-title { font-size: 1.3rem; font-weight: 700; color: var(--wc-purple-dark); margin: 0 0 0.8rem; }
+        /* 장르 블록을 한 줄에 3개씩. 스크롤은 제목은 그대로 두고 장르 블록 영역에만 걸어서
+           4번째 장르(2번째 줄)부터는 제목이 안 밀리고 이 영역만 스크롤되게 한다. 높이는
+           칩이 한 줄에 안 들어가 두 줄로 접혀도(외N건 배지까지) 1줄 분량이 다 보이게 잡았다. */
+        .wc-wizard .picked-genre-groups { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem 1.6rem; max-height: 9.5rem; overflow-y: auto; }
+        .wc-wizard .picked-genre-group { display: flex; align-items: flex-start; gap: 1rem; min-width: 0; }
+        .wc-wizard .picked-genre-label { flex: none; font-size: 1.1rem; font-weight: 700; color: var(--wc-purple-dark); background: var(--wc-purple-light-bg); border-radius: 0.4rem; padding: 0.4rem 0.8rem; }
+        .wc-wizard .picked-chip-row { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+        .wc-wizard .picked-chip { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--wc-purple-light-bg); color: var(--wc-purple-dark); border: 0.1rem solid var(--wc-purple-border); border-radius: 999px; padding: 0.4rem 0.4rem 0.4rem 1.1rem; font-size: 1.15rem; font-weight: 600; }
+        .wc-wizard .picked-chip button { border: none; background: transparent; color: var(--wc-purple-dark); font-size: 1.3rem; line-height: 1; cursor: pointer; padding: 0.3rem; }
+        /* 항목 4개 이상은 칩으로 다 안 늘어놓고 "외N건"으로 요약 - 지울 수 있는 칩이
+           아니라서 버튼 없이 텍스트만, 색도 옅게 눌러서 실제 칩과 구분한다. */
+        .wc-wizard .picked-chip-more { display: inline-flex; align-items: center; background: var(--wc-box-bg); color: var(--wc-text-sub); border: 0.1rem solid var(--wc-border-light); border-radius: 999px; padding: 0.4rem 1rem; font-size: 1.15rem; font-weight: 600; }
+        .wc-wizard .filter-label .filter-hint { font-size: 1.3rem; color: var(--wc-border); font-weight: 400; margin-left: 0.8rem; }
+        .wc-wizard .chips { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-bottom: 1.8rem; }
+        .wc-wizard .chip { border: 0.1rem solid var(--wc-border-light); background: #fff; color: var(--wc-text-sub); padding: 1rem 1.7rem; min-height: 3.4rem; font-size: 1.5rem; line-height: 1.35; cursor: pointer; border-radius: 0.6rem; }
         .wc-wizard .chip:hover { border-color: var(--wc-border); }
         .wc-wizard .chip.has { background: var(--wc-purple-light-bg); border-color: var(--wc-purple-border); color: var(--wc-purple-dark); }
         .wc-wizard .chip.on { background: var(--wc-purple); border-color: var(--wc-purple); color: #fff; }
@@ -1215,13 +1243,36 @@ function initNavi() {
         .wc-wizard .chip-badge.main { background: var(--wc-purple); color: #fff; }
         .wc-wizard .chip-badge.sub { background: var(--wc-border-light); color: var(--wc-text); }
 
+        /* ===== 공통모듈 선택 모달 ===== */
+        .wc-wizard .modal-overlay { position: fixed; inset: 0; background: rgba(30,33,36,0.5); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 2rem; }
+        .wc-wizard .modal-overlay[hidden] { display: none; }
+        /* 위저드 전체(1~4단계 + 필터/카드/차트)를 담는 모달이라 일반 칩 선택 모달보다
+           훨씬 넓게 잡는다 - 헤더/푸터는 고정, 본문(.modal-body)만 스크롤되도록 flex 구조로 */
+        /* height를 고정해서(max-height 아님) 스텝 이동할 때마다 컨텐츠 길이 따라 모달이
+           커졌다 작아졌다 하지 않게 한다 - 짧은 스텝은 아래쪽에 여백이 남고, 긴 스텝은
+           .modal-body 안에서만 스크롤된다 */
+        .wc-wizard .modal-box { background: #fff; width: 90vw; max-width: 140rem; height: 88vh; border-radius: 1.2rem; box-shadow: 0 0.8rem 3rem rgba(0,0,0,0.18); display: flex; flex-direction: column; overflow: hidden; }
+        .wc-wizard .modal-head { display: flex; align-items: center; justify-content: space-between; padding: 2rem 2.4rem; border-bottom: 0.1rem solid var(--wc-border-light); font-size: 1.8rem; font-weight: 700; color: var(--wc-text); }
+        .wc-wizard .modal-close { border: none; background: transparent; font-size: 2.4rem; line-height: 1; color: var(--wc-text-sub); cursor: pointer; padding: 0.4rem; }
+        .wc-wizard .modal-close:hover { color: var(--wc-purple); }
+        .wc-wizard .modal-body { padding: 2rem 2.4rem; overflow-y: auto; flex: 1; min-height: 0; display: flex; flex-direction: column; }
+        .wc-wizard .modal-head, .wc-wizard .modal-foot { flex: none; }
+        .wc-wizard .modal-foot { padding: 1.6rem 2.4rem; border-top: 0.1rem solid var(--wc-border-light); display: flex; justify-content: flex-end; }
+        /* 모달 안 "선택완료"는 본문 CTA버튼(.btn.primary, 2.4rem)보다 작아야 모달 크기에
+           맞다 - 별도 클래스로 오버라이드한다 */
+        .wc-wizard .modal-foot .btn.primary { font-size: 1.5rem; padding: 0.9rem 2rem; }
+        .wc-wizard .module-filter-row { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+        .wc-wizard .module-filter-btn { border: 0.1rem solid var(--wc-border-light); background: #fff; padding: 0.8rem 1.6rem; border-radius: 0.6rem; font-size: 1.5rem; cursor: pointer; color: var(--wc-text); }
+        .wc-wizard .module-filter-btn:hover { border-color: var(--wc-purple); }
+        .wc-wizard .module-filter-count { display: inline-block; margin-left: 0.5rem; font-weight: 700; color: var(--wc-purple); }
+
         /* ===== 검색창 ===== */
         .wc-wizard .search-box {
           display: flex; align-items: center; border: 0.15rem solid var(--wc-border-light); background: #fff;
-          padding: 1.2rem 1.4rem; max-width: 48rem; margin-bottom: 2.6rem; border-radius: 0.6rem;
+          padding: 1.1rem 1.5rem; max-width: 48rem; margin-bottom: 0; border-radius: 0.6rem;
         }
         .wc-wizard .search-box:focus-within { border-color: var(--wc-purple); }
-        .wc-wizard .search-box input { flex: 1; border: none; outline: none; font-size: 1.35rem; background: transparent; color: var(--wc-text); }
+        .wc-wizard .search-box input { flex: 1; border: none; outline: none; font-size: 1.5rem; background: transparent; color: var(--wc-text); }
         .wc-wizard .search-box .clear {
           position: relative; border: none; background: var(--wc-box-bg); width: 1.8rem; height: 1.8rem;
           cursor: pointer; display: none; place-items: center; flex: none; border-radius: 50%;
@@ -1233,59 +1284,103 @@ function initNavi() {
         .wc-wizard .search-box .clear::before { transform: rotate(45deg); }
         .wc-wizard .search-box .clear::after { transform: rotate(-45deg); }
 
-        /* ===== STEP2·3 결과 영역: 장르 카드가 마쏘너리로 배치, 카드 안 항목은 좌→우 흐름 ===== */
-        .wc-wizard .card-area { display: block; }
-        .wc-wizard .card-area.single { display: grid; grid-template-columns: 1fr; }
-        .wc-wizard .card-area.masonry { display: flex; align-items: flex-start; gap: 1.6rem; }
-        .wc-wizard .masonry-col { display: flex; flex-direction: column; gap: 1.6rem; flex: 1 1 0; min-width: 0; }
+        /* ===== STEP2·3 결과 영역: 왼쪽 장르 목차 + 오른쪽 전체 장르 쭉 나열(좌우분할형) =====
+           sticky+flex-stretch로 "본문 스크롤에 얹혀서 따라오게" 하려던 방식이 계속 안정적으로
+           안 먹어서, 아예 구조를 바꿨다 - 사이드바와 본문을 완전히 독립된 스크롤 영역 2개로
+           나눈 고정 높이 2단 패널이다. sticky 없이 사이드바 자체가 항상 자기 자리에 그대로
+           있으니 "따라오네 마네" 할 게 없다. */
+        .wc-wizard .split-layout { display: flex; align-items: stretch; gap: 0; border: 0.1rem solid var(--wc-border-light); border-radius: 1.2rem; overflow: hidden; background: #fff; flex: 1; min-height: 30rem; }
+        .wc-wizard .genre-side-nav { width: 20rem; flex: none; background: var(--wc-box-bg); border-right: 0.1rem solid var(--wc-border-light); padding: 1.2rem 0; overflow-y: auto; }
+        /* 실제 사이트 common.css의 button 리셋(appearance/line-height 등)이 새어 들어올
+           여지를 없애려고 관련 속성을 전부 명시적으로 재선언한다(.btn 때와 같은 처방). */
+        .wc-wizard .genre-nav-item {
+          display: flex; align-items: center; justify-content: space-between; width: 100%; border: none; background: transparent;
+          text-align: left; padding: 1.2rem 1.8rem; font-family: inherit; font-size: 1.5rem; font-weight: 600; color: var(--wc-text);
+          cursor: pointer; border-left: 0.3rem solid transparent; appearance: none; -webkit-appearance: none; border-radius: 0;
+          box-shadow: none; outline: none; line-height: normal; letter-spacing: normal;
+        }
+        .wc-wizard .genre-nav-item:hover { background: #fff; }
+        /* 클릭(포커스)했을 때 브라우저 기본 포커스 링/테두리가 새어 들어오는 걸 확실히 차단 */
+        .wc-wizard .genre-nav-item:focus, .wc-wizard .genre-nav-item:focus-visible { outline: none !important; box-shadow: none !important; }
+        .wc-wizard .genre-nav-item.active { background: var(--wc-purple); border-left-color: var(--wc-purple-dark); color: #fff; }
+        .wc-wizard .genre-nav-count { min-width: 2rem; height: 2rem; padding: 0 0.5rem; border-radius: 999px; background: var(--wc-border-light); color: #fff; font-size: 1.1rem; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
+        .wc-wizard .genre-nav-count.has { background: var(--wc-purple); }
+        .wc-wizard .genre-nav-item.active .genre-nav-count { background: #fff; color: var(--wc-purple); }
 
-        .wc-wizard .group { border: 0.1rem solid var(--wc-border-light); background: #fff; overflow: hidden; border-radius: 1.2rem; }
+        /* 본문도 자기만의 스크롤 영역 - 장르 목차 클릭 시 이 안에서만 스크롤된다 */
+        .wc-wizard .genre-main-panel { flex: 1; min-width: 0; padding: 2rem 2.2rem; overflow-y: auto; }
+
+        .wc-wizard .card-area { display: flex; flex-direction: column; gap: 2.4rem; }
+
+        /* scrollIntoView(block:"start")가 카드를 스크롤 영역 맨 위(y=0)에 붙이는데, 그
+           자리는 sticky 필터바가 덮고 있어서 스크롤은 되어도 카드 제목이 가려 안 보인다.
+           필터바 높이만큼 여유를 줘서 그 아래에서 멈추게 한다. */
+        /* 이제 스크롤이 .genre-main-panel 안에서만 일어나고 그 위를 덮는 sticky 요소가
+           없어서, 예전처럼 필터바 높이만큼 여유를 크게 둘 필요가 없다 - 살짝만 띄운다. */
+        .wc-wizard .group { scroll-margin-top: 1rem; padding-top: 0.4rem; border-top: 0.1rem solid var(--wc-border-light); }
+        .wc-wizard .group:first-child { border-top: none; padding-top: 0; }
         .wc-wizard .group-title {
-          font-size: 1.4rem; font-weight: 700; color: #fff; background: var(--wc-purple); letter-spacing: 0.02em;
-          padding: 1.4rem 2rem; display: flex; justify-content: space-between; align-items: center; border-radius: 1.2rem 1.2rem 0 0;
+          font-size: 1.7rem; font-weight: 700; color: var(--wc-purple-dark); letter-spacing: 0.02em;
+          padding: 0.4rem 0 1.4rem; display: flex; align-items: center;
         }
+        .wc-wizard .group-title-text { display: flex; align-items: center; }
         .wc-wizard .group-title .g-badge {
-          background: #fff; color: var(--wc-purple); font-size: 1.05rem; font-weight: 800;
-          width: 1.6rem; height: 1.6rem; display: grid; place-items: center; flex: none;
+          background: var(--wc-purple); color: #fff; font-size: 1.15rem; font-weight: 800;
+          width: 1.8rem; height: 1.8rem; display: grid; place-items: center; flex: none; border-radius: 50%; margin-left: 0.8rem;
         }
 
-        .wc-wizard .group-body { display: grid; grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr)); }
-        .wc-wizard .group.full .group-body { grid-template-columns: repeat(auto-fill, minmax(21rem, 1fr)); }
+        /* 공통모듈(단계)별 소그룹 - 실제 위저드가 이미 갖고 있던 module 필터 칩 카운트와
+           같은 정보를 여기서도(스크롤하며 훑을 때) 바로 보여준다. */
+        .wc-wizard .stage-block { margin-bottom: 2rem; }
+        .wc-wizard .stage-block:last-child { margin-bottom: 0; }
+        .wc-wizard .stage-label {
+          display: inline-flex; align-items: center; gap: 0.6rem; font-size: 1.3rem; font-weight: 700; color: #fff;
+          background: var(--wc-border); border-radius: 0.4rem; padding: 0.4rem 1rem; margin-bottom: 1rem;
+        }
+        .wc-wizard .stage-count { background: var(--wc-purple); border-radius: 999px; min-width: 1.9rem; height: 1.9rem; padding: 0 0.5rem; display: inline-flex; align-items: center; justify-content: center; font-size: 1.15rem; }
+
+        /* 칸을 공유 테두리로 나누는 "표" 느낌 대신, 실제 웰콘이 쓰는 방식대로 카드마다
+           둥근 테두리를 두르고 gap으로 떨어뜨려서 알약형 타일처럼 보이게 한다.
+           고정 3열이면 사이드바(20rem)가 폭을 갉아먹는 화면에서 칸이 억지로 좁아져
+           긴 한글 라벨이 줄바꿈되며 답답해 보였다 - 칸마다 최소 폭(24rem)을 보장하고
+           남는 공간만큼 열 수를 자동으로 늘리는 auto-fill로 바꿔 항상 여유 있게 만든다. */
+        .wc-wizard .group-body { display: grid; grid-template-columns: repeat(auto-fill, minmax(24rem, 1fr)); gap: 1.2rem; }
 
         .wc-wizard .opt {
-          display: flex; flex-wrap: wrap; align-items: flex-start; align-content: flex-start; gap: 1rem; min-height: 5rem; padding: 1.8rem 2rem; cursor: pointer;
-          border-right: 0.1rem solid var(--wc-box-bg); border-bottom: 0.1rem solid var(--wc-box-bg);
+          display: flex; flex-wrap: wrap; align-items: flex-start; align-content: flex-start; gap: 1rem; min-height: 4.6rem; padding: 1.5rem 1.7rem; cursor: pointer;
+          background: #fff; border: 0.1rem solid var(--wc-border-light); border-radius: 1rem;
         }
-        .wc-wizard .opt:hover { background: var(--wc-box-bg); }
+        .wc-wizard .opt:hover { border-color: var(--wc-border); }
         .wc-wizard .opt .box {
           width: 1.8rem; height: 1.8rem; border: 0.15rem solid var(--wc-border-light); flex: none; background: #fff; margin-top: 0.2rem;
           display: grid; place-items: center; border-radius: 0.4rem;
         }
         .wc-wizard .opt .box::after { content: ""; width: 0.9rem; height: 0.9rem; background: var(--wc-purple); transform: scale(0); transition: transform .12s; }
+        .wc-wizard .opt.on { background: var(--wc-purple-light-bg); border-color: var(--wc-purple-border); }
         .wc-wizard .opt.on .box { border-color: var(--wc-purple); }
         .wc-wizard .opt.on .box::after { transform: scale(1); }
-        .wc-wizard .opt.other-open { background: var(--wc-purple-light-bg); }
+        .wc-wizard .opt.other-open { background: var(--wc-purple-light-bg); border-color: var(--wc-purple-border); }
         .wc-wizard .opt.other-open .box { border-color: var(--wc-purple); }
-        .wc-wizard .opt .label { flex: 1; min-width: 0; font-size: 1.6rem; line-height: 1.45; word-break: keep-all; overflow-wrap: anywhere; color: var(--wc-text); }
+        .wc-wizard .opt .label { flex: 1; min-width: 0; font-size: 1.75rem; line-height: 1.45; word-break: keep-all; overflow-wrap: anywhere; color: var(--wc-text); }
         .wc-wizard .opt.on .label { font-weight: 600; }
         /* 태그(주/보조포지션, 하는 일)를 라벨 텍스트에서 분리해 항상 같은 위치의 별도 줄로 고정 - 태그가
            붙었다 뗐다 해도 박스 높이가 줄마다 들쭉날쭉해지지 않도록 함 */
         .wc-wizard .opt-meta { flex: 1 1 100%; margin-left: 2.8rem; display: flex; align-items: center; flex-wrap: wrap; gap: 0.6rem; min-height: 1.9rem; }
-        .wc-wizard .opt .sub { font-size: 1.3rem; color: var(--wc-text-sub); font-weight: 400; }
+        .wc-wizard .opt .sub { font-size: 1.55rem; color: var(--wc-text-sub); font-weight: 400; }
         /* 기타 항목 선택 시 나타나는 직접입력란 - 라벨을 새 요소로 밀어내리지 않고 라벨이
            있던 자리를 그대로 대체한다. 그래서 줄 수·박스 높이가 절대 안 늘어나고, 카드 폭이
            좁아도 항상 체크박스 바로 오른쪽(원래 라벨 자리)에 들어간다. */
         .wc-wizard .opt-other-input {
-          width: 100%; box-sizing: border-box; font: inherit; font-size: 1.25rem; color: var(--wc-text);
+          width: 100%; box-sizing: border-box; font: inherit; font-size: 1.5rem; color: var(--wc-text);
           border: 0.1rem solid var(--wc-border-light); background: #fff; padding: 0.5rem 0.8rem; border-radius: 0.6rem;
         }
         .wc-wizard .opt-other-input:focus { outline: none; border-color: var(--wc-purple); }
 
-        .wc-wizard .empty { border: 0.1rem dashed var(--wc-border-light); padding: 5rem 1.6rem; text-align: center; color: var(--wc-text-sub); font-size: 1.3rem; border-radius: 0.8rem; }
+        .wc-wizard .empty { border: 0.1rem dashed var(--wc-border-light); padding: 5rem 1.6rem; text-align: center; color: var(--wc-text-sub); font-size: 1.5rem; border-radius: 0.8rem; }
 
         /* ===== 우리 회사(재선택 재개) 음영 표시 + 주/보조 배지 ===== */
-        .wc-wizard .opt.dim { cursor: pointer; background: #fff; }
-        .wc-wizard .opt.dim:hover { background: var(--wc-box-bg); }
+        .wc-wizard .opt.dim { cursor: pointer; background: var(--wc-box-bg); border-color: var(--wc-border-light); }
+        .wc-wizard .opt.dim:hover { border-color: var(--wc-border); }
         .wc-wizard .opt.dim .box { border-color: var(--wc-border-light); }
         .wc-wizard .opt.dim .label { color: var(--wc-text); }
         .wc-wizard .own-tag {
@@ -1309,40 +1404,43 @@ function initNavi() {
         .wc-wizard .tag.pos-sub em { color: var(--wc-border); }
 
         /* ===== STEP4: 완료 ===== */
-        .wc-wizard .done-msg { display: flex; align-items: center; gap: 1.4rem; padding-bottom: 2.8rem; }
-        .wc-wizard .done-msg .ic { width: 4rem; height: 4rem; flex: none; border: 0.2rem solid var(--wc-purple); display: grid; place-items: center; border-radius: 50%; }
         .wc-wizard .ic-check { width: 1.4rem; height: 0.8rem; border-left: 0.25rem solid var(--wc-purple); border-bottom: 0.25rem solid var(--wc-purple); transform: rotate(-45deg) translateY(-0.2rem); }
-        .wc-wizard .done-msg .t { font-size: 2.2rem; font-weight: 700; color: var(--wc-text); }
-        .wc-wizard .done-msg .d { font-size: 1.5rem; color: var(--wc-text-sub); margin-top: 0.3rem; }
 
+        /* 좌우분할(사이드+차트)로 해봤는데, 차트는 정보성이 낮은 보조 자료라 요약카드와
+           동급 파트너처럼 절반을 나눠 가지면 오히려 요약카드 쪽이 좁아져 손해였다.
+           구조를 다시 위아래로: 요약카드 3장은 전체 폭을 다 써서 한눈에 잘 보이게 위에
+           두고, 차트는 그 아래 작고 수수하게 - 필요하면 스크롤해서 보는 보조 자료로
+           내린다(장르/하는 일/희망 파트너가 우선이라는 원래 요청과 맞다). */
         .wc-wizard .sum-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.6rem; }
         .wc-wizard .sum-card { border: 0.1rem solid var(--wc-border-light); background: #fff; border-radius: 1.2rem; overflow: hidden; }
         .wc-wizard .sum-head {
           padding: 1.8rem 2.2rem; background: var(--wc-box-bg); border-bottom: 0.1rem solid var(--wc-border-light);
-          font-size: 1.4rem; font-weight: 700; color: var(--wc-text-sub); display: flex; justify-content: space-between; border-radius: 1.2rem 1.2rem 0 0;
+          font-size: 1.5rem; font-weight: 700; color: var(--wc-text-sub); display: flex; justify-content: space-between; border-radius: 1.2rem 1.2rem 0 0;
         }
         .wc-wizard .sum-head .edit { color: var(--wc-purple); font-weight: 600; cursor: pointer; }
         .wc-wizard .sum-body { padding: 2rem 2.2rem; display: flex; flex-wrap: wrap; gap: 0.6rem; min-height: 6rem; align-content: flex-start; }
-        .wc-wizard .tag { border: 0.1rem solid var(--wc-border-light); background: #fff; font-size: 1.35rem; padding: 0.5rem 1rem; color: var(--wc-text); border-radius: 0.6rem; }
-        .wc-wizard .tag em { font-style: normal; color: var(--wc-border); font-size: 1.1rem; margin-right: 0.4rem; }
-        .wc-wizard .sum-none { color: var(--wc-border); font-size: 1.3rem; }
+        .wc-wizard .tag { border: 0.1rem solid var(--wc-border-light); background: #fff; font-size: 1.5rem; padding: 0.5rem 1rem; color: var(--wc-text); border-radius: 0.6rem; max-width: 100%; word-break: keep-all; overflow-wrap: anywhere; }
+        .wc-wizard .tag em { font-style: normal; color: var(--wc-border); font-size: 1.25rem; margin-right: 0.4rem; }
+        .wc-wizard .sum-none { color: var(--wc-border); font-size: 1.45rem; }
         .wc-wizard .sum-groups { display: flex; flex-direction: column; gap: 1.2rem; width: 100%; }
-        .wc-wizard .sum-group-label { font-size: 1.1rem; font-weight: 700; color: var(--wc-border); letter-spacing: 0.02em; margin-bottom: 0.6rem; }
+        .wc-wizard .sum-group-label { font-size: 1.25rem; font-weight: 700; color: var(--wc-border); letter-spacing: 0.02em; margin-bottom: 0.6rem; }
         .wc-wizard .sum-group .tag-row { display: flex; flex-wrap: wrap; gap: 0.6rem; }
         .wc-wizard .sum-group .sum-none { display: block; }
         /* 장르별 소그룹 - 보조포지션/희망 파트너처럼 항목이 여러 장르에 걸쳐 많아질 수 있는
            카드는 장르 소제목으로 나눠 한눈에 훑기 쉽게 한다 */
         .wc-wizard .sum-subgroup { margin-top: 1rem; }
         .wc-wizard .sum-subgroup:first-child { margin-top: 0.6rem; }
-        .wc-wizard .sum-subgroup-label { font-size: 1.05rem; font-weight: 600; color: var(--wc-text-sub); margin-bottom: 0.5rem; }
+        .wc-wizard .sum-subgroup-label { font-size: 1.2rem; font-weight: 600; color: var(--wc-text-sub); margin-bottom: 0.5rem; }
 
         /* ===== STEP4: 장르별 포지션 막대그래프 ===== */
-        .wc-wizard .chart-card { border: 0.1rem solid var(--wc-border-light); background: #fff; margin-top: 3.2rem; margin-bottom: 1.8rem; border-radius: 1.2rem; overflow: hidden; }
-        .wc-wizard .chart-head { padding: 1.8rem 2.2rem; background: var(--wc-box-bg); border-bottom: 0.1rem solid var(--wc-border-light); font-size: 1.4rem; font-weight: 700; color: var(--wc-text-sub); border-radius: 1.2rem 1.2rem 0 0; }
-        .wc-wizard .chart-body { padding: 2.4rem 2.2rem 2rem; }
-        .wc-wizard .chart-legend { display: flex; flex-wrap: wrap; gap: 1.6rem; margin-bottom: 1.6rem; font-size: 1.2rem; color: var(--wc-text-sub); }
-        .wc-wizard .lg-item { display: flex; align-items: center; gap: 0.6rem; }
-        .wc-wizard .lg-swatch { width: 1.1rem; height: 1.1rem; display: inline-block; flex: none; }
+        .wc-wizard .chart-card { border: 0.1rem solid var(--wc-border-light); background: #fff; margin-top: 2rem; border-radius: 1.2rem; overflow: hidden; }
+        /* 요약카드(장르/하는 일/희망 파트너)에 비해 이 차트는 정보성이 낮은 보조 자료라
+           문구·여백을 눌러서 존재감을 줄였다. */
+        .wc-wizard .chart-head { padding: 1.1rem 1.6rem; background: var(--wc-box-bg); border-bottom: 0.1rem solid var(--wc-border-light); font-size: 1.25rem; font-weight: 700; color: var(--wc-text-sub); border-radius: 1.2rem 1.2rem 0 0; }
+        .wc-wizard .chart-body { padding: 1.4rem 1.6rem 1.2rem; }
+        .wc-wizard .chart-legend { display: flex; flex-wrap: wrap; gap: 1.1rem; margin-bottom: 1rem; font-size: 1.15rem; color: var(--wc-text-sub); }
+        .wc-wizard .lg-item { display: flex; align-items: center; gap: 0.5rem; }
+        .wc-wizard .lg-swatch { width: 0.9rem; height: 0.9rem; display: inline-block; flex: none; }
         /* Chart.js 막대 색은 verbatim JS(CHART_SEG_META)에 #6d28d9/#8b5cf6로 하드코딩돼 있어
            범례 스와치도 브랜드 퍼플 대신 그 값을 그대로 맞춰 범례-그래프 색상 불일치를 막는다 */
         .wc-wizard .lg-swatch.main { background: #6d28d9; }
@@ -1352,8 +1450,14 @@ function initNavi() {
         .wc-wizard .chart-canvas-wrap { position: relative; width: 100%; }
 
         /* ===== 하단 고정바 ===== */
-        .wc-wizard .footer { position: static; background: #fff; border-top: 0.1rem solid var(--wc-border-light); margin-top: 3.6rem; }
+        /* 이제 .modal-box 안 flex 자식이라 항상 하단에 고정 노출된다(스크롤은 .modal-body만) */
+        .wc-wizard .footer { position: static; background: #fff; border-top: 0.1rem solid var(--wc-border-light); flex: none; }
         .wc-wizard .footer-in { max-width: 112rem; margin: 0 auto; padding: 1.4rem 3.2rem; display: flex; align-items: center; justify-content: space-between; }
+        /* 모달 안 footer는 페이지 기준 112rem 제한을 풀어서 다음/이전 버튼이 모달 오른쪽
+           끝까지 붙도록 한다 */
+        .wc-wizard .modal-box .footer-in { max-width: none; margin: 0; }
+        /* 이전/다음 버튼도 본문 CTA(2.4rem) 그대로 쓰니 모달 안에서 과하게 커 보여서 줄인다 */
+        .wc-wizard .footer .btn, .wc-wizard .footer .btn.primary { font-size: 1.6rem; padding: 1rem 2.2rem; }
         .wc-wizard .count-note { font-size: 1.3rem; color: var(--wc-text-sub); }
         .wc-wizard .btn-row { display: flex; gap: 0.8rem; }
         .wc-wizard .btn {
@@ -1374,6 +1478,7 @@ function initNavi() {
           .wc-wizard .gnb-in { align-items: flex-start; flex-direction: column; gap: 1.4rem; }
           .wc-wizard .genre-grid { grid-template-columns: repeat(2, 1fr); }
           .wc-wizard .sum-grid { grid-template-columns: 1fr; }
+          .wc-wizard .modal-box { width: 96vw; }
         }
 
         @media (max-width: 620px) {
@@ -1397,6 +1502,15 @@ function initNavi() {
 </div>
 
 <div class="page">
+  <div class="module-trigger-wrap">
+    <button type="button" class="module-filter-btn module-filter-btn-lg" id="openWizardModalBtn">공통모듈 선택하기</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="wizardModal" hidden>
+  <div class="modal-box wizard-modal-box">
+    <div class="modal-head"><span id="wizardModalTitle"></span><button type="button" class="modal-close" id="wizardModalClose" aria-label="닫기">&times;</button></div>
+    <div class="modal-body">
 
   <section class="screen" data-s="1">
     <h1 class="title">활동 장르를 선택해 주세요 <span class="req">*</span></h1>
@@ -1404,44 +1518,45 @@ function initNavi() {
     <div class="genre-grid" id="genreGrid"></div>
   </section>
 
-  <section class="screen" data-s="2">
-    <h1 class="title">기업에서 귀하가 하는 일을 선택해 주세요 <span class="req">*</span></h1>
-    <p class="desc">가장 대표적인 역할 하나가 주포지션이 되며, 보조포지션 배지를 누르면 주포지션을 바꿀 수 있습니다.</p>
-    <div id="catGenreFilterWrap">
-      <div class="filter-label">장르 <span class="filter-hint">선택하면 해당 장르의 항목만 보입니다.</span></div>
-      <div class="chips" id="catGenreFilter"></div>
+  <section class="screen screen-fill" data-s="2">
+    <div class="sticky-filters">
+      <div class="filter-label">공통모듈 <span class="filter-hint">선택하면 해당 공통모듈의 항목만 보입니다.</span></div>
+      <div class="chips" id="catModuleFilter"></div>
+      <div class="search-box" id="catSearchBox">
+        <input type="text" id="catSearch" placeholder="항목 이름으로 검색 (예: 배급사, 유통)">
+        <button type="button" class="clear" id="catSearchClear"></button>
+      </div>
     </div>
-    <div class="filter-label">공통모듈 <span class="filter-hint">선택하면 해당 공통모듈의 항목만 보입니다.</span></div>
-    <div class="chips" id="catModuleFilter"></div>
-    <div class="search-box" id="catSearchBox">
-      <input type="text" id="catSearch" placeholder="항목 이름으로 검색 (예: 배급사, 유통)">
-      <button type="button" class="clear" id="catSearchClear"></button>
+    <div class="split-layout">
+      <nav class="genre-side-nav" id="catGenreNav" aria-label="산업 분야 목차"></nav>
+      <div class="genre-main-panel">
+        <div class="card-area" id="catArea"></div>
+      </div>
     </div>
-    <div id="catArea"></div>
+    <div class="picked-bar" id="catPickedBar"></div>
   </section>
 
-  <section class="screen" data-s="3">
+  <section class="screen screen-fill" data-s="3">
     <h1 class="title">귀하가 찾고 있는 파트너 유형을 선택해 주세요. <span class="req">*</span></h1>
     <p class="desc">다른 장르의 기업도 선택할 수 있습니다.</p>
-    <div class="filter-label">장르 <span class="filter-hint">선택하면 해당 장르의 항목만 보입니다.</span></div>
-    <div class="chips" id="wishGenreFilter"></div>
-    <div class="filter-label">공통모듈 <span class="filter-hint">선택하면 해당 공통모듈의 항목만 보입니다.</span></div>
-    <div class="chips" id="wishModuleFilter"></div>
-    <div class="search-box" id="wishSearchBox">
-      <input type="text" id="wishSearch" placeholder="항목 이름으로 검색">
-      <button type="button" class="clear" id="wishSearchClear"></button>
+    <div class="sticky-filters">
+      <div class="filter-label">공통모듈 <span class="filter-hint">선택하면 해당 공통모듈의 항목만 보입니다.</span></div>
+      <div class="chips" id="wishModuleFilter"></div>
+      <div class="search-box" id="wishSearchBox">
+        <input type="text" id="wishSearch" placeholder="항목 이름으로 검색">
+        <button type="button" class="clear" id="wishSearchClear"></button>
+      </div>
     </div>
-    <div id="wishArea"></div>
+    <div class="split-layout">
+      <nav class="genre-side-nav" id="wishGenreNav" aria-label="산업 분야 목차"></nav>
+      <div class="genre-main-panel">
+        <div class="card-area" id="wishArea"></div>
+      </div>
+    </div>
+    <div class="picked-bar" id="wishPickedBar"></div>
   </section>
 
   <section class="screen" data-s="4">
-    <div class="done-msg">
-      <div class="ic"><span class="ic-check"></span></div>
-      <div>
-        <div class="t">기업정보가 등록되었습니다</div>
-        <div class="d">입력하신 정보로 파트너 추천이 시작됩니다.</div>
-      </div>
-    </div>
     <div class="sum-grid">
       <div class="sum-card">
         <div class="sum-head"><span>장르</span><span class="edit" data-go="1">수정</span></div>
@@ -1457,7 +1572,7 @@ function initNavi() {
       </div>
     </div>
     <div class="chart-card">
-      <div class="chart-head">장르별 포지션 분포</div>
+      <div class="chart-head">포지션 분포</div>
       <div class="chart-body">
         <div class="chart-legend">
           <span class="lg-item"><span class="lg-swatch main"></span>주포지션</span>
@@ -1469,14 +1584,15 @@ function initNavi() {
     </div>
   </section>
 
-</div>
-
-<div class="footer">
-  <div class="footer-in">
-    <div class="count-note" id="countNote"></div>
-    <div class="btn-row">
-      <button type="button" class="btn" id="btnBack" style="display:none">이전</button>
-      <button type="button" class="btn primary" id="btnNext">다음</button>
+    </div>
+    <div class="footer">
+      <div class="footer-in">
+        <div class="count-note" id="countNote"></div>
+        <div class="btn-row">
+          <button type="button" class="btn" id="btnBack" style="visibility:hidden">이전</button>
+          <button type="button" class="btn primary" id="btnNext">다음</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -1594,6 +1710,13 @@ const DATA = {
     "플랫폼·서비스": ["XR플랫폼"],
     "제조·상품화": ["실감형 전시·체험시설 구축업체"],
     "기타": ["기타"]
+  },
+  "스토리": {
+    "제작": ["웹소설 CP사(작가발굴·편집·연재관리·매니지먼트)"],
+    "유통·배급": ["오디오북·오디오드라마 제작/유통사"],
+    "플랫폼·서비스": ["웹소설 플랫폼/퍼블리셔"],
+    "중개·에이전트": ["문학저작권 에이전시(해외판권 수출입)", "웹소설·웹툰 2차 저작물(매체전환) 에이전트"],
+    "기타": ["기타"]
   }
 };
 
@@ -1651,18 +1774,35 @@ function render() {
     el.classList.toggle("active", el.dataset.s === String(st.step));
   });
   drawStepper();
+  // 모달 상단은 전 단계에 걸쳐 "공통모듈 선택"이라는 고정 문구를 달고 있었는데, 각
+  // 화면 안에 이미 그 단계 전용 질문(<h1 class="title">)이 있어 서로 안 맞고 겹쳤다.
+  // 그 자리를 STEP_LABELS(스테퍼가 쓰는 것과 같은 짧은 단계명)로 대체한다.
+  document.getElementById("wizardModalTitle").textContent = STEP_LABELS[st.step];
 
-  document.getElementById("btnBack").style.display = (st.step > 1 && st.step < 4) ? "inline-block" : "none";
+  // display:none 대신 visibility로 숨긴다 - 자리(공간)는 항상 차지해서 "다음" 버튼
+  // 위치가 스텝마다 좌우로 밀리지 않고 항상 같은 자리에 있게 한다.
+  document.getElementById("btnBack").style.visibility = (st.step > 1 && st.step < 4) ? "visible" : "hidden";
   const nextBtn = document.getElementById("btnNext");
   nextBtn.textContent = st.step === 3 ? "등록 완료" : (st.step === 4 ? "처음부터 다시" : "다음");
   nextBtn.disabled = (st.step === 1 && !st.genres.size) || (st.step === 2 && !st.cats.size);
 
   if (st.step === 1) drawGenreStep();
-  if (st.step === 2) drawCatStep();
+  if (st.step === 2) { drawCatStep(); scrollToFirstSelectedGenre(); }
   if (st.step === 3) drawWishStep();
   if (st.step === 4) drawSummaryStep();
 
   updateCountNote();
+}
+
+/* 2단계 진입 시(다음/이전/수정 이동 - 즉 render()를 통한 진짜 "화면 전환"일 때만),
+   1단계에서 고른 장르 중 목록 순서상 첫 번째로 자동 스크롤한다. 픽 토글 등으로
+   drawCatStep()만 다시 불리는 매 리렌더마다는 부르지 않아서(render() 안에서만 호출)
+   사용자가 보던 위치가 항목 체크할 때마다 튀지 않는다. */
+function scrollToFirstSelectedGenre() {
+  const target = GENRES.find(g => st.genres.has(g));
+  if (!target) return;
+  const el = document.querySelector('#catArea .group[data-genre="' + CSS.escape(target) + '"]');
+  if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 function drawStepper() {
@@ -1832,10 +1972,17 @@ function escAttr(s) {
     .replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
-function cardHtml(card, pickedSet, isFull, allowMainToggle, otherText, otherOpen) {
+/* 장르 카드 하나 - 이제 아코디언으로 접지 않고 항상 전체를 보여주며, 그 안에서 항목을
+   공통모듈(단계)별로 소그룹(stage-block)으로 묶는다. 항목 하나하나의 동작(선택 토글,
+   주/보조 배지, 기타 입력, dim 참고표시)은 이전과 완전히 동일 - 어디에 담기느냐만 바뀌었다. */
+// 공통모듈(단계)별 소그룹 헤더는 뺐다 - 상단 "공통모듈" 필터 칩에 이미 단계별 선택 개수가
+// 나오고 있어서 카드 안에서 또 나눠 보여줄 필요가 없다는 판단. 항목은 전부 한 그리드에
+// 같이 놓고, 어느 단계인지만 항목 자체에 작은 태그로 표시한다.
+function cardHtml(card, pickedSet, allowMainToggle, otherText, otherOpen) {
   const picked = card.items.filter(o => pickedSet.has(o.k)).length;
   const badge = picked ? '<span class="g-badge">' + picked + '</span>' : "";
-  const body = card.items.map(o => {
+
+  const tiles = card.items.map(o => {
     const isOn = pickedSet.has(o.k);
     const isOtherInput = o.stage === "기타" && o.item === "기타";
     const isOtherOpen = isOtherInput && !!(otherOpen && otherOpen[card.genre]);
@@ -1852,54 +1999,110 @@ function cardHtml(card, pickedSet, isFull, allowMainToggle, otherText, otherOpen
       ? '<input type="text" class="opt-other-input" data-k="' + o.k +
         '" placeholder="직접 입력해 주세요" value="' + escAttr(otherVal) + '">'
       : labelText;
-    // 기타 항목은 라벨이 이미 "기타"라서 하단 단계뱃지에 "기타"를 또 보여줄 필요가 없다.
+    // 기타 항목은 라벨이 이미 "기타"라서 단계뱃지에 "기타"를 또 보여줄 필요가 없다.
     const subHtml = isOtherInput ? "" : '<span class="sub">' + o.stage + '</span>';
     return '<div class="opt' + (isOn ? " on" : "") + (isOtherOpen ? " other-open" : "") + (isDim ? " dim" : "") + '" data-k="' + o.k + '">' +
       '<div class="box"></div><div class="label' + (showOther ? " has-input" : "") + '">' + labelHtml + '</div>' +
       '<div class="opt-meta">' + subHtml + extra + '</div>' +
     '</div>';
   }).join("");
-  return '<div class="group' + (isFull ? " full" : "") + '"><div class="group-title">' + card.genre + badge + '</div>' +
-    '<div class="group-body">' + body + '</div></div>';
+
+  return '<section class="group" id="genre-section-' + escAttr(card.genre) + '" data-genre="' + escAttr(card.genre) + '">' +
+    '<div class="group-title"><span class="group-title-text">' + card.genre + badge + '</span></div>' +
+    '<div class="group-body">' + tiles + '</div>' +
+  '</section>';
 }
 
-/* 카드 목록을 실제 DOM에 배치 - 카드 1개면 전체폭, 여러 개면 마쏘너리(짧은 열 우선) 배치 */
+/* 카드 목록을 실제 DOM에 배치 - 이제 장르 전부를 세로로 쭉 쌓아서 한 번에 보여준다
+   (아코디언 접기 없음). 왼쪽 장르 목차에서 어디로 스크롤할지 찾을 수 있도록 각 카드에
+   id="genre-section-장르명"을 붙여둔다. */
 function renderCards(container, cards, pickedSet, emptyMsg, allowMainToggle, otherText, otherOpen) {
-  container.classList.remove("single", "masonry");
   if (!cards.length) {
     container.innerHTML = '<div class="empty">' + emptyMsg + '</div>';
     return;
   }
-  if (cards.length === 1) {
-    container.classList.add("single");
-    container.innerHTML = cardHtml(cards[0], pickedSet, true, allowMainToggle, otherText, otherOpen);
+  container.innerHTML = cards.map(c => cardHtml(c, pickedSet, allowMainToggle, otherText, otherOpen)).join("");
+}
+
+/* ===== 왼쪽 장르 목차 - 필터가 아니라 스크롤 이동 + 지금 위치 하이라이트 전용 ===== */
+// 색칠은 "지금 스크롤로 보고 있는 위치"가 아니라 "그 장르에 고른 항목이 하나라도 있는지"를
+// 그대로 보여준다 - 매번 다시 그릴 때 pickedSet 기준으로 다시 계산하므로 늘 정확하다.
+// preSelectedGenres: 1단계(활동 장르)에서 이미 골라둔 장르 - 이 단계에서 항목을 아직 하나도
+// 안 골랐어도 앞에서 선택한 장르는 처음부터 색칠되어 있어야 하므로 함께 OR 계산한다.
+function renderGenreSideNav(container, genres, pickedSet, preSelectedGenres) {
+  container.innerHTML = genres.map(g => {
+    let count = 0;
+    pickedSet.forEach(k => { if (parseKey(k)[0] === g) count++; });
+    const hasPicks = count > 0 || (preSelectedGenres && preSelectedGenres.has(g));
+    return '<button type="button" class="genre-nav-item' + (hasPicks ? " active" : "") + '" data-genre="' + escAttr(g) + '">' +
+      '<span>' + g + '</span><span class="genre-nav-count' + (hasPicks ? " has" : "") + '">' + count + '</span>' +
+    '</button>';
+  }).join("");
+}
+
+/* 왼쪽 목차 클릭 → 해당 장르 섹션으로 스크롤.
+   색칠(active)은 renderGenreSideNav가 매번 pickedSet 기준으로 다시 계산하는 값이라(그
+   장르에 고른 게 있는지), 여기서는 클릭 = 스크롤 이동만 하면 된다. 스크롤 위치를 추적해서
+   색을 바꾸는 로직(IntersectionObserver)은 필요 없어져서 걷어냈다. */
+function wireGenreSideNav(navEl, cardAreaEl) {
+  navEl.onclick = e => {
+    const btn = e.target.closest(".genre-nav-item");
+    if (!btn) return;
+    const target = cardAreaEl.querySelector('.group[data-genre="' + CSS.escape(btn.dataset.genre) + '"]');
+    if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+}
+
+/* ===== 하단 고정 "선택한 항목" 바 - 장르별로 묶어서 보여준다 ===== */
+function renderPickedBar(container, pickedSet, which, redraw) {
+  const byGenre = {};
+  const order = [];
+  pickedSet.forEach(k => {
+    const p = parseKey(k);
+    if (!byGenre[p[0]]) { byGenre[p[0]] = []; order.push(p[0]); }
+    byGenre[p[0]].push({ k: k, item: p[1] });
+  });
+  if (!order.length) {
+    container.innerHTML = "";
     return;
   }
-
-  // 우선 화면에 순서대로 깔아서 각 카드의 실제 높이를 측정한다
-  container.innerHTML = cards.map(c => cardHtml(c, pickedSet, false, allowMainToggle, otherText, otherOpen)).join("");
-  const nodes = Array.from(container.children);
-  const w = window.innerWidth;
-  const cols = w <= 620 ? 1 : (w <= 900 ? 2 : 3);
-
-  if (cols === 1) return; // 이미 세로 1열이 자연스러운 폭 - 그대로 둠
-
-  const colBoxes = [];
-  for (let i = 0; i < cols; i++) {
-    const box = document.createElement("div");
-    box.className = "masonry-col";
-    colBoxes.push(box);
-  }
-  const heights = new Array(cols).fill(0);
-  nodes.forEach(node => {
-    let idx = 0;
-    for (let i = 1; i < cols; i++) { if (heights[i] < heights[idx]) idx = i; }
-    colBoxes[idx].appendChild(node); // 기존 노드를 그대로 옮기므로 이벤트 핸들러는 나중에 다시 건다
-    heights[idx] += node.offsetHeight + 16;
+  const groups = order.map(g => {
+    // 장르 하나에 항목이 많이 쌓이면 칩을 끝없이 늘어놓지 않고 2개까지만 보여준 뒤
+    // 나머지는 "외N건"으로 요약한다(지울 수 없는 요약이라 버튼 없이 텍스트만) - 3개까지
+    // 보여줬을 때 한 줄에 안 들어가고 줄바꿈이 일어나서 2개로 줄였다.
+    const items = byGenre[g];
+    const shown = items.slice(0, 2);
+    const restCount = items.length - shown.length;
+    const chips = shown.map(o =>
+      '<span class="picked-chip">' + summaryLabel(o.item) +
+        '<button type="button" data-k="' + o.k + '" aria-label="' + summaryLabel(o.item) + ' 선택 해제">×</button>' +
+      '</span>'
+    ).join("") + (restCount > 0 ? '<span class="picked-chip-more">외 ' + restCount + '건</span>' : "");
+    return '<div class="picked-genre-group"><span class="picked-genre-label">' + g + '</span><div class="picked-chip-row">' + chips + '</div></div>';
+  }).join("");
+  container.innerHTML = '<p class="picked-bar-title">선택한 항목 (' + pickedSet.size + '개)</p><div class="picked-genre-groups">' + groups + '</div>';
+  container.querySelectorAll("button[data-k]").forEach(btn => {
+    btn.onclick = () => {
+      pickedSet.delete(btn.dataset.k);
+      if (which === "cat") syncGenreFromPicks(parseKey(btn.dataset.k)[0]);
+      redraw();
+    };
   });
-  container.innerHTML = "";
-  container.classList.add("masonry");
-  colBoxes.forEach(box => container.appendChild(box));
+}
+
+/* 1·2단계만 서로 연동한다(장르 타일 ↔ 하는 일 항목). 3단계(희망 파트너)는 "다른
+   장르의 기업도 선택할 수 있습니다"라는 설명대로 원래 다른 장르를 자유롭게 고르는
+   독립된 질문이라 여기 끼워 넣지 않는다 - 끼워 넣으면 1·2단계에서 이미 활성화된
+   장르의 항목을 3단계에서 체크했다 취소해도(그 장르가 1·2단계 덕에 여전히 "선택된
+   장르"로 남아 있어서) 취소가 먹히지 않는 것처럼 보이는 문제가 있었다.
+   그래서 2단계(하는 일) 항목을 고르거나 뺄 때만 이 함수를 불러 st.genres를 맞춘다 -
+   장르에 하는 일 항목이 하나라도 남아 있으면 유지(1단계 타일 자동 켜짐), 마지막
+   항목까지 해제되면 빠진다(타일도 자동 꺼짐). 1단계에서 타일만 눌러두고 2단계
+   항목을 하나도 안 고른 장르는 이 함수가 호출되지 않으므로 그대로 유지된다. */
+function syncGenreFromPicks(g) {
+  let hasAny = false;
+  st.cats.forEach(k => { if (parseKey(k)[0] === g) hasAny = true; });
+  if (hasAny) st.genres.add(g); else st.genres.delete(g);
 }
 
 function putWishGenreFirst(genre) {
@@ -1929,8 +2132,9 @@ function wireOptClicks(container, pickedSet, otherOpen, onChange) {
       for (const g in otherOpen) delete otherOpen[g];
       const wasSelected = pickedSet.has(k);
       wasSelected ? pickedSet.delete(k) : pickedSet.add(k);
-      if (!wasSelected && pickedSet === st.cats) {
-        putWishGenreFirst(p[0]);
+      if (pickedSet === st.cats) {
+        if (!wasSelected) putWishGenreFirst(p[0]);
+        syncGenreFromPicks(p[0]);
       }
       onChange();
     };
@@ -1962,7 +2166,10 @@ function wireOtherInputs(container, otherText, otherOpen, pickedSet, customStore
       pickedSet.add(key(genre, value));
       otherText[genre] = "";
       delete otherOpen[genre];
-      if (pickedSet === st.cats) putWishGenreFirst(genre);
+      if (pickedSet === st.cats) {
+        putWishGenreFirst(genre);
+        syncGenreFromPicks(genre);
+      }
       if (onCommit) onCommit();
     };
   });
@@ -2008,23 +2215,8 @@ function catPositionLabel(k, clickable) {
 
 /* ===== STEP2: 회사카테고리 ===== */
 function drawCatStep() {
-  drawChipRow(document.getElementById("catGenreFilter"), GENRES, st.catGenreFilter, drawCatStep, null, true, false, false,
-    (g, isOn) => {
-      if (isOn) {
-        if (!st.genres.has(g)) st.filterAddedGenres.add(g);
-        st.genres.add(g);
-        st.wishGenreFilter.add(g);
-      } else {
-        if (st.filterAddedGenres.has(g)) {
-          st.filterAddedGenres.delete(g);
-          st.genres.delete(g);
-          st.wishGenreFilter.delete(g);
-          [...st.cats].forEach(k => { if (parseKey(k)[0] === g) st.cats.delete(k); });
-        }
-      }
-    });
-
-  const genreScope = st.catGenreFilter.size ? [...st.catGenreFilter] : GENRES;
+  // 이제 장르를 필터링하지 않고 항상 전체를 보여준다(왼쪽 목차가 그 대신 내비게이션 역할).
+  const genreScope = GENRES;
   drawChipRow(document.getElementById("catModuleFilter"), moduleOptionsFor(genreScope, true), st.catModuleFilter, drawCatStep,
     stage => moduleBadgeInfo(st.cats, genreScope, stage));
 
@@ -2032,6 +2224,17 @@ function drawCatStep() {
   const cards = collectCards(genreScope, st.catModuleFilter, q, null, false, st.catCustomItems);
   const el = document.getElementById("catArea");
   renderCards(el, cards, st.cats, q ? '"' + q + '"에 해당하는 항목이 없습니다.' : '해당하는 항목이 없습니다.', true, st.catOtherText, st.catOtherOpen);
+
+  const navEl = document.getElementById("catGenreNav");
+  renderGenreSideNav(navEl, genreScope, st.cats, st.genres);
+  wireGenreSideNav(navEl, el);
+
+  renderPickedBar(document.getElementById("catPickedBar"), st.cats, "cat", () => {
+    drawCatStep();
+    document.getElementById("btnNext").disabled = !st.cats.size;
+    updateCountNote();
+  });
+
   wireOptClicks(el, st.cats, st.catOtherOpen, () => {
     drawCatStep();
     document.getElementById("btnNext").disabled = !st.cats.size;
@@ -2043,10 +2246,7 @@ function drawCatStep() {
 
 /* ===== STEP3: 희망비즈니스 ===== */
 function drawWishStep() {
-  drawChipRow(document.getElementById("wishGenreFilter"), GENRES, st.wishGenreFilter, drawWishStep,
-    g => genreBadgeInfo(st.wishes, g), true, true, true);
-
-  const genreScope = st.wishGenreFilter.size ? [...st.wishGenreFilter] : GENRES;
+  const genreScope = GENRES;
   drawChipRow(document.getElementById("wishModuleFilter"), moduleOptionsFor(genreScope, true), st.wishModuleFilter, drawWishStep,
     stage => moduleBadgeInfo(st.wishes, genreScope, stage, true), false, false);
 
@@ -2054,6 +2254,16 @@ function drawWishStep() {
   const cards = collectCards(genreScope, st.wishModuleFilter, q, st.cats, false, [st.catCustomItems, st.wishCustomItems]);
   const el = document.getElementById("wishArea");
   renderCards(el, cards, st.wishes, q ? '"' + q + '"에 해당하는 항목이 없습니다.' : '선택할 수 있는 파트너 유형이 없습니다.', false, st.wishOtherText, st.wishOtherOpen);
+
+  const navEl = document.getElementById("wishGenreNav");
+  renderGenreSideNav(navEl, genreScope, st.wishes);
+  wireGenreSideNav(navEl, el);
+
+  renderPickedBar(document.getElementById("wishPickedBar"), st.wishes, "wish", () => {
+    drawWishStep();
+    updateCountNote();
+  });
+
   wireOptClicks(el, st.wishes, st.wishOtherOpen, () => {
     drawWishStep();
     updateCountNote();
@@ -2164,7 +2374,8 @@ function drawGenreChart() {
   canvas.style.display = "";
   canvas.onmouseleave = clearChartHighlight;
   // 장르 하나당 막대 1개 - 장르 수(최대 8개)에 비례해 캔버스 높이를 잡는다.
-  wrap.style.height = Math.max(120, data.length * 42) + "px";
+  // 정보성이 낮은 보조 자료라 존재감을 줄이려고 막대 1개당 높이를 살짝 낮췄다(42→34).
+  wrap.style.height = Math.max(100, data.length * 34) + "px";
 
   // 분모(denom, 그 장르의 DATA 전체 항목수)가 0인 경우(실제로는 발생하지 않음)는
   // 0으로 나누기 방지를 위해 0%로 처리한다. 같은 항목을 우리 회사와 희망 파트너 양쪽에
@@ -2366,6 +2577,11 @@ document.getElementById("btnBack").onclick = () => { st.step--; render(); };
 document.querySelectorAll(".edit").forEach(el => {
   el.onclick = () => { st.step = +el.dataset.go; render(); };
 });
+
+// "공통모듈" 버튼을 누르면 위저드 전체(1~4단계)가 모달로 열린다.
+document.getElementById("openWizardModalBtn").onclick = () => { document.getElementById("wizardModal").hidden = false; };
+document.getElementById("wizardModalClose").onclick = () => { document.getElementById("wizardModal").hidden = true; };
+document.getElementById("wizardModal").onclick = e => { if (e.target.id === "wizardModal") document.getElementById("wizardModal").hidden = true; };
 
 wireSearchBox("catSearchBox", "catSearch", "catSearchClear", v => { st.catQ = v; drawCatStep(); });
 wireSearchBox("wishSearchBox", "wishSearch", "wishSearchClear", v => { st.wishQ = v; drawWishStep(); });
