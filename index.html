@@ -1145,6 +1145,9 @@ function initNavi() {
           시각적으로만 숨겼다 - JS가 #stepper에 렌더링하므로 DOM에서 제거하지 않는다.
         -->
         <style>
+        /* 모달 열려있는 동안 뒤쪽 페이지 스크롤 잠금 - body는 .wc-wizard 스코프 밖이라
+           별도로 둔다. */
+        body.wc-modal-open { overflow: hidden; }
         .wc-wizard {
           --wc-text: #1E2124;
           --wc-text-sub: #464C53;
@@ -1223,7 +1226,7 @@ function initNavi() {
         /* 장르 블록을 한 줄에 3개씩. 스크롤은 제목은 그대로 두고 장르 블록 영역에만 걸어서
            4번째 장르(2번째 줄)부터는 제목이 안 밀리고 이 영역만 스크롤되게 한다. 높이는
            칩이 한 줄에 안 들어가 두 줄로 접혀도(외N건 배지까지) 1줄 분량이 다 보이게 잡았다. */
-        .wc-wizard .picked-genre-groups { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem 1.6rem; max-height: 9.5rem; overflow-y: auto; }
+        .wc-wizard .picked-genre-groups { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem 1.6rem; max-height: 9.5rem; overflow-y: auto; overscroll-behavior: contain; }
         .wc-wizard .picked-genre-group { display: flex; align-items: flex-start; gap: 1rem; min-width: 0; }
         .wc-wizard .picked-genre-label { flex: none; font-size: 1.1rem; font-weight: 700; color: var(--wc-purple-dark); background: var(--wc-purple-light-bg); border-radius: 0.4rem; padding: 0.4rem 0.8rem; }
         .wc-wizard .picked-chip-row { display: flex; flex-wrap: wrap; gap: 0.6rem; }
@@ -1252,10 +1255,18 @@ function initNavi() {
            커졌다 작아졌다 하지 않게 한다 - 짧은 스텝은 아래쪽에 여백이 남고, 긴 스텝은
            .modal-body 안에서만 스크롤된다 */
         .wc-wizard .modal-box { background: #fff; width: 90vw; max-width: 140rem; height: 88vh; border-radius: 1.2rem; box-shadow: 0 0.8rem 3rem rgba(0,0,0,0.18); display: flex; flex-direction: column; overflow: hidden; }
-        .wc-wizard .modal-head { display: flex; align-items: center; justify-content: space-between; padding: 2rem 2.4rem; border-bottom: 0.1rem solid var(--wc-border-light); font-size: 1.8rem; font-weight: 700; color: var(--wc-text); }
+        .wc-wizard .modal-head { display: flex; align-items: baseline; justify-content: space-between; padding: 2rem 2.4rem; border-bottom: 0.1rem solid var(--wc-border-light); font-size: 1.8rem; font-weight: 700; color: var(--wc-text); }
+        /* 제목 옆에 보조 설명을 작게 붙인다 - 예전엔 본문 h1 아래 별도 문단이었는데,
+           모달 상단으로 제목을 옮기면서 설명도 같이 옮겨 제목 오른쪽에 작게 둔다. */
+        .wc-wizard .modal-head-title-group { display: flex; align-items: baseline; gap: 1.2rem; flex: 1; min-width: 0; }
+        .wc-wizard .modal-head-desc { font-size: 1.3rem; font-weight: 400; color: var(--wc-text-sub); }
         .wc-wizard .modal-close { border: none; background: transparent; font-size: 2.4rem; line-height: 1; color: var(--wc-text-sub); cursor: pointer; padding: 0.4rem; }
         .wc-wizard .modal-close:hover { color: var(--wc-purple); }
-        .wc-wizard .modal-body { padding: 2rem 2.4rem; overflow-y: auto; flex: 1; min-height: 0; display: flex; flex-direction: column; }
+        /* overscroll-behavior:contain - 이 안에서 스크롤이 끝(맨위/맨아래)에 닿아도
+           그 다음 스크롤이 뒤에 있는 페이지 본문으로 새어나가지 않게 막는다("모달인데
+           뒤쪽이 스크롤된다" 버그의 원인). body 스크롤 자체도 모달 열려있는 동안
+           JS에서 잠그지만, 안전하게 이중으로 막아둔다. */
+        .wc-wizard .modal-body { padding: 2rem 2.4rem; overflow-y: auto; overscroll-behavior: contain; flex: 1; min-height: 0; display: flex; flex-direction: column; }
         .wc-wizard .modal-head, .wc-wizard .modal-foot { flex: none; }
         .wc-wizard .modal-foot { padding: 1.6rem 2.4rem; border-top: 0.1rem solid var(--wc-border-light); display: flex; justify-content: flex-end; }
         /* 모달 안 "선택완료"는 본문 CTA버튼(.btn.primary, 2.4rem)보다 작아야 모달 크기에
@@ -1290,7 +1301,7 @@ function initNavi() {
            나눈 고정 높이 2단 패널이다. sticky 없이 사이드바 자체가 항상 자기 자리에 그대로
            있으니 "따라오네 마네" 할 게 없다. */
         .wc-wizard .split-layout { display: flex; align-items: stretch; gap: 0; border: 0.1rem solid var(--wc-border-light); border-radius: 1.2rem; overflow: hidden; background: #fff; flex: 1; min-height: 30rem; }
-        .wc-wizard .genre-side-nav { width: 20rem; flex: none; background: var(--wc-box-bg); border-right: 0.1rem solid var(--wc-border-light); padding: 1.2rem 0; overflow-y: auto; }
+        .wc-wizard .genre-side-nav { width: 20rem; flex: none; background: var(--wc-box-bg); border-right: 0.1rem solid var(--wc-border-light); padding: 1.2rem 0; overflow-y: auto; overscroll-behavior: contain; }
         /* 실제 사이트 common.css의 button 리셋(appearance/line-height 등)이 새어 들어올
            여지를 없애려고 관련 속성을 전부 명시적으로 재선언한다(.btn 때와 같은 처방). */
         .wc-wizard .genre-nav-item {
@@ -1307,18 +1318,15 @@ function initNavi() {
         .wc-wizard .genre-nav-count.has { background: var(--wc-purple); }
         .wc-wizard .genre-nav-item.active .genre-nav-count { background: #fff; color: var(--wc-purple); }
 
-        /* 본문도 자기만의 스크롤 영역 - 장르 목차 클릭 시 이 안에서만 스크롤된다 */
-        .wc-wizard .genre-main-panel { flex: 1; min-width: 0; padding: 2rem 2.2rem; overflow-y: auto; }
+        /* 본문도 자기만의 스크롤 영역 */
+        .wc-wizard .genre-main-panel { flex: 1; min-width: 0; padding: 2rem 2.2rem; overflow-y: auto; overscroll-behavior: contain; }
 
         .wc-wizard .card-area { display: flex; flex-direction: column; gap: 2.4rem; }
 
-        /* scrollIntoView(block:"start")가 카드를 스크롤 영역 맨 위(y=0)에 붙이는데, 그
-           자리는 sticky 필터바가 덮고 있어서 스크롤은 되어도 카드 제목이 가려 안 보인다.
-           필터바 높이만큼 여유를 줘서 그 아래에서 멈추게 한다. */
-        /* 이제 스크롤이 .genre-main-panel 안에서만 일어나고 그 위를 덮는 sticky 요소가
-           없어서, 예전처럼 필터바 높이만큼 여유를 크게 둘 필요가 없다 - 살짝만 띄운다. */
         .wc-wizard .group { scroll-margin-top: 1rem; padding-top: 0.4rem; border-top: 0.1rem solid var(--wc-border-light); }
         .wc-wizard .group:first-child { border-top: none; padding-top: 0; }
+        /* 왼쪽 목차에서 장르를 클릭하면 그 장르들만 남기고 나머지 .group은 이 클래스로 숨긴다. */
+        .wc-wizard .group.filtered-out { display: none; }
         .wc-wizard .group-title {
           font-size: 1.7rem; font-weight: 700; color: var(--wc-purple-dark); letter-spacing: 0.02em;
           padding: 0.4rem 0 1.4rem; display: flex; align-items: center;
@@ -1383,9 +1391,11 @@ function initNavi() {
         .wc-wizard .opt.dim:hover { border-color: var(--wc-border); }
         .wc-wizard .opt.dim .box { border-color: var(--wc-border-light); }
         .wc-wizard .opt.dim .label { color: var(--wc-text); }
+        /* 이전엔 배경색이 .opt.dim 카드 배경(--wc-box-bg)과 똑같아서 태그가 카드에
+           묻혀 거의 안 보였다 - 흰 배경+테두리로 대비를 주고 글자도 키웠다. */
         .wc-wizard .own-tag {
-          display: inline-block; font-size: 0.95rem; font-weight: 700; color: var(--wc-text-sub); background: var(--wc-box-bg);
-          padding: 0.15rem 0.5rem; border-radius: 0.4rem; white-space: nowrap;
+          display: inline-block; font-size: 1.2rem; font-weight: 700; color: var(--wc-text-sub); background: #fff;
+          border: 0.1rem solid var(--wc-border-light); padding: 0.2rem 0.7rem; border-radius: 0.4rem; white-space: nowrap;
         }
         .wc-wizard .pos-badge { display: inline-block; font-size: 0.9rem; font-weight: 700; padding: 0.15rem 0.5rem; border-radius: 0.4rem; white-space: nowrap; }
         .wc-wizard .pos-badge.main { background: var(--wc-purple); color: #fff; }
@@ -1509,7 +1519,10 @@ function initNavi() {
 
 <div class="modal-overlay" id="wizardModal" hidden>
   <div class="modal-box wizard-modal-box">
-    <div class="modal-head"><span id="wizardModalTitle"></span><button type="button" class="modal-close" id="wizardModalClose" aria-label="닫기">&times;</button></div>
+    <div class="modal-head">
+      <span class="modal-head-title-group"><span id="wizardModalTitle"></span><span id="wizardModalDesc" class="modal-head-desc" hidden></span></span>
+      <button type="button" class="modal-close" id="wizardModalClose" aria-label="닫기">&times;</button>
+    </div>
     <div class="modal-body">
 
   <section class="screen" data-s="1">
@@ -1537,8 +1550,6 @@ function initNavi() {
   </section>
 
   <section class="screen screen-fill" data-s="3">
-    <h1 class="title">귀하가 찾고 있는 파트너 유형을 선택해 주세요. <span class="req">*</span></h1>
-    <p class="desc">다른 장르의 기업도 선택할 수 있습니다.</p>
     <div class="sticky-filters">
       <div class="filter-label">공통모듈 <span class="filter-hint">선택하면 해당 공통모듈의 항목만 보입니다.</span></div>
       <div class="chips" id="wishModuleFilter"></div>
@@ -1722,6 +1733,12 @@ const DATA = {
 
 const GENRES = Object.keys(DATA);
 const STEP_LABELS = ["", "활동 장르", "내가 하는 일", "희망 파트너", "완료"];
+// 모달 상단 문구는 스테퍼의 짧은 단계명(STEP_LABELS)과 달리, 2·3단계는 본문에 있던
+// 질문 문장을 그대로 옮겨와 안내 역할을 하도록 별도로 둔다.
+const MODAL_TITLES = ["", "활동 장르", "귀하가 하는 일을 선택해주세요", "귀하가 찾고 있는 파트너 유형을 선택해주세요", "완료"];
+// 원래 본문 h1 아래 있던 보조 설명 문단 - 2·3단계는 제목과 함께 모달 상단으로 옮기고
+// 본문에서는 뺐다. 옮기지 않은 1단계는 본문에 그대로 있으니 여기선 빈 문자열.
+const MODAL_DESCS = ["", "", "가장 대표적인 역할 하나가 주포지션이 되며, 보조포지션 배지를 누르면 주포지션을 바꿀 수 있습니다.", "다른 장르의 기업도 선택할 수 있습니다.", ""];
 const SEP = "||";
 
 /* ===== 상태 ===== */
@@ -1743,7 +1760,11 @@ const st = {
   wishOtherOpen: {},
   catCustomItems: {},
   wishCustomItems: {},
-  mainKey: null
+  mainKey: null,
+  // 왼쪽 장르 목차를 클릭한 장르들의 모음(여러 개 동시 선택 가능) - 비어 있으면
+  // 필터 없음(전체 표시), 하나 이상 있으면 그 장르들만 보여준다.
+  catShownGenres: new Set(),
+  wishShownGenres: new Set()
 };
 
 const key = (g, item) => g + SEP + item;
@@ -1776,8 +1797,12 @@ function render() {
   drawStepper();
   // 모달 상단은 전 단계에 걸쳐 "공통모듈 선택"이라는 고정 문구를 달고 있었는데, 각
   // 화면 안에 이미 그 단계 전용 질문(<h1 class="title">)이 있어 서로 안 맞고 겹쳤다.
-  // 그 자리를 STEP_LABELS(스테퍼가 쓰는 것과 같은 짧은 단계명)로 대체한다.
-  document.getElementById("wizardModalTitle").textContent = STEP_LABELS[st.step];
+  // 그 자리를 단계별 안내 문구(MODAL_TITLES)로 대체한다.
+  document.getElementById("wizardModalTitle").textContent = MODAL_TITLES[st.step];
+  const descEl = document.getElementById("wizardModalDesc");
+  const descText = MODAL_DESCS[st.step];
+  descEl.textContent = descText;
+  descEl.hidden = !descText;
 
   // display:none 대신 visibility로 숨긴다 - 자리(공간)는 항상 차지해서 "다음" 버튼
   // 위치가 스텝마다 좌우로 밀리지 않고 항상 같은 자리에 있게 한다.
@@ -1788,7 +1813,9 @@ function render() {
 
   if (st.step === 1) drawGenreStep();
   if (st.step === 2) { drawCatStep(); scrollToFirstSelectedGenre(); }
-  if (st.step === 3) drawWishStep();
+  // 3단계 진입 시(화면 전환 시점에만) 2단계에서 필터링해 보고 있던 장르를 그대로
+  // 이어받는다 - 방금 "방송"만 보고 있었으면 3단계도 "방송"만 필터된 채로 시작한다.
+  if (st.step === 3) { st.wishShownGenres = new Set(st.catShownGenres); drawWishStep(); }
   if (st.step === 4) drawSummaryStep();
 
   updateCountNote();
@@ -2024,33 +2051,63 @@ function renderCards(container, cards, pickedSet, emptyMsg, allowMainToggle, oth
   container.innerHTML = cards.map(c => cardHtml(c, pickedSet, allowMainToggle, otherText, otherOpen)).join("");
 }
 
-/* ===== 왼쪽 장르 목차 - 필터가 아니라 스크롤 이동 + 지금 위치 하이라이트 전용 ===== */
-// 색칠은 "지금 스크롤로 보고 있는 위치"가 아니라 "그 장르에 고른 항목이 하나라도 있는지"를
-// 그대로 보여준다 - 매번 다시 그릴 때 pickedSet 기준으로 다시 계산하므로 늘 정확하다.
+/* ===== 왼쪽 장르 목차 - 클릭한 장르들만 오른쪽에 남기고 나머지는 숨기는 다중선택 필터 ===== */
+// 색칠(보라색 채움)은 두 가지 중 하나만 만족해도 켜진다: ① 그 장르에 실제로 고른 항목이
+// 있거나, ② 지금 왼쪽에서 클릭해서 "보여주기"로 선택해둔 장르인 경우. 클릭 자체가
+// 색칠의 트리거가 되므로 "클릭하면 색칠된다"가 그대로 성립한다.
 // preSelectedGenres: 1단계(활동 장르)에서 이미 골라둔 장르 - 이 단계에서 항목을 아직 하나도
 // 안 골랐어도 앞에서 선택한 장르는 처음부터 색칠되어 있어야 하므로 함께 OR 계산한다.
-function renderGenreSideNav(container, genres, pickedSet, preSelectedGenres) {
+// shownGenres: 지금 왼쪽에서 클릭해 켜둔 장르들의 Set(여러 개 동시 가능) - 없으면 전체 표시.
+function renderGenreSideNav(container, genres, pickedSet, preSelectedGenres, shownGenres) {
   container.innerHTML = genres.map(g => {
     let count = 0;
     pickedSet.forEach(k => { if (parseKey(k)[0] === g) count++; });
-    const hasPicks = count > 0 || (preSelectedGenres && preSelectedGenres.has(g));
-    return '<button type="button" class="genre-nav-item' + (hasPicks ? " active" : "") + '" data-genre="' + escAttr(g) + '">' +
+    const isShown = !!(shownGenres && shownGenres.has(g));
+    const hasPicks = count > 0 || (preSelectedGenres && preSelectedGenres.has(g)) || isShown;
+    const cls = "genre-nav-item" + (hasPicks ? " active" : "");
+    return '<button type="button" class="' + cls + '" data-genre="' + escAttr(g) + '">' +
       '<span>' + g + '</span><span class="genre-nav-count' + (hasPicks ? " has" : "") + '">' + count + '</span>' +
     '</button>';
   }).join("");
 }
 
-/* 왼쪽 목차 클릭 → 해당 장르 섹션으로 스크롤.
-   색칠(active)은 renderGenreSideNav가 매번 pickedSet 기준으로 다시 계산하는 값이라(그
-   장르에 고른 게 있는지), 여기서는 클릭 = 스크롤 이동만 하면 된다. 스크롤 위치를 추적해서
-   색을 바꾸는 로직(IntersectionObserver)은 필요 없어져서 걷어냈다. */
-function wireGenreSideNav(navEl, cardAreaEl) {
+/* 왼쪽 목차 클릭 → 그 장르를 "보여주기" 목록(st[stateKey], Set)에 토글로 추가/제거한다.
+   목록이 비어 있으면(아무 장르도 안 눌렀으면) 전체를 보여주고, 하나 이상 있으면 그
+   장르들만 오른쪽에 남는다 - 여러 장르를 눌러도 전부 계속 보인다(하나 누르면 이전 것이
+   사라지지 않음). 상태는 st[stateKey]에 저장해서 다시 그릴 때도(항목 체크 등) 유지된다. */
+function wireGenreSideNav(navEl, stateKey, redraw) {
   navEl.onclick = e => {
     const btn = e.target.closest(".genre-nav-item");
     if (!btn) return;
-    const target = cardAreaEl.querySelector('.group[data-genre="' + CSS.escape(btn.dataset.genre) + '"]');
-    if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+    const g = btn.dataset.genre;
+    const set = st[stateKey];
+    if (set.has(g)) set.delete(g); else set.add(g);
+    redraw();
   };
+}
+
+/* 카드 영역에 실제로 렌더링된 장르 섹션(.group) 중 필터에 안 걸리는 것들을 숨긴다.
+   collectCards가 이미 검색어·공통모듈 필터를 반영해 만든 결과 위에 얹는 마지막 단계라,
+   검색/필터와 장르 사이드바 필터가 동시에 걸려도 서로 안 어긋난다.
+   클릭해서 일부러 펼쳐본 장르인데 아직 아무 항목도 안 골랐으면(picked===0) 안내 문구를
+   그 섹션 제목 아래 띄워서 "여기서 골라야 한다"는 걸 알려준다. */
+function applyGenreFilter(cardAreaEl, shownGenres) {
+  const filtering = !!(shownGenres && shownGenres.size);
+  cardAreaEl.querySelectorAll(".group").forEach(sec => {
+    const isShown = !filtering || shownGenres.has(sec.dataset.genre);
+    sec.classList.toggle("filtered-out", !isShown);
+  });
+}
+
+/* 클릭해서 펼쳐본 장르인데 항목을 하나도 안 고른 채 "다음"을 누르면 그 장르 이름을
+   짚어 알려준다 - 화면에 계속 떠 있는 안내 문구 대신, 넘어가려는 시점에만 확인한다. */
+function findEmptyShownGenre(shownGenres, pickedSet) {
+  for (const g of shownGenres) {
+    let count = 0;
+    pickedSet.forEach(k => { if (parseKey(k)[0] === g) count++; });
+    if (count === 0) return g;
+  }
+  return null;
 }
 
 /* ===== 하단 고정 "선택한 항목" 바 - 장르별로 묶어서 보여준다 ===== */
@@ -2224,10 +2281,11 @@ function drawCatStep() {
   const cards = collectCards(genreScope, st.catModuleFilter, q, null, false, st.catCustomItems);
   const el = document.getElementById("catArea");
   renderCards(el, cards, st.cats, q ? '"' + q + '"에 해당하는 항목이 없습니다.' : '해당하는 항목이 없습니다.', true, st.catOtherText, st.catOtherOpen);
+  applyGenreFilter(el, st.catShownGenres);
 
   const navEl = document.getElementById("catGenreNav");
-  renderGenreSideNav(navEl, genreScope, st.cats, st.genres);
-  wireGenreSideNav(navEl, el);
+  renderGenreSideNav(navEl, genreScope, st.cats, st.genres, st.catShownGenres);
+  wireGenreSideNav(navEl, "catShownGenres", drawCatStep);
 
   renderPickedBar(document.getElementById("catPickedBar"), st.cats, "cat", () => {
     drawCatStep();
@@ -2254,10 +2312,11 @@ function drawWishStep() {
   const cards = collectCards(genreScope, st.wishModuleFilter, q, st.cats, false, [st.catCustomItems, st.wishCustomItems]);
   const el = document.getElementById("wishArea");
   renderCards(el, cards, st.wishes, q ? '"' + q + '"에 해당하는 항목이 없습니다.' : '선택할 수 있는 파트너 유형이 없습니다.', false, st.wishOtherText, st.wishOtherOpen);
+  applyGenreFilter(el, st.wishShownGenres);
 
   const navEl = document.getElementById("wishGenreNav");
-  renderGenreSideNav(navEl, genreScope, st.wishes);
-  wireGenreSideNav(navEl, el);
+  renderGenreSideNav(navEl, genreScope, st.wishes, null, st.wishShownGenres);
+  wireGenreSideNav(navEl, "wishShownGenres", drawWishStep);
 
   renderPickedBar(document.getElementById("wishPickedBar"), st.wishes, "wish", () => {
     drawWishStep();
@@ -2563,6 +2622,7 @@ function resetAll() {
   st.catOtherOpen = {}; st.wishOtherOpen = {};
   st.catCustomItems = {}; st.wishCustomItems = {};
   st.mainKey = null;
+  st.catShownGenres = new Set(); st.wishShownGenres = new Set();
   document.getElementById("catSearch").value = "";
   document.getElementById("catSearchBox").classList.remove("has-val");
   document.getElementById("wishSearch").value = "";
@@ -2570,6 +2630,14 @@ function resetAll() {
 }
 
 document.getElementById("btnNext").onclick = () => {
+  if (st.step === 2) {
+    const g = findEmptyShownGenre(st.catShownGenres, st.cats);
+    if (g) { alert(g + " 장르에서 항목을 선택해 주세요."); return; }
+  }
+  if (st.step === 3) {
+    const g = findEmptyShownGenre(st.wishShownGenres, st.wishes);
+    if (g) { alert(g + " 장르에서 항목을 선택해 주세요."); return; }
+  }
   if (st.step === 4) resetAll(); else st.step++;
   render();
 };
@@ -2579,9 +2647,21 @@ document.querySelectorAll(".edit").forEach(el => {
 });
 
 // "공통모듈" 버튼을 누르면 위저드 전체(1~4단계)가 모달로 열린다.
-document.getElementById("openWizardModalBtn").onclick = () => { document.getElementById("wizardModal").hidden = false; };
-document.getElementById("wizardModalClose").onclick = () => { document.getElementById("wizardModal").hidden = true; };
-document.getElementById("wizardModal").onclick = e => { if (e.target.id === "wizardModal") document.getElementById("wizardModal").hidden = true; };
+/* 모달이 열려 있는 동안 뒤쪽 페이지 본문 스크롤을 잠근다 - 모달 안 스크롤 영역
+   끝에서 다음 스크롤이 뒤쪽 페이지로 새어나가 "모달인데 뒤가 스크롤된다"처럼
+   보이던 문제의 핵심 원인이었다(overscroll-behavior는 모달 내부 요소끼리의
+   전파만 막고, 뒤쪽 body 스크롤 자체는 못 막는다). */
+function openWizardModal() {
+  document.getElementById("wizardModal").hidden = false;
+  document.body.classList.add("wc-modal-open");
+}
+function closeWizardModal() {
+  document.getElementById("wizardModal").hidden = true;
+  document.body.classList.remove("wc-modal-open");
+}
+document.getElementById("openWizardModalBtn").onclick = openWizardModal;
+document.getElementById("wizardModalClose").onclick = closeWizardModal;
+document.getElementById("wizardModal").onclick = e => { if (e.target.id === "wizardModal") closeWizardModal(); };
 
 wireSearchBox("catSearchBox", "catSearch", "catSearchClear", v => { st.catQ = v; drawCatStep(); });
 wireSearchBox("wishSearchBox", "wishSearch", "wishSearchClear", v => { st.wishQ = v; drawWishStep(); });
