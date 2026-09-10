@@ -3982,27 +3982,30 @@ function renderGenreSideNav(container, genres, pickedSet, preSelectedGenres, sho
   }).join("");
 }
 
-/* 왼쪽 목차 클릭 → 그 장르의 카드 섹션(.group[data-genre])으로 부드럽게 스크롤 이동한다
-   (2단계 catArea, 3단계 wishArea 둘 다 적용) - 순수 TOC(목차) 내비게이션.
-   2026-09-10 버그 수정: 예전엔 클릭할 때마다 "보여주기" 목록(st[stateKey], shownGenres)에
-   토글로 추가/제거해서 거기 없는 장르 섹션을 전부 숨기는 다중선택 필터였다. 그런데 사이드바
-   하이라이트(active 클래스)는 shownGenres 멤버십 하나가 아니라 pickedSet 보유 개수·
-   preSelectedGenres(1단계에서 고른 장르)까지 OR로 합쳐서 켜지기 때문에, "하이라이트된
-   장르 = 지금 shownGenres에 있는 장르"가 아니었다. 그 결과 (a) 아직 한번도 안 눌러본
-   하이라이트 장르를 처음 클릭하면 그 장르만 shownGenres에 들어가면서 다른 하이라이트
-   장르들까지 전부 갑자기 필터링되어 사라지고, (b) 이미 shownGenres에 있는 장르를 다시
-   클릭하면 토글 OFF로 빠지면서 그 섹션이 filtered-out(display:none)으로 숨겨진 채로
-   scrollIntoView를 호출해 스크롤이 먹지 않는 버그가 있었다(사용자 리포트: "선택한 장르
-   누르면 스크롤이 안되고 카테고리 안보이는 경우도 있음"). 필터링(숨기기) 기능 자체를
-   제거하고 클릭 = 항상 스크롤만 하도록 단순화해서 근본적으로 막았다 - 장르는 항상 전부
-   보여야 한다는 현재 설계와도 맞다. stateKey/redraw는 이제 이 함수 안에서 안 쓰지만
-   두 호출부(drawCatStep/drawWishStep) 시그니처를 안 건드리려고 인자는 그대로 둔다. */
+/* 왼쪽 목차 클릭 → 그 장르를 "보여주기" 목록(st[stateKey], shownGenres Set)에 토글로
+   추가/제거하는 다중선택 필터(2026-09-10 재정정 - 직전에 "스크롤 버그"를 고친다며 이
+   토글/숨김 자체를 통째로 없앴던 건 과했다는 사용자 지적으로 원복). 우측 카드 영역은
+   shownGenres에 있는 장르만 보이고(비어 있으면 필터 없음 = 전체 표시 - applyGenreFilter의
+   기존 규약, 안 건드림), 나머지는 .filtered-out으로 숨는다. 여러 장르를 동시에 켤 수
+   있다(하나 켠다고 이전 것이 꺼지지 않음).
+   사이드바 하이라이트(active, renderGenreSideNav의 hasPicks)는 이 shownGenres 멤버십과
+   완전히 별개다 - "그 장르에 실제 선택 항목이 있는지"(count>0)·"1단계에서 고른 장르인지"
+   (preSelectedGenres)만으로 계산되고, shownGenres에 새로 추가한다고 자동으로 하이라이트
+   되는 게 아니며 거꾸로 하이라이트되어 있다고 자동으로 shownGenres에 들어가 있는 것도
+   아니다(진짜 원인이었던 버그 - 클릭 핸들러가 이 둘을 뒤섞어 다루지 않도록 여기서 다루는
+   상태는 오직 shownGenres 하나뿐이다).
+   스크롤은 "새로 켠"(추가) 경우에만 한다 - 이미 켜져 있던 걸 꺼서(숨겨서) "선택 취소"할
+   때는 사라지는 섹션으로 스크롤할 이유가 없어 하지 않는다. */
 function wireGenreSideNav(navEl, stateKey, redraw, contentAreaId) {
   navEl.onclick = e => {
     const btn = e.target.closest(".genre-nav-item");
     if (!btn) return;
     const g = btn.dataset.genre;
-    if (contentAreaId) {
+    const set = st[stateKey];
+    const wasShown = set.has(g);
+    if (wasShown) set.delete(g); else set.add(g);
+    redraw();
+    if (!wasShown && contentAreaId) {
       const contentEl = document.getElementById(contentAreaId);
       const target = contentEl && contentEl.querySelector('.group[data-genre="' + CSS.escape(g) + '"]');
       if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
