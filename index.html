@@ -3104,10 +3104,19 @@ TEMP-HIDDEN-END -->
                 <div id="prevErrorsMsgGroup" class="textc">
 
                 </div>
+                <!-- TEMP-HIDDEN 2026-09-11: 폼 전체 제출 버튼(취소/완료, fnMain()/fnSave()) 임시
+                     숨김(사용자 요청, 삭제 아님) - "공통모듈" 박스 위/앞쪽 폼 필드들이 대거
+                     숨겨진 채라 이 버튼들이 공통모듈 박스 바로 아래에 걸쳐 보이는 상태였다.
+                     버튼 마크업만 숨기고 fnMain()/fnSave() 함수 정의 자체는 그대로 둔다(다른
+                     곳에서 쓰일 수 있어 손대지 않는 원칙 - 재검색 결과 이 두 버튼에서만
+                     호출되지만 함수는 그대로 보존). 되살릴 때는 TEMP-HIDDEN-START/END 마커
+                     줄만 제거하면 된다. -->
+                <!-- TEMP-HIDDEN-START
                 <div class="btn-wrap">
                     <button type="button" class="btn-pre btn-xlarge" onclick="fnMain();return false;"><i class="button-icon04"></i>취소</button>
                     <button type="button" class="btn-save btn-xlarge open-modal" data-target="modalPwchange" onclick="fnSave('_target5');return false;">완료<i class="button-icon03"></i></button>
                 </div>
+                TEMP-HIDDEN-END -->
             <input type="hidden" name="" value=""></form>
         </div>
     </div>
