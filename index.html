@@ -3946,9 +3946,9 @@ function renderGenreSideNav(container, genres, pickedSet, preSelectedGenres, sho
    목록이 비어 있으면(아무 장르도 안 눌렀으면) 전체를 보여주고, 하나 이상 있으면 그
    장르들만 오른쪽에 남는다 - 여러 장르를 눌러도 전부 계속 보인다(하나 누르면 이전 것이
    사라지지 않음). 상태는 st[stateKey]에 저장해서 다시 그릴 때도(항목 체크 등) 유지된다.
-   contentAreaId를 넘기면(2단계 한정 - drawWishStep은 기존 동작 그대로 유지하려고 안 넘김)
-   클릭한 장르의 카드 섹션(.group[data-genre])으로 부드럽게 스크롤 이동한다. 필터링으로
-   숨겨진 섹션이어도 scrollIntoView 자체는 안전하게 무시된다. */
+   contentAreaId를 넘기면 클릭한 장르의 카드 섹션(.group[data-genre])으로 부드럽게 스크롤
+   이동한다(2단계 catArea, 3단계 wishArea 둘 다 적용). 필터링으로 숨겨진 섹션이어도
+   scrollIntoView 자체는 안전하게 무시된다. */
 function wireGenreSideNav(navEl, stateKey, redraw, contentAreaId) {
   navEl.onclick = e => {
     const btn = e.target.closest(".genre-nav-item");
@@ -4198,7 +4198,7 @@ function drawWishStep() {
 
   const navEl = document.getElementById("wishGenreNav");
   renderGenreSideNav(navEl, genreScope, st.wishes, st.genres, st.wishShownGenres);
-  wireGenreSideNav(navEl, "wishShownGenres", drawWishStep);
+  wireGenreSideNav(navEl, "wishShownGenres", drawWishStep, "wishArea");
 
   renderPickedBar(document.getElementById("wishPickedBar"), st.wishes, "wish", () => {
     drawWishStep();
