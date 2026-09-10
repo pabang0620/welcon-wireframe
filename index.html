@@ -3568,6 +3568,12 @@ function initPanel() {
         <div class="count-note" id="countNote"></div>
         <div class="btn-row">
           <button type="button" class="btn" id="btnBack" style="visibility:hidden">이전</button>
+          <!-- 2026-09-11: 완료 화면(4단계, "처음부터 다시" 버튼이 있는 화면) 전용 "확인" 버튼.
+               "처음부터 다시"(btnNext, 전체 초기화)와는 별개로, 지금 선택을 그대로 둔 채
+               모달만 닫는다(closeWizardModal 재사용) - 메인 폼 "공통모듈" 박스에 이미 그려진
+               차트가 모달에 가려 안 보인다는 사용자 리포트로 추가. render()가 4단계일 때만
+               보이게 켠다. -->
+          <button type="button" class="btn primary" id="btnConfirmDone" style="display:none">확인</button>
           <button type="button" class="btn primary" id="btnNext">다음</button>
         </div>
       </div>
@@ -3779,6 +3785,12 @@ function render() {
   const nextBtn = document.getElementById("btnNext");
   nextBtn.textContent = st.step === 3 ? "등록 완료" : (st.step === 4 ? "처음부터 다시" : "다음");
   nextBtn.disabled = (st.step === 1 && !st.genres.size) || (st.step === 2 && !st.cats.size);
+  // 4단계(완료 화면)에서만 "확인" 버튼을 보인다 - 지금 선택을 그대로 둔 채 모달만 닫는
+  // 별도 액션이라, 전체 초기화인 "처음부터 다시"(btnNext)보다 이쪽을 주 액션(.primary)으로
+  // 두고 "처음부터 다시"는 보조 액션으로 내린다(실수로 초기화 누르는 사고 예방).
+  const confirmBtn = document.getElementById("btnConfirmDone");
+  confirmBtn.style.display = st.step === 4 ? "" : "none";
+  nextBtn.classList.toggle("primary", st.step !== 4);
 
   if (st.step === 1) drawGenreStep();
   if (st.step === 2) { drawCatStep(); scrollToFirstSelectedGenre(); }
@@ -4081,7 +4093,12 @@ function isSectionScrolledIntoView(target, contentEl) {
 /* 왼쪽 목차 클릭 → 켜기/끄기+스크롤을 전부 사이드바 클릭 하나로 처리한다.
    - 클릭한 장르 섹션이 지금 실제로 스크롤 상단에 맞춰져 있다(isSectionScrolledIntoView)
      → 제외: shownGenres에서 빼고 redraw만, 스크롤 안 함(사라지는 섹션이니 스크롤할
-     이유가 없다).
+     이유가 없다). 2026-09-11 6차: 이때 그 장르에 실제로 골라뒀던 항목(pickedSet -
+     2단계는 st.cats, 3단계는 st.wishes)도 전부 같이 지운다 - "화면에서만 숨기기"가
+     아니라 "그 장르의 선택 자체를 취소하기"로 동작을 바꿔달라는 요청. pickedSet이
+     st.cats일 때만 syncGenreFromPicks(g)도 불러서 1단계 장르 타일 체크도 같이
+     풀리게 한다(wireOptClicks가 이미 쓰는 것과 동일한 패턴 - `pickedSet === st.cats`
+     로 판별. 3단계 st.wishes는 원래도 1단계와 동기화 안 하는 별개 질문이라 그대로 둔다).
    - 아니다(다른 위치에 있거나, 아직 shownGenres에 없어 아예 안 보이는 상태)
      → 표시+스크롤: shownGenres에 없으면 add, redraw 후 그 섹션으로 scrollIntoView.
    위치를 "기억"하지 않고 클릭 시점에 매번 실측하므로, 사용자가 사이드바 클릭이 아니라
@@ -4089,7 +4106,7 @@ function isSectionScrolledIntoView(target, contentEl) {
    사이드바 하이라이트(active, renderGenreSideNav의 hasPicks)는 이 shownGenres 멤버십과
    완전히 별개다 - "그 장르에 실제 선택 항목이 있는지"(count>0)·"1단계에서 고른 장르인지"
    (preSelectedGenres)만으로 계산된다. */
-function wireGenreSideNav(navEl, stateKey, redraw, contentAreaId) {
+function wireGenreSideNav(navEl, stateKey, redraw, contentAreaId, pickedSet) {
   navEl.onclick = e => {
     const btn = e.target.closest(".genre-nav-item");
     if (!btn) return;
@@ -4099,6 +4116,10 @@ function wireGenreSideNav(navEl, stateKey, redraw, contentAreaId) {
     const currentTarget = contentEl && contentEl.querySelector('.group[data-genre="' + CSS.escape(g) + '"]');
     if (isSectionScrolledIntoView(currentTarget, contentEl)) {
       set.delete(g);
+      if (pickedSet) {
+        [...pickedSet].forEach(k => { if (parseKey(k)[0] === g) pickedSet.delete(k); });
+        if (pickedSet === st.cats) syncGenreFromPicks(g);
+      }
       redraw();
       return;
     }
@@ -4332,7 +4353,15 @@ function drawCatStep() {
 
   const navEl = document.getElementById("catGenreNav");
   renderGenreSideNav(navEl, genreScope, st.cats, st.genres, st.catShownGenres);
-  wireGenreSideNav(navEl, "catShownGenres", drawCatStep, "catArea");
+  // 2026-09-11: redraw로 drawCatStep을 바로 안 넘기고 감싼다 - 사이드바에서 장르를
+  // 제외하면 이제 그 장르의 실제 선택 항목(st.cats)까지 같이 지워지므로, wireOptClicks와
+  // 동일하게 다음 버튼의 disabled 상태(st.cats.size 기준)도 매번 갱신해야 한다(안 그러면
+  // 마지막 남은 선택 장르를 제외했을 때 st.cats가 0개가 돼도 "다음"이 계속 눌리는 채로 남는다).
+  wireGenreSideNav(navEl, "catShownGenres", () => {
+    drawCatStep();
+    document.getElementById("btnNext").disabled = !st.cats.size;
+    updateCountNote();
+  }, "catArea", st.cats);
 
   renderPickedBar(document.getElementById("catPickedBar"), st.cats, "cat", () => {
     drawCatStep();
@@ -4363,7 +4392,7 @@ function drawWishStep() {
 
   const navEl = document.getElementById("wishGenreNav");
   renderGenreSideNav(navEl, genreScope, st.wishes, st.genres, st.wishShownGenres);
-  wireGenreSideNav(navEl, "wishShownGenres", drawWishStep, "wishArea");
+  wireGenreSideNav(navEl, "wishShownGenres", drawWishStep, "wishArea", st.wishes);
 
   renderPickedBar(document.getElementById("wishPickedBar"), st.wishes, "wish", () => {
     drawWishStep();
@@ -4741,6 +4770,10 @@ function closeWizardModal() {
 document.getElementById("openWizardModalBtn").onclick = openWizardModal;
 document.getElementById("wizardModalClose").onclick = closeWizardModal;
 document.getElementById("wizardModal").onclick = e => { if (e.target.id === "wizardModal") closeWizardModal(); };
+// 2026-09-11: 완료 화면(4단계) 전용 "확인" - 선택은 그대로 두고 모달만 닫는다. resetAll()을
+// 부르는 btnNext("처음부터 다시")와 달리 상태를 안 건드리므로, 닫은 뒤 메인 폼 "공통모듈"
+// 박스에 이미 그려진 차트(drawMainPageGenreChart)가 그대로 보인다.
+document.getElementById("btnConfirmDone").onclick = closeWizardModal;
 
 wireSearchBox("catSearchBox", "catSearch", "catSearchClear", v => { st.catQ = v; drawCatStep(); });
 wireSearchBox("wishSearchBox", "wishSearch", "wishSearchClear", v => { st.wishQ = v; drawWishStep(); });
