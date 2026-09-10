@@ -1621,6 +1621,12 @@ function initNavi() {
         .wc-wizard .genre-nav-item:hover { background: #fff; }
         /* 클릭(포커스)했을 때 브라우저 기본 포커스 링/테두리가 새어 들어오는 걸 확실히 차단 */
         .wc-wizard .genre-nav-item:focus, .wc-wizard .genre-nav-item:focus-visible { outline: none !important; box-shadow: none !important; }
+        /* 2026-09-11: 우측에 지금 켜져 있는(shownGenres 멤버) 장르만 옅게 표시 - .active(실제
+           선택 항목 보유)와 별개다. 우측에서 제외되면 이 클래스가 빠지며 즉시 사라진다.
+           genre-tile.on과 같은 "옅은 보라" 톤(--wc-purple-light-bg/--wc-purple-border)을
+           재사용해 새 색을 도입하지 않았다. 아래 .active 규칙이 뒤에 와서 둘 다 해당할 때
+           .active의 진한 보라가 우선한다. */
+        .wc-wizard .genre-nav-item.shown { background: var(--wc-purple-light-bg); border-left-color: var(--wc-purple-border); }
         .wc-wizard .genre-nav-item.active { background: var(--wc-purple); border-left-color: var(--wc-purple-dark); color: #fff; }
         .wc-wizard .genre-nav-count { min-width: 2rem; height: 2rem; padding: 0 0.5rem; border-radius: 999px; background: var(--wc-border-light); color: #fff; font-size: 1.1rem; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
         .wc-wizard .genre-nav-count.has { background: var(--wc-purple); }
@@ -3763,10 +3769,17 @@ function render() {
   nextBtn.disabled = (st.step === 1 && !st.genres.size) || (st.step === 2 && !st.cats.size);
 
   if (st.step === 1) drawGenreStep();
-  if (st.step === 2) { drawCatStep(); scrollToFirstSelectedGenre(); }
+  // 2026-09-11: 진짜 "화면 전환"(render() 경유)으로 2/3단계에 들어올 때마다
+  // catLastScrolledGenre/wishLastScrolledGenre를 null로 리셋한다 - 이 값이 지난 방문
+  // 때 기억을 그대로 들고 있으면, 다른 스텝 갔다가 돌아와서 처음 클릭한 장르가(이번
+  // 방문에서 스크롤한 적 없는데도) "마지막 스크롤 장르와 같다"고 오판되어 곧장
+  // 제외(숨김)로 처리되는 꼬임이 생긴다. 항목 체크 등으로 drawCatStep/drawWishStep만
+  // 다시 불리는 매 리렌더에서는 안 불려서(render() 안에서만 호출) 그 안에서 사이드바를
+  // 눌러가며 켜고 끄는 정상 동작에는 영향 없다.
+  if (st.step === 2) { st.catLastScrolledGenre = null; drawCatStep(); scrollToFirstSelectedGenre(); }
   // 3단계 진입 시(화면 전환 시점에만) 2단계에서 필터링해 보고 있던 장르를 그대로
   // 이어받는다 - 방금 "방송"만 보고 있었으면 3단계도 "방송"만 필터된 채로 시작한다.
-  if (st.step === 3) { st.wishShownGenres = new Set(st.catShownGenres); drawWishStep(); }
+  if (st.step === 3) { st.wishShownGenres = new Set(st.catShownGenres); st.wishLastScrolledGenre = null; drawWishStep(); }
   if (st.step === 4) drawSummaryStep();
 
   updateCountNote();
@@ -4005,20 +4018,23 @@ function renderCards(container, cards, pickedSet, emptyMsg, allowMainToggle, oth
   container.innerHTML = cards.map(c => cardHtml(c, pickedSet, allowMainToggle, otherText, otherOpen)).join("");
 }
 
-/* ===== 왼쪽 장르 목차 - 클릭한 장르들만 오른쪽에 남기고 나머지는 숨기는 다중선택 필터 ===== */
-// 색칠(보라색 채움)은 두 가지 중 하나만 만족해도 켜진다: ① 그 장르에 실제로 고른 항목이
-// 있거나, ② 지금 왼쪽에서 클릭해서 "보여주기"로 선택해둔 장르인 경우. 클릭 자체가
-// 색칠의 트리거가 되므로 "클릭하면 색칠된다"가 그대로 성립한다.
-// preSelectedGenres: 1단계(활동 장르)에서 이미 골라둔 장르 - 이 단계에서 항목을 아직 하나도
-// 안 골랐어도 앞에서 선택한 장르는 처음부터 색칠되어 있어야 하므로 함께 OR 계산한다.
-// shownGenres: 지금 왼쪽에서 클릭해 켜둔 장르들의 Set(여러 개 동시 가능) - 없으면 전체 표시.
+/* ===== 왼쪽 장르 목차 ===== */
+// 두 표시를 완전히 분리한다(2026-09-11 - "우측에서 제외됐는데 좌측 표시가 안 사라진다"는
+// 사용자 리포트로 분리):
+// ① .active(보라색 채움) - "그 장르에 실제로 고른 항목이 있는지"(count>0) 또는
+//    "1단계에서 고른 장르인지"(preSelectedGenres)로만 계산한다. shownGenres 멤버십과는
+//    무관 - 우측에서 제외해도 실제 선택 항목이 있으면 계속 켜져 있어야 정상이다.
+// ② .shown(옅은 보라 배경) - 지금 왼쪽에서 클릭해 우측에 켜둔 장르인지(shownGenres 멤버십)
+//    만으로 계산한다. 우측 섹션이 제외되는 순간 이 표시도 같이 빠진다.
+// 둘 다 해당하면 .active의 진한 보라가 시각적으로 우선한다(CSS에서 .active 규칙을
+// .shown보다 뒤에 둬서 우선순위를 맞춤).
 function renderGenreSideNav(container, genres, pickedSet, preSelectedGenres, shownGenres) {
   container.innerHTML = genres.map(g => {
     let count = 0;
     pickedSet.forEach(k => { if (parseKey(k)[0] === g) count++; });
     const isShown = !!(shownGenres && shownGenres.has(g));
-    const hasPicks = count > 0 || (preSelectedGenres && preSelectedGenres.has(g)) || isShown;
-    const cls = "genre-nav-item" + (hasPicks ? " active" : "");
+    const hasPicks = count > 0 || (preSelectedGenres && preSelectedGenres.has(g));
+    const cls = "genre-nav-item" + (hasPicks ? " active" : "") + (isShown ? " shown" : "");
     return '<button type="button" class="' + cls + '" data-genre="' + escAttr(g) + '">' +
       '<span>' + g + '</span><span class="genre-nav-count' + (hasPicks ? " has" : "") + '">' + count + '</span>' +
     '</button>';
