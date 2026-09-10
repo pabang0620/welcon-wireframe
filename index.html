@@ -4043,22 +4043,39 @@ function renderGenreSideNav(container, genres, pickedSet, preSelectedGenres, sho
   }).join("");
 }
 
-/* 클릭한 장르의 카드 섹션이 지금 스크롤 컨테이너(.genre-main-panel) 상단에 이미 맞춰져
-   있는지(=지금 진짜로 그 위치를 보고 있는지) 실측한다(2026-09-11 3차 정정 - "마지막으로
-   스크롤한 장르"를 기억해두는 state 방식은, 클릭으로 스크롤한 뒤 사용자가 마우스 휠로
-   직접 다른 데로 스크롤하고 나서 그 장르를 다시 클릭하면 "기억"과 "실제 위치"가 어긋나
-   엉뚱하게 제외돼버리는 문제가 있었다 - 그래서 기억 대신 클릭 시점에 실측한다).
-   허용 오차 20px - scrollIntoView({block:"start"})로 맞춘 뒤에도 서브픽셀 반올림 등으로
-   완전히 0px 일치하지 않을 수 있어 여유를 둔다. filtered-out(숨겨진) 섹션은 애초에
-   레이아웃에 안 잡히므로 무조건 "불일치"로 취급한다. */
-const SCROLL_ALIGN_TOLERANCE_PX = 20;
+/* 클릭한 장르의 카드 섹션이 지금 스크롤 컨테이너(.genre-main-panel) 안에서 "더 스크롤해도
+   달라질 게 없는" 위치까지 이미 맞춰져 있는지(=지금 진짜로 그 위치를 보고 있는지) 실측한다
+   (2026-09-11 4차 정정). "타겟 top이 패널 top과 ±20px 이내인가"라는 단순 픽셀 비교(3차
+   버전)는 스크롤 컨테이너 맨 아래에 가까운 섹션(특히 목록 마지막 장르)에서 깨졌다 -
+   콘텐츠 하단 여백(padding-bottom 등)만큼 그 섹션의 top이 panelTop과 절대 20px 이내로
+   맞아떨어지지 못하는데, scrollIntoView로 더 스크롤할 여지도 이미 없어서(컨테이너가 이미
+   최대 스크롤 상태) 매번 "불일치"로만 판정되어 마지막 장르는 절대 토글 오프가 안 됐다
+   (사용자 리포트: "2스탭에서 취소가 되는 게 있고 안 되는 게 있다").
+   그래서 "타겟이 패널 top에 오도록 스크롤하려면 스크롤량이 얼마나 더 필요한가"를 먼저
+   계산한 뒤, 그 값을 실제로 도달 가능한 범위([0, 최대 스크롤량])로 clamp하고, 클램프된
+   목표값과 현재 scrollTop이 이미 같은지(오차 허용)를 비교한다 - 마지막 섹션처럼 목표가
+   최대 스크롤량을 넘어서는 경우 목표는 최대 스크롤량으로 clamp되고, 컨테이너가 이미
+   그 최대값에 있다면 "더 스크롤해도 안 바뀐다"는 뜻이므로 일치로 판정된다. */
+const SCROLL_ALIGN_TOLERANCE_PX = 5;
 function isSectionScrolledIntoView(target, contentEl) {
   if (!target || !contentEl) return false;
   if (target.classList.contains("filtered-out")) return false;
   const panel = contentEl.closest(".genre-main-panel") || contentEl;
   const panelTop = panel.getBoundingClientRect().top;
   const targetTop = target.getBoundingClientRect().top;
-  return Math.abs(targetTop - panelTop) <= SCROLL_ALIGN_TOLERANCE_PX;
+  // .group에 scroll-margin-top: 1rem(≈10px)이 걸려 있어서, 실제 scrollIntoView({block:"start"})는
+  // targetTop을 panelTop에 딱 맞추는 게 아니라 그만큼 여백을 남긴 채로 멈춘다 - 이걸 빼놓고
+  // "지금 스크롤 상태에서 타겟을 패널 top에 맞추려면" 필요한 scrollTop만 계산하면, 마지막
+  // 섹션(맨 아래라 더 스크롤 여지가 없어 클램프로 우연히 들어맞는 경우)만 빼고 다른 모든
+  // 섹션은 실제 scrollIntoView가 도달하는 지점과 계산값이 항상 어긋나 절대 "일치"로 안
+  // 잡혔다(2026-09-11 5차 정정 - 전수 테스트로 발견: 마지막 1~2개만 제외되고 나머지는 전부
+  // 안 되던 버그의 진짜 원인). scrollMarginTop을 명시적으로 빼서 "실제 scrollIntoView가
+  // 도달할 scrollTop"을 계산해야 한다.
+  const scrollMarginTop = parseFloat(getComputedStyle(target).scrollMarginTop) || 0;
+  const desiredScrollTop = panel.scrollTop + (targetTop - panelTop) - scrollMarginTop;
+  const maxScrollTop = Math.max(0, panel.scrollHeight - panel.clientHeight);
+  const clampedDesiredScrollTop = Math.max(0, Math.min(desiredScrollTop, maxScrollTop));
+  return Math.abs(panel.scrollTop - clampedDesiredScrollTop) <= SCROLL_ALIGN_TOLERANCE_PX;
 }
 
 /* 왼쪽 목차 클릭 → 켜기/끄기+스크롤을 전부 사이드바 클릭 하나로 처리한다.
