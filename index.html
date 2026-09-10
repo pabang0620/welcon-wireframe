@@ -1644,12 +1644,6 @@ function initNavi() {
           background: var(--wc-purple); color: #fff; font-size: 1.15rem; font-weight: 800;
           width: 1.8rem; height: 1.8rem; display: grid; place-items: center; flex: none; border-radius: 50%; margin-left: 0.8rem;
         }
-        /* 섹션 숨기기(× 버튼) - 2026-09-11, 사이드바 재클릭으로 숨기던 걸 여기로 옮겼다. */
-        .wc-wizard .group-close-btn {
-          margin-left: auto; border: none; background: transparent; color: var(--wc-text-sub);
-          font-size: 1.7rem; line-height: 1; font-weight: 400; cursor: pointer; padding: 0.2rem 0.6rem; border-radius: 0.4rem;
-        }
-        .wc-wizard .group-close-btn:hover { color: var(--wc-purple); background: var(--wc-box-bg); }
 
         /* 공통모듈(단계)별 소그룹 - 실제 위저드가 이미 갖고 있던 module 필터 칩 카운트와
            같은 정보를 여기서도(스크롤하며 훑을 때) 바로 보여준다. */
@@ -3157,7 +3151,7 @@ TEMP-HIDDEN-END -->
 <script>requirejs = { waitSeconds: 0 }</script>
 <script src="https://welcon.kocca.kr/static/cmm/js/welcon/vendor/require.js?v=20260825181323341"></script>
 <script>
-    require(["https://welcon.kocca.kr/static/cmm/js/welcon/common.js?v=20260825181323341"], function () {
+    require(["/static/cmm/js/welcon/common.js?v=20260825181323341"], function () {
         require(["module/mng", "ajax-form", "pickadate"], function (mytrade, ajaxForm, pickadate) {
             $("#signUp").ajaxForm({
 
@@ -3714,9 +3708,14 @@ const st = {
   catShownGenres: new Set(),
   wishShownGenres: new Set(),
   // 2026-09-11: drawCatStep이 "이미 시드해본 st.genres 멤버"를 기록해두는 용도 - Set 크기가
-  // 아니라 이 목록으로 시드 여부를 판단해서, ×로 catShownGenres를 완전히 비워도 재시드되지
-  // 않는다(자세한 이유는 drawCatStep 안의 주석 참고).
-  catShownGenresSeededFrom: new Set()
+  // 아니라 이 목록으로 시드 여부를 판단해서, 사이드바 클릭으로 catShownGenres를 완전히
+  // 비워도(전부 제외) 재시드되지 않는다(자세한 이유는 drawCatStep 안의 주석 참고).
+  catShownGenresSeededFrom: new Set(),
+  // 2026-09-11: 사이드바 클릭 핸들러(wireGenreSideNav)가 "마지막으로 스크롤 이동시킨
+  // 장르"를 기록해두는 용도 - 같은 장르를 다시 클릭했을 때만 제외(숨김)로 판단한다.
+  // 스텝별로 분리(2단계/3단계 독립).
+  catLastScrolledGenre: null,
+  wishLastScrolledGenre: null
 };
 
 const key = (g, item) => g + SEP + item;
@@ -3986,14 +3985,11 @@ function cardHtml(card, pickedSet, allowMainToggle, otherText, otherOpen) {
     '</div>';
   }).join("");
 
-  // 2026-09-10: 섹션 숨기기("선택 취소")는 더 이상 사이드바 클릭이 아니라 이 × 버튼
-  // 전담이다(사이드바는 이제 클릭=항상 스크롤, 절대 숨기지 않음 - wireGenreSideNav 참고).
-  // 닫기 버튼은 shownGenres에서 안 지워도 되는 경우(필터 자체가 비어 "전체 표시" 중인 경우)에도
-  // 눌러서 "이 장르만 제외"할 수 있어야 하므로, 클릭 핸들러(wireGroupCloseButtons)가 실제
-  // 상태 전환을 판단한다 - 여기 마크업은 data-genre만 갖고 있으면 된다.
-  const closeBtn = '<button type="button" class="group-close-btn" data-genre="' + escAttr(card.genre) + '" aria-label="' + escAttr(card.genre) + ' 섹션 숨기기">&times;</button>';
+  // 2026-09-11: 섹션 숨기기 전담이던 × 버튼(group-close-btn)은 제거했다 - 사이드바 클릭
+  // 하나로 표시/숨김+스크롤을 전부 처리하는 방식(lastScrolledGenre 기준, wireGenreSideNav
+  // 참고)으로 통합되어 더는 필요 없다.
   return '<section class="group" id="genre-section-' + escAttr(card.genre) + '" data-genre="' + escAttr(card.genre) + '">' +
-    '<div class="group-title"><span class="group-title-text">' + card.genre + badge + '</span>' + closeBtn + '</div>' +
+    '<div class="group-title"><span class="group-title-text">' + card.genre + badge + '</span></div>' +
     '<div class="group-body">' + tiles + '</div>' +
   '</section>';
 }
@@ -4029,51 +4025,44 @@ function renderGenreSideNav(container, genres, pickedSet, preSelectedGenres, sho
   }).join("");
 }
 
-/* 왼쪽 목차 클릭 → 그 장르 섹션을 보이게(shownGenres에 추가) 한 뒤 그 섹션으로 부드럽게
-   스크롤한다(2026-09-11 재정정). 사이드바 클릭으로는 더 이상 숨기지 않는다 - "클릭하면
-   항상 스크롤되어야 하는데 이미 켜진 걸 클릭하면 꺼졌다가 다음 클릭에야 스크롤된다"는
-   사용자 리포트 때문에, 켜기/스크롤과 끄기를 서로 다른 컨트롤로 분리했다: 사이드바 클릭은
-   "안 보이면 켜고 스크롤 / 이미 보이면 그냥 스크롤만"만 하고, 숨기기("선택 취소")는 각
-   카드 섹션 제목의 × 버튼(wireGroupCloseButtons)으로 옮겼다.
-   "이미 보임" 여부는 shownGenres 멤버십 그대로 판정한다(applyGenreFilter와 동일한 규약 -
-   2026-09-11부로 "비어있으면 전체 표시" 특례를 없앴다. drawCatStep의 seed 로직이 진입
-   시점에 항상 채워주므로 굳이 필요 없었고, 오히려 사용자가 다 닫아서 진짜로 비었을 때도
-   "전체 표시"로 되돌아가버리는 버그의 원인이었다).
+/* 왼쪽 목차 클릭 → 켜기/끄기+스크롤을 전부 사이드바 클릭 하나로 처리한다(2026-09-11
+   재재정정 - × 버튼 방식을 걷어내고 사용자가 제안한 "마지막으로 스크롤한 장르" 기준으로
+   교체). 판단 기준은 shownGenres 멤버십이 아니라 st[lastScrolledKey](직전에 스크롤로
+   보여준 장르, 스텝별로 catLastScrolledGenre/wishLastScrolledGenre 분리)다:
+   - 클릭한 장르 g가 lastScrolledKey와 같다("이미 거기 스크롤해서 보고 있는 상태에서
+     다시 클릭") → 제외: shownGenres에서 빼고 lastScrolledKey를 null로 리셋, 스크롤 안 함.
+   - 다르다(다른 장르를 클릭했거나, 처음 클릭하는 경우 - lastScrolledKey가 아직 g가
+     아니므로) → 표시+스크롤: shownGenres에 없으면 add, lastScrolledKey를 g로 갱신,
+     redraw 후 스크롤.
+   이러면 2단계 진입 시 seed되어 이미 shownGenres 멤버인 장르라도 lastScrolledKey는
+   아직 그 장르가 아니므로 첫 클릭은 항상 "표시+스크롤"로 처리된다 - "seed된 장르 첫
+   클릭이 숨김으로 처리되던" 버그가 구조적으로 재발하지 않는다. 다른 장르를 클릭하면
+   lastScrolledKey가 그쪽으로 넘어가므로, 원래 장르를 또 클릭하면 "이미 거기 있는 게
+   아니게" 되어 다시 표시+스크롤로 자연스럽게 순환한다.
    사이드바 하이라이트(active, renderGenreSideNav의 hasPicks)는 이 shownGenres 멤버십과
    완전히 별개다 - "그 장르에 실제 선택 항목이 있는지"(count>0)·"1단계에서 고른 장르인지"
    (preSelectedGenres)만으로 계산된다. */
-function wireGenreSideNav(navEl, stateKey, redraw, contentAreaId) {
+function wireGenreSideNav(navEl, stateKey, lastScrolledKey, redraw, contentAreaId) {
   navEl.onclick = e => {
     const btn = e.target.closest(".genre-nav-item");
     if (!btn) return;
     const g = btn.dataset.genre;
     const set = st[stateKey];
-    if (!set.has(g)) {
-      set.add(g);
+    if (st[lastScrolledKey] === g) {
+      set.delete(g);
+      st[lastScrolledKey] = null;
       redraw();
+      return;
     }
+    if (!set.has(g)) set.add(g);
+    st[lastScrolledKey] = g;
+    redraw();
     if (contentAreaId) {
       const contentEl = document.getElementById(contentAreaId);
       const target = contentEl && contentEl.querySelector('.group[data-genre="' + CSS.escape(g) + '"]');
       if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   };
-}
-
-/* 카드 섹션(.group) 제목의 × 버튼 → 그 장르를 shownGenres에서 빼서 숨긴다("선택 취소",
-   2026-09-11 신설 - 이전엔 사이드바 재클릭이 이 역할이었는데 사이드바를 "클릭=항상
-   스크롤"로 바꾸면서 숨기기 기능을 여기로 옮겼다). × 버튼은 현재 보이는(filtered-out이
-   아닌) 섹션에만 클릭 가능한 상태로 존재하므로, 이 시점엔 g가 반드시 shownGenres의
-   멤버다 - 그냥 delete만 하면 된다("비어있으면 전체 표시" 특례가 없어져서 미리 채워 넣는
-   보정이 더는 필요 없다). */
-function wireGroupCloseButtons(container, shownGenres, redraw) {
-  container.querySelectorAll(".group-close-btn").forEach(btn => {
-    btn.onclick = e => {
-      e.stopPropagation();
-      shownGenres.delete(btn.dataset.genre);
-      redraw();
-    };
-  });
 }
 
 /* 카드 영역에 실제로 렌더링된 장르 섹션(.group) 중 shownGenres에 없는 것들을 숨긴다.
@@ -4294,11 +4283,10 @@ function drawCatStep() {
   const el = document.getElementById("catArea");
   renderCards(el, cards, st.cats, q ? '"' + q + '"에 해당하는 항목이 없습니다.' : '해당하는 항목이 없습니다.', true, st.catOtherText, st.catOtherOpen);
   applyGenreFilter(el, st.catShownGenres);
-  wireGroupCloseButtons(el, st.catShownGenres, drawCatStep);
 
   const navEl = document.getElementById("catGenreNav");
   renderGenreSideNav(navEl, genreScope, st.cats, st.genres, st.catShownGenres);
-  wireGenreSideNav(navEl, "catShownGenres", drawCatStep, "catArea");
+  wireGenreSideNav(navEl, "catShownGenres", "catLastScrolledGenre", drawCatStep, "catArea");
 
   renderPickedBar(document.getElementById("catPickedBar"), st.cats, "cat", () => {
     drawCatStep();
@@ -4326,11 +4314,10 @@ function drawWishStep() {
   const el = document.getElementById("wishArea");
   renderCards(el, cards, st.wishes, q ? '"' + q + '"에 해당하는 항목이 없습니다.' : '선택할 수 있는 파트너 유형이 없습니다.', false, st.wishOtherText, st.wishOtherOpen);
   applyGenreFilter(el, st.wishShownGenres);
-  wireGroupCloseButtons(el, st.wishShownGenres, drawWishStep);
 
   const navEl = document.getElementById("wishGenreNav");
   renderGenreSideNav(navEl, genreScope, st.wishes, st.genres, st.wishShownGenres);
-  wireGenreSideNav(navEl, "wishShownGenres", drawWishStep, "wishArea");
+  wireGenreSideNav(navEl, "wishShownGenres", "wishLastScrolledGenre", drawWishStep, "wishArea");
 
   renderPickedBar(document.getElementById("wishPickedBar"), st.wishes, "wish", () => {
     drawWishStep();
@@ -4637,6 +4624,7 @@ function resetAll() {
   st.catCustomItems = {}; st.wishCustomItems = {};
   st.mainKey = null;
   st.catShownGenres = new Set(); st.wishShownGenres = new Set(); st.catShownGenresSeededFrom = new Set();
+  st.catLastScrolledGenre = null; st.wishLastScrolledGenre = null;
   document.getElementById("catSearch").value = "";
   document.getElementById("catSearchBox").classList.remove("has-val");
   document.getElementById("wishSearch").value = "";
