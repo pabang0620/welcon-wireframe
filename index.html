@@ -1140,9 +1140,13 @@ function initNavi() {
             <!-- 필수 표시 안내 -->
 
             <!-- 폼 헤더 -->
+            <!-- TEMP-HIDDEN 2026-09-11: "기업정보" 섹션 타이틀 임시 숨김(사용자 요청, 삭제
+                 아님) - 되살릴 때는 TEMP-HIDDEN-START/END 마커 줄만 제거. -->
+            <!-- TEMP-HIDDEN-START
             <div class="member-form-header">
                 <h3 class="form-section-title">기업정보</h3>
             </div>
+            TEMP-HIDDEN-END -->
             <!-- //폼 헤더 -->
 
             <!-- 회원가입 폼 -->
@@ -1855,6 +1859,13 @@ function initNavi() {
     </div>
 </div>
 
+<!-- TEMP-HIDDEN 2026-09-11: "장르" 섹션 전체(장르 체크박스 11개 + 장르별 회사카테고리
+     wrap002001~007 + 기타 장르 divGenreEtc1/2) 임시 숨김(사용자 요청, 삭제 아님).
+     기존 소스 내 작은 라벨 주석(장르명 표시용 짧은 주석 등)과 중첩 불가능한 HTML 주석
+     특성 때문에, 위 "기업정보" 필드 블록과 동일한 방식으로 그 사이사이 구간만 나눠
+     TEMP-HIDDEN-START/END 쌍으로 감쌌다. 되살릴 때는 아래 TEMP-HIDDEN-START/END
+     마커 줄만 전부 제거하면 원래 마크업이 그대로 복원된다(원본 내용은 무변경). -->
+<!-- TEMP-HIDDEN-START
 <div class="member-form-header mgt-30">
     <h3 class="form-section-title">장르</h3>
 </div>
@@ -1960,7 +1971,9 @@ function initNavi() {
     </div>
 </div>
 
+TEMP-HIDDEN-END -->
 <!-- 방송 -->
+<!-- TEMP-HIDDEN-START
 <div id="wrap002001Title" class="member-form-header mgt-30" style="display: none;">
     <h3 class="form-section-title">방송 회사</h3>
 </div>
@@ -2211,7 +2224,9 @@ function initNavi() {
     </div>
 </div>
 
+TEMP-HIDDEN-END -->
 <!-- 게임  -->
+<!-- TEMP-HIDDEN-START
 <div id="wrap002002Title" class="member-form-header mgt-30" style="display: none;">
     <h3 class="form-section-title">게임 회사</h3>
 </div>
@@ -2334,7 +2349,9 @@ function initNavi() {
     </div>
 </div>
 
+TEMP-HIDDEN-END -->
 <!-- 캐릭터 -->
+<!-- TEMP-HIDDEN-START
 <div id="wrap002003Title" class="member-form-header mgt-30" style="display: none;">
     <h3 class="form-section-title">캐릭터 회사</h3>
 </div>
@@ -2450,7 +2467,9 @@ function initNavi() {
     </div>
 </div>
 
+TEMP-HIDDEN-END -->
 <!-- 만화 -->
+<!-- TEMP-HIDDEN-START
 <div id="wrap002004Title" class="member-form-header mgt-30" style="display: none;">
     <h3 class="form-section-title">만화 회사</h3>
 </div>
@@ -2573,7 +2592,9 @@ function initNavi() {
     </div>
 </div>
 
+TEMP-HIDDEN-END -->
 <!-- 애니메이션 -->
+<!-- TEMP-HIDDEN-START
 <div id="wrap002005Title" class="member-form-header mgt-30" style="display: none;">
     <h3 class="form-section-title">애니메이션 회사</h3>
 </div>
@@ -2737,7 +2758,9 @@ function initNavi() {
     </div>
 </div>
 
+TEMP-HIDDEN-END -->
 <!-- 패션 -->
+<!-- TEMP-HIDDEN-START
 <div id="wrap002006Title" class="member-form-header mgt-30" style="display: none;">
     <h3 class="form-section-title">애니메이션 회사</h3>
 </div>
@@ -2810,7 +2833,9 @@ function initNavi() {
     </div>
 </div>
 
+TEMP-HIDDEN-END -->
 <!-- 음악 -->
+<!-- TEMP-HIDDEN-START
 <div id="wrap002007Title" class="member-form-header mgt-30" style="display: none;">
     <h3 class="form-section-title">음악 회사</h3>
 </div>
@@ -2906,7 +2931,10 @@ function initNavi() {
         </div>
     </div>
 </div>
+TEMP-HIDDEN-END -->
 <!-- 기타는 회원가입 -->
+<!-- 2026-09-11: 아래 스크립트 블록(mergeGenre 등 장르 체크박스 로직)은 TEMP-HIDDEN
+     범위에서 제외한다 - 마크업만 숨기고 JS 로직은 그대로 살려둬야 한다는 원칙. -->
 
 <script>
 $(document).ready(function(){
@@ -3035,6 +3063,7 @@ function validateGenre() {
 </script>
 
                 <!-- 기타 회사타이틀 -->
+<!-- TEMP-HIDDEN-START
                 <div class="member-form-header mgt-30" id="divGenreEtc1" style="display: none;">
                     <h3 class="form-section-title">기타 장르</h3>
                 </div>
@@ -3053,6 +3082,7 @@ function validateGenre() {
                         </div>
                     </div>
                 </div>
+TEMP-HIDDEN-END -->
 
                 <div id="prevErrorsMsgGroup" class="textc">
 
