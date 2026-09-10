@@ -4199,11 +4199,21 @@ function catPositionLabel(k, clickable) {
 
 /* ===== STEP2: 회사카테고리 ===== */
 function drawCatStep() {
-  // 사이드바·카드 목록은 선택 여부와 무관하게 항상 전체 장르(GENRES)를 보여준다
+  // 사이드바 "목차" 자체는 선택 여부와 무관하게 항상 전체 장르(GENRES)를 보여준다
   // (수정 전: st.genres로 선택된 장르만 좁혀서 보여줬던 버그 - 1단계에서 고른 장르는
-  // renderGenreSideNav의 preSelectedGenres 인자로 넘겨 하이라이트만 하고, 목록 자체는
+  // renderGenreSideNav의 preSelectedGenres 인자로 넘겨 하이라이트만 하고, 목차 자체는
   // 필터링하지 않는다. drawWishStep과 동일한 패턴).
   const genreScope = GENRES;
+
+  // 2026-09-10: 우측 카드 영역에 실제로 뭘 보여줄지 결정하는 catShownGenres는 위 목차와
+  // 별개다 - "선택된(1단계에서 고른) 장르의 카테고리만 기본으로 보여야 한다"는 요구사항에
+  // 맞춰, 2단계에 아직 한 번도 진입한 적 없어 catShownGenres가 비어있는 시점에만 st.genres
+  // 로 시드한다. size 체크로 가드해서, 드로우가 여러 번(항목 체크·사이드바 토글 등으로)
+  // 다시 불려도 이미 사용자가 사이드바에서 조정해둔 상태를 st.genres로 덮어쓰지 않는다
+  // (덮어쓰면 클릭해서 켠/끈 상태가 매 리렌더마다 초기화되어버린다).
+  if (!st.catShownGenres.size && st.genres.size) {
+    st.genres.forEach(g => st.catShownGenres.add(g));
+  }
   drawChipRow(document.getElementById("catModuleFilter"), moduleOptionsFor(genreScope, true), st.catModuleFilter, drawCatStep,
     stage => moduleBadgeInfo(st.cats, genreScope, stage));
 
