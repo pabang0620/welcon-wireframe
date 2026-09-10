@@ -1156,9 +1156,18 @@ function initNavi() {
             <input type="hidden" id="snsUrlArr" name="seller.snsUrlArr" value="">
 
 
+                <!-- TEMP-HIDDEN 2026-09-10: 공통모듈 박스 위 입력 필드 전체를 "일단" 임시로
+                     화면에서 숨김(사용자 요청, 삭제 아님). 기존 소스 내 작은 라벨 주석
+                     (회사명 국문 라벨 주석 등)은 HTML 주석은 중첩이 불가능해 그대로 두고
+                     그 사이사이 구간만 나눠 TEMP-HIDDEN-START/END 쌍으로 감쌌다.
+                     되살릴 때는 아래 TEMP-HIDDEN-START/END 마커 줄만 전부 제거하면
+                     원래 마크업이 그대로 복원된다(원본 내용은 한 글자도 바꾸지 않음). -->
+                <!-- TEMP-HIDDEN-START
                 <div class="form-grid">
 
+                TEMP-HIDDEN-END -->
                     <!-- 회사명(국문) -->
+                <!-- TEMP-HIDDEN-START
                     <div class="form-row">
                         <div class="form-label required">회사명(국문)</div>
                         <div class="form-input-group"><p class="form-noinput">퍼널스</p></div>
@@ -1200,9 +1209,11 @@ function initNavi() {
                             </div>
                         </div>
                     </div>
+                TEMP-HIDDEN-END -->
 
 
                     <!-- 우편번호 -->
+                <!-- TEMP-HIDDEN-START
                     <div class="form-row">
                         <label for="companyZip" class="form-label required">우편번호</label>
                         <div class="form-input-group">
@@ -1212,8 +1223,10 @@ function initNavi() {
                             <a class="btn-primary form-button" href="javascript:void(0);" role="button" onclick="openSearchZipPopup()" title="새창열림">우편번호<i class="button-icon03"></i></a>
                         </div>
                     </div>
+                TEMP-HIDDEN-END -->
 
                     <!-- 주소(국문) -->
+                <!-- TEMP-HIDDEN-START
                     <div class="form-row">
                         <div class="form-label required">주소(국문)</div>
                         <div class="form-input-group">
@@ -1244,8 +1257,10 @@ function initNavi() {
                             </div>
                         </div>
                     </div>
+                TEMP-HIDDEN-END -->
 
                     <!-- 대표 전화 -->
+                <!-- TEMP-HIDDEN-START
                     <div class="form-row">
                         <label for="companyMainTel" class="form-label required">대표 전화</label>
                         <div class="form-input-group">
@@ -1254,8 +1269,10 @@ function initNavi() {
                             <span class="form-add-txt danger"><strong> [필수]</strong> '-' 포함하여 입력해 주세요.</span>
                         </div>
                     </div>
+                TEMP-HIDDEN-END -->
 
                     <!-- 팩스 -->
+                <!-- TEMP-HIDDEN-START
                     <div class="form-row">
                         <label for="companyFax" class="form-label berequired">팩스</label>
                         <div class="form-input-group">
@@ -1264,8 +1281,10 @@ function initNavi() {
                             <span class="form-add-txt danger"><strong> [필수]</strong> '-' 포함하여 입력해 주세요.</span>
                         </div>
                     </div>
+                TEMP-HIDDEN-END -->
 
                     <!-- 웹사이트  -->
+                <!-- TEMP-HIDDEN-START
                     <div class="form-row">
                         <label for="siteUrl" class="form-label berequired">웹사이트</label>
                         <div class="form-input-group">
@@ -1317,7 +1336,9 @@ function initNavi() {
 
 
 
-                </div><!-- //폼 1-->
+                </div>
+                TEMP-HIDDEN-END --><!-- //폼 1-->
+                <!-- TEMP-HIDDEN-START
 
                 <div class="form-grid02 mgt-30">
                     <div class="form-row rownone">
@@ -1336,7 +1357,9 @@ function initNavi() {
                                 <input type="file" id="imgAtchFile_3" data-idx="0" name="imgAtchFile_3" data-focus-id="btn_imgAtchFile_3" accept=".gif,.jpeg,.jpg,.png" onchange="WELCON.Util.checkFileSize(this, 10, '회사 로고')" class="offscreen">
                                 <a href="javascript:void(0)" id="btn_imgAtchFile_3" role="button" class="btn-primary form-button btn-upload">이미지 업로드<i class="button-upload"></i></a>
                             </div>
+                TEMP-HIDDEN-END -->
                             <!-- 미리보기 영역 -->
+                <!-- TEMP-HIDDEN-START
                             <div class="preview-area" id="gallery_imgAtchFile_3" style="display:none;">
                                 <div class="js-file-container"></div>
                             </div>
@@ -1346,6 +1369,7 @@ function initNavi() {
                     </div>
                 </div>
                 <!-- 대표 이미지(목록)-->
+                <!-- TEMP-HIDDEN-START
                  <div class="form-grid02 mgt-30">
                     <div class="form-row rownone">
                         <div class="form-label berequired">대표 이미지 (목록)</div>
@@ -1358,7 +1382,9 @@ function initNavi() {
                                    <input type="file" id="imgAtchFile_1" data-idx="0" name="imgAtchFile_1" data-focus-id="btn_imgAtchFile_1" accept=".gif,.jpeg,.jpg,.png" onchange="WELCON.Util.checkFileSize(this, 10, '대표 이미지(목록)')" class="offscreen">
                                 <a href="javascript:void(0)" id="btn_imgAtchFile_1" role="button" class="btn-primary form-button btn-upload">이미지 업로드<i class="button-upload"></i></a>
                             </div>
+                TEMP-HIDDEN-END -->
                             <!-- 미리보기 영역 -->
+                <!-- TEMP-HIDDEN-START
                             <div class="preview-area" id="gallery_imgAtchFile_1" style="display:none;">
                                 <div class="js-file-container"></div>
                             </div>
@@ -1368,6 +1394,7 @@ function initNavi() {
                     </div>
                 </div>
                 <!-- 대표 이미지(상세)-->
+                <!-- TEMP-HIDDEN-START
                 <div class="form-grid02 mgt-30">
                     <div class="form-row rownone">
                         <div class="form-label berequired">대표 이미지 (상세)</div>
@@ -1380,7 +1407,9 @@ function initNavi() {
                                 <input type="file" id="imgAtchFile_2" data-idx="0" name="imgAtchFile_2" data-focus-id="btn_imgAtchFile_2" accept=".gif,.jpeg,.jpg,.png" onchange="WELCON.Util.checkFileSize(this, 10, '대표 이미지(상세)')" class="offscreen">
                                 <a href="javascript:void(0)" id="btn_imgAtchFile_2" role="button" class="btn-primary form-button btn-upload">이미지 업로드<i class="button-upload"></i></a>
                             </div>
+                TEMP-HIDDEN-END -->
                             <!-- 미리보기 영역 -->
+                <!-- TEMP-HIDDEN-START
                             <div class="preview-area" id="gallery_imgAtchFile_2" style="display:none;">
                                 <div class="js-file-container"></div>
                             </div>
@@ -1391,6 +1420,7 @@ function initNavi() {
                 </div>
 
                 <!-- SNS-->
+                <!-- TEMP-HIDDEN-START
                 <div class="member-form-header mgt-30">
                     <h3 class="form-section-title">SNS</h3>
                 </div>
@@ -1413,6 +1443,7 @@ function initNavi() {
                         </div>
                     </div>
                 </div>
+                TEMP-HIDDEN-END -->
                 <!-- //SNS-->
 
 
@@ -3423,7 +3454,12 @@ function initPanel() {
         <div class="card-area" id="catArea"></div>
       </div>
     </div>
-    <div class="picked-bar" id="catPickedBar"></div>
+    <!-- 2026-09-10: "선택한 항목" 요약 바 임시 숨김(사용자 요청) - 컨테이너 자체는 DOM에 유지한다.
+         renderPickedBar()가 이 id로 getElementById 후 innerHTML을 쓰는데, 엘리먼트를 통째로
+         주석 처리해 없애면 null.innerHTML 에러가 나서 뒤이어 실행되는 wireOptClicks 등
+         항목 선택/해제 배선까지 전부 끊긴다 - 그래서 display:none으로만 숨긴다.
+         선택 상태 데이터·체크 표시·1↔2단계 동기화는 이 요소와 무관하게 그대로 동작한다. -->
+    <div class="picked-bar" id="catPickedBar" style="display:none"></div>
   </section>
 
   <section class="screen screen-fill" data-s="3">
@@ -3441,7 +3477,8 @@ function initPanel() {
         <div class="card-area" id="wishArea"></div>
       </div>
     </div>
-    <div class="picked-bar" id="wishPickedBar"></div>
+    <!-- 2026-09-10: "선택한 항목" 요약 바 임시 숨김 - 이유는 catPickedBar 주석 참고. -->
+    <div class="picked-bar" id="wishPickedBar" style="display:none"></div>
   </section>
 
   <section class="screen" data-s="4">
