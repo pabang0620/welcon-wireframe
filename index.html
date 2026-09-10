@@ -1640,6 +1640,12 @@ function initNavi() {
           background: var(--wc-purple); color: #fff; font-size: 1.15rem; font-weight: 800;
           width: 1.8rem; height: 1.8rem; display: grid; place-items: center; flex: none; border-radius: 50%; margin-left: 0.8rem;
         }
+        /* 섹션 숨기기(× 버튼) - 2026-09-11, 사이드바 재클릭으로 숨기던 걸 여기로 옮겼다. */
+        .wc-wizard .group-close-btn {
+          margin-left: auto; border: none; background: transparent; color: var(--wc-text-sub);
+          font-size: 1.7rem; line-height: 1; font-weight: 400; cursor: pointer; padding: 0.2rem 0.6rem; border-radius: 0.4rem;
+        }
+        .wc-wizard .group-close-btn:hover { color: var(--wc-purple); background: var(--wc-box-bg); }
 
         /* 공통모듈(단계)별 소그룹 - 실제 위저드가 이미 갖고 있던 module 필터 칩 카운트와
            같은 정보를 여기서도(스크롤하며 훑을 때) 바로 보여준다. */
@@ -3945,8 +3951,14 @@ function cardHtml(card, pickedSet, allowMainToggle, otherText, otherOpen) {
     '</div>';
   }).join("");
 
+  // 2026-09-10: 섹션 숨기기("선택 취소")는 더 이상 사이드바 클릭이 아니라 이 × 버튼
+  // 전담이다(사이드바는 이제 클릭=항상 스크롤, 절대 숨기지 않음 - wireGenreSideNav 참고).
+  // 닫기 버튼은 shownGenres에서 안 지워도 되는 경우(필터 자체가 비어 "전체 표시" 중인 경우)에도
+  // 눌러서 "이 장르만 제외"할 수 있어야 하므로, 클릭 핸들러(wireGroupCloseButtons)가 실제
+  // 상태 전환을 판단한다 - 여기 마크업은 data-genre만 갖고 있으면 된다.
+  const closeBtn = '<button type="button" class="group-close-btn" data-genre="' + escAttr(card.genre) + '" aria-label="' + escAttr(card.genre) + ' 섹션 숨기기">&times;</button>';
   return '<section class="group" id="genre-section-' + escAttr(card.genre) + '" data-genre="' + escAttr(card.genre) + '">' +
-    '<div class="group-title"><span class="group-title-text">' + card.genre + badge + '</span></div>' +
+    '<div class="group-title"><span class="group-title-text">' + card.genre + badge + '</span>' + closeBtn + '</div>' +
     '<div class="group-body">' + tiles + '</div>' +
   '</section>';
 }
@@ -3982,35 +3994,58 @@ function renderGenreSideNav(container, genres, pickedSet, preSelectedGenres, sho
   }).join("");
 }
 
-/* 왼쪽 목차 클릭 → 그 장르를 "보여주기" 목록(st[stateKey], shownGenres Set)에 토글로
-   추가/제거하는 다중선택 필터(2026-09-10 재정정 - 직전에 "스크롤 버그"를 고친다며 이
-   토글/숨김 자체를 통째로 없앴던 건 과했다는 사용자 지적으로 원복). 우측 카드 영역은
-   shownGenres에 있는 장르만 보이고(비어 있으면 필터 없음 = 전체 표시 - applyGenreFilter의
-   기존 규약, 안 건드림), 나머지는 .filtered-out으로 숨는다. 여러 장르를 동시에 켤 수
-   있다(하나 켠다고 이전 것이 꺼지지 않음).
+/* 왼쪽 목차 클릭 → 그 장르 섹션을 보이게(shownGenres에 추가) 한 뒤 그 섹션으로 부드럽게
+   스크롤한다(2026-09-11 재정정). 사이드바 클릭으로는 더 이상 숨기지 않는다 - "클릭하면
+   항상 스크롤되어야 하는데 이미 켜진 걸 클릭하면 꺼졌다가 다음 클릭에야 스크롤된다"는
+   사용자 리포트 때문에, 켜기/스크롤과 끄기를 서로 다른 컨트롤로 분리했다: 사이드바 클릭은
+   "안 보이면 켜고 스크롤 / 이미 보이면 그냥 스크롤만"만 하고, 숨기기("선택 취소")는 각
+   카드 섹션 제목의 × 버튼(wireGroupCloseButtons)으로 옮겼다.
+   "이미 보임" 여부는 applyGenreFilter와 동일한 규약으로 판정한다 - shownGenres가
+   비어있으면(필터 없음) 전체가 이미 보이는 것으로 치므로 굳이 add하지 않는다(비어있는
+   채로 둬야 다른 장르들도 계속 "필터 없음"으로 함께 보인다 - 여기서 add해버리면 그
+   순간부터 shownGenres가 딱 1개짜리 명시적 필터가 되어 버려 오히려 다른 장르들이 숨는다).
    사이드바 하이라이트(active, renderGenreSideNav의 hasPicks)는 이 shownGenres 멤버십과
    완전히 별개다 - "그 장르에 실제 선택 항목이 있는지"(count>0)·"1단계에서 고른 장르인지"
-   (preSelectedGenres)만으로 계산되고, shownGenres에 새로 추가한다고 자동으로 하이라이트
-   되는 게 아니며 거꾸로 하이라이트되어 있다고 자동으로 shownGenres에 들어가 있는 것도
-   아니다(진짜 원인이었던 버그 - 클릭 핸들러가 이 둘을 뒤섞어 다루지 않도록 여기서 다루는
-   상태는 오직 shownGenres 하나뿐이다).
-   스크롤은 "새로 켠"(추가) 경우에만 한다 - 이미 켜져 있던 걸 꺼서(숨겨서) "선택 취소"할
-   때는 사라지는 섹션으로 스크롤할 이유가 없어 하지 않는다. */
+   (preSelectedGenres)만으로 계산된다. */
 function wireGenreSideNav(navEl, stateKey, redraw, contentAreaId) {
   navEl.onclick = e => {
     const btn = e.target.closest(".genre-nav-item");
     if (!btn) return;
     const g = btn.dataset.genre;
     const set = st[stateKey];
-    const wasShown = set.has(g);
-    if (wasShown) set.delete(g); else set.add(g);
-    redraw();
-    if (!wasShown && contentAreaId) {
+    const isCurrentlyShown = !set.size || set.has(g);
+    if (!isCurrentlyShown) {
+      set.add(g);
+      redraw();
+    }
+    if (contentAreaId) {
       const contentEl = document.getElementById(contentAreaId);
       const target = contentEl && contentEl.querySelector('.group[data-genre="' + CSS.escape(g) + '"]');
       if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   };
+}
+
+/* 카드 섹션(.group) 제목의 × 버튼 → 그 장르를 shownGenres에서 명시적으로 빼서 숨긴다
+   ("선택 취소", 2026-09-11 신설 - 이전엔 사이드바 재클릭이 이 역할이었는데 사이드바를
+   "클릭=항상 스크롤"로 바꾸면서 숨기기 기능을 여기로 옮겼다).
+   shownGenres가 비어있으면(필터 없음=전체 표시 규약) 그냥 delete만 해선 효과가 없다
+   (애초에 그 장르가 Set의 멤버가 아니었으므로) - 그래서 이 경우엔 먼저 전체 장르를
+   채워 넣어 명시적 목록으로 바꾼 다음 이 장르만 빼서, "이 장르만 숨기고 나머지는 계속
+   보이게" 만든다. */
+function wireGroupCloseButtons(container, shownGenres, redraw) {
+  container.querySelectorAll(".group-close-btn").forEach(btn => {
+    btn.onclick = e => {
+      e.stopPropagation();
+      const g = btn.dataset.genre;
+      if (!shownGenres.size) {
+        GENRES.forEach(x => { if (x !== g) shownGenres.add(x); });
+      } else {
+        shownGenres.delete(g);
+      }
+      redraw();
+    };
+  });
 }
 
 /* 카드 영역에 실제로 렌더링된 장르 섹션(.group) 중 필터에 안 걸리는 것들을 숨긴다.
@@ -4222,6 +4257,7 @@ function drawCatStep() {
   const el = document.getElementById("catArea");
   renderCards(el, cards, st.cats, q ? '"' + q + '"에 해당하는 항목이 없습니다.' : '해당하는 항목이 없습니다.', true, st.catOtherText, st.catOtherOpen);
   applyGenreFilter(el, st.catShownGenres);
+  wireGroupCloseButtons(el, st.catShownGenres, drawCatStep);
 
   const navEl = document.getElementById("catGenreNav");
   renderGenreSideNav(navEl, genreScope, st.cats, st.genres, st.catShownGenres);
@@ -4253,6 +4289,7 @@ function drawWishStep() {
   const el = document.getElementById("wishArea");
   renderCards(el, cards, st.wishes, q ? '"' + q + '"에 해당하는 항목이 없습니다.' : '선택할 수 있는 파트너 유형이 없습니다.', false, st.wishOtherText, st.wishOtherOpen);
   applyGenreFilter(el, st.wishShownGenres);
+  wireGroupCloseButtons(el, st.wishShownGenres, drawWishStep);
 
   const navEl = document.getElementById("wishGenreNav");
   renderGenreSideNav(navEl, genreScope, st.wishes, st.genres, st.wishShownGenres);
