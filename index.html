@@ -1854,6 +1854,23 @@ function initNavi() {
         <div class="form-input-group">
             <div class="wc-wizard">
                 <button type="button" class="module-filter-btn module-filter-btn-lg" id="openWizardModalBtn">공통모듈 선택하기</button>
+                <!-- 2026-09-11: 위저드 4단계(완료 화면) 진입 시 그 안에서 이미 쓰던 "포지션 분포"
+                     차트(drawGenreChart/computeGenreChartData)를 재사용해 이 공통모듈 박스
+                     안에도 같은 그래프를 그린다(drawMainPageGenreChart 참고, 모달을 닫아도
+                     이 카드는 메인 폼에 남아 있으므로 계속 보인다). 선택된 게 없으면 빈
+                     카드를 보이지 않으려고 기본은 숨김(display:none) - drawMainPageGenreChart가
+                     데이터가 생기면 보이게 켠다. -->
+                <div class="chart-card" id="mainPageGenreChartCard" style="display:none; margin-top:1.6rem;">
+                    <div class="chart-head">포지션 분포</div>
+                    <div class="chart-body">
+                        <div class="chart-legend">
+                            <span class="lg-item"><span class="lg-swatch main"></span>주포지션</span>
+                            <span class="lg-item"><span class="lg-swatch sub"></span>보조포지션</span>
+                            <span class="lg-item"><span class="lg-swatch wish"></span>희망 포지션</span>
+                        </div>
+                        <div class="chart-canvas-wrap" id="mainPageGenreChartWrap"><canvas id="mainPageGenreChartCanvas"></canvas></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -3716,12 +3733,7 @@ const st = {
   // 2026-09-11: drawCatStep이 "이미 시드해본 st.genres 멤버"를 기록해두는 용도 - Set 크기가
   // 아니라 이 목록으로 시드 여부를 판단해서, 사이드바 클릭으로 catShownGenres를 완전히
   // 비워도(전부 제외) 재시드되지 않는다(자세한 이유는 drawCatStep 안의 주석 참고).
-  catShownGenresSeededFrom: new Set(),
-  // 2026-09-11: 사이드바 클릭 핸들러(wireGenreSideNav)가 "마지막으로 스크롤 이동시킨
-  // 장르"를 기록해두는 용도 - 같은 장르를 다시 클릭했을 때만 제외(숨김)로 판단한다.
-  // 스텝별로 분리(2단계/3단계 독립).
-  catLastScrolledGenre: null,
-  wishLastScrolledGenre: null
+  catShownGenresSeededFrom: new Set()
 };
 
 const key = (g, item) => g + SEP + item;
@@ -3769,17 +3781,10 @@ function render() {
   nextBtn.disabled = (st.step === 1 && !st.genres.size) || (st.step === 2 && !st.cats.size);
 
   if (st.step === 1) drawGenreStep();
-  // 2026-09-11: 진짜 "화면 전환"(render() 경유)으로 2/3단계에 들어올 때마다
-  // catLastScrolledGenre/wishLastScrolledGenre를 null로 리셋한다 - 이 값이 지난 방문
-  // 때 기억을 그대로 들고 있으면, 다른 스텝 갔다가 돌아와서 처음 클릭한 장르가(이번
-  // 방문에서 스크롤한 적 없는데도) "마지막 스크롤 장르와 같다"고 오판되어 곧장
-  // 제외(숨김)로 처리되는 꼬임이 생긴다. 항목 체크 등으로 drawCatStep/drawWishStep만
-  // 다시 불리는 매 리렌더에서는 안 불려서(render() 안에서만 호출) 그 안에서 사이드바를
-  // 눌러가며 켜고 끄는 정상 동작에는 영향 없다.
-  if (st.step === 2) { st.catLastScrolledGenre = null; drawCatStep(); scrollToFirstSelectedGenre(); }
+  if (st.step === 2) { drawCatStep(); scrollToFirstSelectedGenre(); }
   // 3단계 진입 시(화면 전환 시점에만) 2단계에서 필터링해 보고 있던 장르를 그대로
   // 이어받는다 - 방금 "방송"만 보고 있었으면 3단계도 "방송"만 필터된 채로 시작한다.
-  if (st.step === 3) { st.wishShownGenres = new Set(st.catShownGenres); st.wishLastScrolledGenre = null; drawWishStep(); }
+  if (st.step === 3) { st.wishShownGenres = new Set(st.catShownGenres); drawWishStep(); }
   if (st.step === 4) drawSummaryStep();
 
   updateCountNote();
@@ -4038,41 +4043,52 @@ function renderGenreSideNav(container, genres, pickedSet, preSelectedGenres, sho
   }).join("");
 }
 
-/* 왼쪽 목차 클릭 → 켜기/끄기+스크롤을 전부 사이드바 클릭 하나로 처리한다(2026-09-11
-   재재정정 - × 버튼 방식을 걷어내고 사용자가 제안한 "마지막으로 스크롤한 장르" 기준으로
-   교체). 판단 기준은 shownGenres 멤버십이 아니라 st[lastScrolledKey](직전에 스크롤로
-   보여준 장르, 스텝별로 catLastScrolledGenre/wishLastScrolledGenre 분리)다:
-   - 클릭한 장르 g가 lastScrolledKey와 같다("이미 거기 스크롤해서 보고 있는 상태에서
-     다시 클릭") → 제외: shownGenres에서 빼고 lastScrolledKey를 null로 리셋, 스크롤 안 함.
-   - 다르다(다른 장르를 클릭했거나, 처음 클릭하는 경우 - lastScrolledKey가 아직 g가
-     아니므로) → 표시+스크롤: shownGenres에 없으면 add, lastScrolledKey를 g로 갱신,
-     redraw 후 스크롤.
-   이러면 2단계 진입 시 seed되어 이미 shownGenres 멤버인 장르라도 lastScrolledKey는
-   아직 그 장르가 아니므로 첫 클릭은 항상 "표시+스크롤"로 처리된다 - "seed된 장르 첫
-   클릭이 숨김으로 처리되던" 버그가 구조적으로 재발하지 않는다. 다른 장르를 클릭하면
-   lastScrolledKey가 그쪽으로 넘어가므로, 원래 장르를 또 클릭하면 "이미 거기 있는 게
-   아니게" 되어 다시 표시+스크롤로 자연스럽게 순환한다.
+/* 클릭한 장르의 카드 섹션이 지금 스크롤 컨테이너(.genre-main-panel) 상단에 이미 맞춰져
+   있는지(=지금 진짜로 그 위치를 보고 있는지) 실측한다(2026-09-11 3차 정정 - "마지막으로
+   스크롤한 장르"를 기억해두는 state 방식은, 클릭으로 스크롤한 뒤 사용자가 마우스 휠로
+   직접 다른 데로 스크롤하고 나서 그 장르를 다시 클릭하면 "기억"과 "실제 위치"가 어긋나
+   엉뚱하게 제외돼버리는 문제가 있었다 - 그래서 기억 대신 클릭 시점에 실측한다).
+   허용 오차 20px - scrollIntoView({block:"start"})로 맞춘 뒤에도 서브픽셀 반올림 등으로
+   완전히 0px 일치하지 않을 수 있어 여유를 둔다. filtered-out(숨겨진) 섹션은 애초에
+   레이아웃에 안 잡히므로 무조건 "불일치"로 취급한다. */
+const SCROLL_ALIGN_TOLERANCE_PX = 20;
+function isSectionScrolledIntoView(target, contentEl) {
+  if (!target || !contentEl) return false;
+  if (target.classList.contains("filtered-out")) return false;
+  const panel = contentEl.closest(".genre-main-panel") || contentEl;
+  const panelTop = panel.getBoundingClientRect().top;
+  const targetTop = target.getBoundingClientRect().top;
+  return Math.abs(targetTop - panelTop) <= SCROLL_ALIGN_TOLERANCE_PX;
+}
+
+/* 왼쪽 목차 클릭 → 켜기/끄기+스크롤을 전부 사이드바 클릭 하나로 처리한다.
+   - 클릭한 장르 섹션이 지금 실제로 스크롤 상단에 맞춰져 있다(isSectionScrolledIntoView)
+     → 제외: shownGenres에서 빼고 redraw만, 스크롤 안 함(사라지는 섹션이니 스크롤할
+     이유가 없다).
+   - 아니다(다른 위치에 있거나, 아직 shownGenres에 없어 아예 안 보이는 상태)
+     → 표시+스크롤: shownGenres에 없으면 add, redraw 후 그 섹션으로 scrollIntoView.
+   위치를 "기억"하지 않고 클릭 시점에 매번 실측하므로, 사용자가 사이드바 클릭이 아니라
+   마우스 휠로 직접 스크롤을 옮겨놔도 클릭 시점의 진짜 위치 기준으로 정확히 판단된다.
    사이드바 하이라이트(active, renderGenreSideNav의 hasPicks)는 이 shownGenres 멤버십과
    완전히 별개다 - "그 장르에 실제 선택 항목이 있는지"(count>0)·"1단계에서 고른 장르인지"
    (preSelectedGenres)만으로 계산된다. */
-function wireGenreSideNav(navEl, stateKey, lastScrolledKey, redraw, contentAreaId) {
+function wireGenreSideNav(navEl, stateKey, redraw, contentAreaId) {
   navEl.onclick = e => {
     const btn = e.target.closest(".genre-nav-item");
     if (!btn) return;
     const g = btn.dataset.genre;
     const set = st[stateKey];
-    if (st[lastScrolledKey] === g) {
+    const contentEl = contentAreaId ? document.getElementById(contentAreaId) : null;
+    const currentTarget = contentEl && contentEl.querySelector('.group[data-genre="' + CSS.escape(g) + '"]');
+    if (isSectionScrolledIntoView(currentTarget, contentEl)) {
       set.delete(g);
-      st[lastScrolledKey] = null;
       redraw();
       return;
     }
     if (!set.has(g)) set.add(g);
-    st[lastScrolledKey] = g;
     redraw();
-    if (contentAreaId) {
-      const contentEl = document.getElementById(contentAreaId);
-      const target = contentEl && contentEl.querySelector('.group[data-genre="' + CSS.escape(g) + '"]');
+    if (contentEl) {
+      const target = contentEl.querySelector('.group[data-genre="' + CSS.escape(g) + '"]');
       if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   };
@@ -4299,7 +4315,7 @@ function drawCatStep() {
 
   const navEl = document.getElementById("catGenreNav");
   renderGenreSideNav(navEl, genreScope, st.cats, st.genres, st.catShownGenres);
-  wireGenreSideNav(navEl, "catShownGenres", "catLastScrolledGenre", drawCatStep, "catArea");
+  wireGenreSideNav(navEl, "catShownGenres", drawCatStep, "catArea");
 
   renderPickedBar(document.getElementById("catPickedBar"), st.cats, "cat", () => {
     drawCatStep();
@@ -4330,7 +4346,7 @@ function drawWishStep() {
 
   const navEl = document.getElementById("wishGenreNav");
   renderGenreSideNav(navEl, genreScope, st.wishes, st.genres, st.wishShownGenres);
-  wireGenreSideNav(navEl, "wishShownGenres", "wishLastScrolledGenre", drawWishStep, "wishArea");
+  wireGenreSideNav(navEl, "wishShownGenres", drawWishStep, "wishArea");
 
   renderPickedBar(document.getElementById("wishPickedBar"), st.wishes, "wish", () => {
     drawWishStep();
@@ -4383,9 +4399,13 @@ function computeGenreChartData() {
   });
 }
 
-/* Chart.js 인스턴스 - drawSummaryStep()이 4단계에 여러 번 진입해도 캔버스가 중복
-   생성되지 않도록, 다시 그릴 때마다 기존 인스턴스를 destroy() 하고 새로 만든다. */
+/* Chart.js 인스턴스 2개 - 위저드 내부(4단계 요약 화면) 캔버스용 하나, 위저드를 완료해도
+   메인 폼 "공통모듈" 박스에 계속 남아있는 캔버스용 하나(2026-09-11 - 위저드 완료 시
+   공통모듈 박스에도 같은 그래프를 보여달라는 요청으로 추가). drawSummaryStep()이
+   4단계에 여러 번 진입해도 캔버스가 중복 생성되지 않도록, 다시 그릴 때마다 기존
+   인스턴스를 destroy() 하고 새로 만든다. */
 let genreChartInstance = null;
+let mainPageGenreChartInstance = null;
 
 const CHART_SEG_META = {
   main: { label: "주포지션", color: "#6d28d9", hlBg: "#4c1d95", hlText: "#fff" },
@@ -4428,22 +4448,34 @@ function highlightSummaryFor(genre, type) {
   });
 }
 
-function drawGenreChart() {
-  const wrap = document.getElementById("genreChartWrap");
-  const canvas = document.getElementById("genreChartCanvas");
+/* wrapId/canvasId 자리에 "포지션 분포" 막대그래프를 그린다 - 위저드 내부(4단계 요약)
+   캔버스와 메인 폼 "공통모듈" 박스 캔버스가 이 함수 하나를 공유한다(2026-09-11, 위저드
+   완료 시 공통모듈 박스에도 같은 그래프를 보여달라는 요청으로 drawGenreChart에서 분리).
+   cardId를 넘기면(메인 폼 쪽만 해당) 데이터가 없을 때 카드 전체(제목+범례 포함)를
+   숨기고 있으면 보이게 한다 - 모달 내부 캔버스는 항상 요약 카드들 아래 제자리에 있어
+   카드째로 숨길 필요가 없어 cardId 없이 호출한다. enableHover가 true면(모달 내부만)
+   그래프 hover 시 위에 있는 요약 카드의 태그를 하이라이트한다 - 메인 폼 쪽은 그 태그
+   목록 자체가 없어서 꺼둔다(켜봐야 아무 것도 안 걸림, 에러는 안 남). */
+function renderGenreChartInto(wrapId, canvasId, getInstance, setInstance, cardId, enableHover) {
+  const wrap = document.getElementById(wrapId);
+  const canvas = document.getElementById(canvasId);
+  const card = cardId ? document.getElementById(cardId) : null;
   if (!wrap || !canvas) return;
 
-  if (genreChartInstance) {
-    genreChartInstance.destroy();
-    genreChartInstance = null;
+  const existing = getInstance();
+  if (existing) {
+    existing.destroy();
+    setInstance(null);
   }
 
   const data = computeGenreChartData();
   if (!data.length) {
     canvas.style.display = "none";
     wrap.style.height = "0px";
+    if (card) card.style.display = "none";
     return;
   }
+  if (card) card.style.display = "";
   canvas.style.display = "";
   canvas.onmouseleave = clearChartHighlight;
   // 장르 하나당 막대 1개 - 장르 수(최대 8개)에 비례해 캔버스 높이를 잡는다.
@@ -4480,7 +4512,7 @@ function drawGenreChart() {
     };
   });
 
-  genreChartInstance = new Chart(canvas, {
+  setInstance(new Chart(canvas, {
     type: "bar",
     data: { labels: data.map(d => d.genre), datasets: datasets },
     options: {
@@ -4489,13 +4521,13 @@ function drawGenreChart() {
       maintainAspectRatio: false,
       animation: { duration: 200 },
       interaction: { mode: "nearest", intersect: true },
-      onHover: (evt, elements) => {
+      onHover: enableHover ? (evt, elements) => {
         if (!elements.length) { clearChartHighlight(); return; }
         const el = elements[0];
         const type = ["main", "sub", "wish"][el.datasetIndex];
         const genre = data[el.index].genre;
         highlightSummaryFor(genre, type);
-      },
+      } : undefined,
       scales: {
         x: {
           stacked: true, min: 0, max: chartMax, position: "bottom",
@@ -4525,7 +4557,22 @@ function drawGenreChart() {
         }
       }
     }
-  });
+  }));
+}
+
+function drawGenreChart() {
+  renderGenreChartInto("genreChartWrap", "genreChartCanvas",
+    () => genreChartInstance, v => { genreChartInstance = v; },
+    null, true);
+}
+
+/* 2026-09-11 신설: 위저드 4단계(완료 화면) 진입 시 drawSummaryStep()에서 drawGenreChart와
+   나란히 호출된다 - 모달을 닫아도 메인 폼 "공통모듈" 박스에 남아있는 캔버스
+   (#mainPageGenreChartCanvas)에 같은 데이터로 그린다. */
+function drawMainPageGenreChart() {
+  renderGenreChartInto("mainPageGenreChartWrap", "mainPageGenreChartCanvas",
+    () => mainPageGenreChartInstance, v => { mainPageGenreChartInstance = v; },
+    "mainPageGenreChartCard", false);
 }
 
 /* ===== STEP4: 완료 요약 ===== */
@@ -4560,6 +4607,7 @@ function sumSubgroupsByGenre(keys, tagFn) {
 function drawSummaryStep() {
   clearChartHighlight();
   drawGenreChart();
+  drawMainPageGenreChart();
 
   /* 장르 카드: 활동장르(st.genres + 2단계에서 필터를 끄고 추가 선택한 st.cats 장르, 중복
      제거하되 st.genres가 먼저 오도록) + 희망장르(st.wishes에서 파생, 겹쳐도 양쪽 표시) */
@@ -4637,7 +4685,6 @@ function resetAll() {
   st.catCustomItems = {}; st.wishCustomItems = {};
   st.mainKey = null;
   st.catShownGenres = new Set(); st.wishShownGenres = new Set(); st.catShownGenresSeededFrom = new Set();
-  st.catLastScrolledGenre = null; st.wishLastScrolledGenre = null;
   document.getElementById("catSearch").value = "";
   document.getElementById("catSearchBox").classList.remove("has-val");
   document.getElementById("wishSearch").value = "";
