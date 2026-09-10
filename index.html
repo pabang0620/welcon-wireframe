@@ -1621,16 +1621,16 @@ function initNavi() {
         .wc-wizard .genre-nav-item:hover { background: #fff; }
         /* 클릭(포커스)했을 때 브라우저 기본 포커스 링/테두리가 새어 들어오는 걸 확실히 차단 */
         .wc-wizard .genre-nav-item:focus, .wc-wizard .genre-nav-item:focus-visible { outline: none !important; box-shadow: none !important; }
-        /* 2026-09-11: 우측에 지금 켜져 있는(shownGenres 멤버) 장르만 옅게 표시 - .active(실제
-           선택 항목 보유)와 별개다. 우측에서 제외되면 이 클래스가 빠지며 즉시 사라진다.
-           genre-tile.on과 같은 "옅은 보라" 톤(--wc-purple-light-bg/--wc-purple-border)을
-           재사용해 새 색을 도입하지 않았다. 아래 .active 규칙이 뒤에 와서 둘 다 해당할 때
-           .active의 진한 보라가 우선한다. */
-        .wc-wizard .genre-nav-item.shown { background: var(--wc-purple-light-bg); border-left-color: var(--wc-purple-border); }
-        .wc-wizard .genre-nav-item.active { background: var(--wc-purple); border-left-color: var(--wc-purple-dark); color: #fff; }
+        /* 2026-09-11 재정정: 배경 색칠은 이제 .shown(=shownGenres 멤버, 지금 우측에 표시
+           중인지) 하나로만 결정한다 - 한때 있던 .active(실제 선택 항목 보유 여부로 배경을
+           채우던 별도 클래스)는 없앴다. "제외했는데 실제 픽이 있던 장르는 계속 배경이 남아
+           있다"는 사용자 리포트 때문 - 이제 제외되면 예외 없이 흰색(배경 없음)이 된다.
+           색상 자체는 원래 .active가 쓰던 진한 보라 solid 배경(테두리선 없이 꽉 채움)을
+           그대로 가져왔다(연한 배경+왼쪽 테두리선 스타일은 이전 요청에서 이미 되돌림). */
+        .wc-wizard .genre-nav-item.shown { background: var(--wc-purple); border-left-color: var(--wc-purple-dark); color: #fff; }
         .wc-wizard .genre-nav-count { min-width: 2rem; height: 2rem; padding: 0 0.5rem; border-radius: 999px; background: var(--wc-border-light); color: #fff; font-size: 1.1rem; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
         .wc-wizard .genre-nav-count.has { background: var(--wc-purple); }
-        .wc-wizard .genre-nav-item.active .genre-nav-count { background: #fff; color: var(--wc-purple); }
+        .wc-wizard .genre-nav-item.shown .genre-nav-count { background: #fff; color: var(--wc-purple); }
 
         /* 본문도 자기만의 스크롤 영역 */
         .wc-wizard .genre-main-panel { flex: 1; min-width: 0; padding: 2rem 2.2rem; overflow-y: auto; overscroll-behavior: contain; }
@@ -4019,22 +4019,19 @@ function renderCards(container, cards, pickedSet, emptyMsg, allowMainToggle, oth
 }
 
 /* ===== 왼쪽 장르 목차 ===== */
-// 두 표시를 완전히 분리한다(2026-09-11 - "우측에서 제외됐는데 좌측 표시가 안 사라진다"는
-// 사용자 리포트로 분리):
-// ① .active(보라색 채움) - "그 장르에 실제로 고른 항목이 있는지"(count>0) 또는
-//    "1단계에서 고른 장르인지"(preSelectedGenres)로만 계산한다. shownGenres 멤버십과는
-//    무관 - 우측에서 제외해도 실제 선택 항목이 있으면 계속 켜져 있어야 정상이다.
-// ② .shown(옅은 보라 배경) - 지금 왼쪽에서 클릭해 우측에 켜둔 장르인지(shownGenres 멤버십)
-//    만으로 계산한다. 우측 섹션이 제외되는 순간 이 표시도 같이 빠진다.
-// 둘 다 해당하면 .active의 진한 보라가 시각적으로 우선한다(CSS에서 .active 규칙을
-// .shown보다 뒤에 둬서 우선순위를 맞춤).
+// 2026-09-11 재정정: 배경 색칠(.shown)은 오직 shownGenres 멤버십(=지금 우측에 표시 중인지)
+// 하나로만 결정한다 - "제외했는데도 배경이 안 빠진다"는 사용자 리포트로, 한때 hasPicks(실제
+// 선택 항목 보유/1단계 선택 여부)를 배경에 반영하던 .active를 없앴다. 우측에서 제외되면
+// shownGenres에서 빠지므로 배경도 무조건 흰색이 된다 - 실제 픽이 있었어도 예외 없음.
+// hasPicks는 이제 배경과 무관하고, 오른쪽 동그란 카운트 배지(.genre-nav-count.has)의 색만
+// 계속 담당한다(기존에 있던 요소라 새로 추가하는 게 아님).
 function renderGenreSideNav(container, genres, pickedSet, preSelectedGenres, shownGenres) {
   container.innerHTML = genres.map(g => {
     let count = 0;
     pickedSet.forEach(k => { if (parseKey(k)[0] === g) count++; });
     const isShown = !!(shownGenres && shownGenres.has(g));
     const hasPicks = count > 0 || (preSelectedGenres && preSelectedGenres.has(g));
-    const cls = "genre-nav-item" + (hasPicks ? " active" : "") + (isShown ? " shown" : "");
+    const cls = "genre-nav-item" + (isShown ? " shown" : "");
     return '<button type="button" class="' + cls + '" data-genre="' + escAttr(g) + '">' +
       '<span>' + g + '</span><span class="genre-nav-count' + (hasPicks ? " has" : "") + '">' + count + '</span>' +
     '</button>';
