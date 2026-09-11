@@ -1860,6 +1860,14 @@ function initNavi() {
                      이 카드는 메인 폼에 남아 있으므로 계속 보인다). 선택된 게 없으면 빈
                      카드를 보이지 않으려고 기본은 숨김(display:none) - drawMainPageGenreChart가
                      데이터가 생기면 보이게 켠다. -->
+                <!-- TEMP-HIDDEN 2026-09-11: "확인" 눌렀을 때 나오는 이 차트 카드를 "일단"(임시로)
+                     숨김(사용자 요청, 삭제 아님) - 마크업만 주석처리하고 drawMainPageGenreChart()
+                     JS 호출은 그대로 둔다. renderGenreChartInto()가 이미 `if (!wrap || !canvas)
+                     return;`으로 대상 엘리먼트가 없으면 안전하게 no-op 하도록 짜여 있어서(원래
+                     이 함수 자체가 재사용을 염두에 두고 방어적으로 작성됨), 마크업이 사라져도
+                     에러 없이 조용히 아무 일도 안 한다 - 별도 방어 코드 추가가 필요 없었다.
+                     되살릴 때는 TEMP-HIDDEN-START/END 마커 줄만 제거하면 된다. -->
+                <!-- TEMP-HIDDEN-START
                 <div class="chart-card" id="mainPageGenreChartCard" style="display:none; margin-top:1.6rem;">
                     <div class="chart-head">포지션 분포</div>
                     <div class="chart-body">
@@ -1871,6 +1879,7 @@ function initNavi() {
                         <div class="chart-canvas-wrap" id="mainPageGenreChartWrap"><canvas id="mainPageGenreChartCanvas"></canvas></div>
                     </div>
                 </div>
+                TEMP-HIDDEN-END -->
             </div>
         </div>
     </div>
@@ -4014,7 +4023,7 @@ function cardHtml(card, pickedSet, allowMainToggle, otherText, otherOpen) {
     // 줄이 하나 늘어날 일이 없고, 카드 폭이 좁아도 무조건 체크박스 오른쪽 자리에 들어간다.
     const labelHtml = showOther
       ? '<input type="text" class="opt-other-input" data-k="' + o.k +
-        '" placeholder="직접 입력해 주세요" value="' + escAttr(otherVal) + '">'
+        '" placeholder="입력 후 엔터를 눌러주세요" value="' + escAttr(otherVal) + '">'
       : labelText;
     // 기타 항목은 라벨이 이미 "기타"라서 단계뱃지에 "기타"를 또 보여줄 필요가 없다.
     const subHtml = isOtherInput ? "" : '<span class="sub">' + o.stage + '</span>';
