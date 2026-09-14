@@ -1496,7 +1496,7 @@ function initNavi() {
         .wc-wizard .page { max-width: 112rem; margin: 0 auto; padding: 3.6rem 3.2rem; }
         /* "공통모듈" 버튼을 누르기 전까지 보이는 안내 영역 */
         .wc-wizard .module-trigger-wrap { text-align: center; padding: 6rem 2rem; }
-        .wc-wizard .module-filter-btn-lg { font-size: 1.7rem; padding: 1.3rem 3.1rem; border-radius: 0.8rem; }
+        .wc-wizard .module-filter-btn-lg { font-size: 2rem; padding: 1.3rem 3.1rem; border-radius: 0.8rem; }
         .wc-wizard .screen { display: none; }
         .wc-wizard .screen.active { display: block; }
         /* STEP2·3(screen-fill)은 .split-layout이 남은 높이를 정확히 채우게 해서, 모달
@@ -1536,13 +1536,13 @@ function initNavi() {
            칩이 한 줄에 안 들어가 두 줄로 접혀도(외N건 배지까지) 1줄 분량이 다 보이게 잡았다. */
         .wc-wizard .picked-genre-groups { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem 1.6rem; max-height: 9.5rem; overflow-y: auto; overscroll-behavior: contain; }
         .wc-wizard .picked-genre-group { display: flex; align-items: flex-start; gap: 1rem; min-width: 0; }
-        .wc-wizard .picked-genre-label { flex: none; font-size: 1.1rem; font-weight: 700; color: var(--wc-purple-dark); background: var(--wc-purple-light-bg); border-radius: 0.4rem; padding: 0.4rem 0.8rem; }
+        .wc-wizard .picked-genre-label { flex: none; font-size: 1.3rem; font-weight: 700; color: var(--wc-purple-dark); background: var(--wc-purple-light-bg); border-radius: 0.4rem; padding: 0.4rem 0.8rem; }
         .wc-wizard .picked-chip-row { display: flex; flex-wrap: wrap; gap: 0.6rem; }
-        .wc-wizard .picked-chip { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--wc-purple-light-bg); color: var(--wc-purple-dark); border: 0.1rem solid var(--wc-purple-border); border-radius: 999px; padding: 0.4rem 0.4rem 0.4rem 1.1rem; font-size: 1.15rem; font-weight: 600; }
+        .wc-wizard .picked-chip { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--wc-purple-light-bg); color: var(--wc-purple-dark); border: 0.1rem solid var(--wc-purple-border); border-radius: 999px; padding: 0.4rem 0.4rem 0.4rem 1.1rem; font-size: 1.3rem; font-weight: 600; }
         .wc-wizard .picked-chip button { border: none; background: transparent; color: var(--wc-purple-dark); font-size: 1.3rem; line-height: 1; cursor: pointer; padding: 0.3rem; }
         /* 항목 4개 이상은 칩으로 다 안 늘어놓고 "외N건"으로 요약 - 지울 수 있는 칩이
            아니라서 버튼 없이 텍스트만, 색도 옅게 눌러서 실제 칩과 구분한다. */
-        .wc-wizard .picked-chip-more { display: inline-flex; align-items: center; background: var(--wc-box-bg); color: var(--wc-text-sub); border: 0.1rem solid var(--wc-border-light); border-radius: 999px; padding: 0.4rem 1rem; font-size: 1.15rem; font-weight: 600; }
+        .wc-wizard .picked-chip-more { display: inline-flex; align-items: center; background: var(--wc-box-bg); color: var(--wc-text-sub); border: 0.1rem solid var(--wc-border-light); border-radius: 999px; padding: 0.4rem 1rem; font-size: 1.3rem; font-weight: 600; }
         .wc-wizard .filter-label .filter-hint { font-size: 1.3rem; color: var(--wc-border); font-weight: 400; margin-left: 0.8rem; }
         .wc-wizard .chips { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-bottom: 1.8rem; }
         .wc-wizard .chip { border: 0.1rem solid var(--wc-border-light); background: #fff; color: var(--wc-text-sub); padding: 1rem 1.7rem; min-height: 3.4rem; font-size: 1.5rem; line-height: 1.35; cursor: pointer; border-radius: 0.6rem; }
@@ -1550,7 +1550,7 @@ function initNavi() {
         .wc-wizard .chip.has { background: var(--wc-purple-light-bg); border-color: var(--wc-purple-border); color: var(--wc-purple-dark); }
         .wc-wizard .chip.on { background: var(--wc-purple); border-color: var(--wc-purple); color: #fff; }
         .wc-wizard .chip.on.has { background: var(--wc-purple); border-color: var(--wc-purple); color: #fff; }
-        .wc-wizard .chip-badge { display: inline-block; font-size: 1rem; font-weight: 800; padding: 0 0.5rem; margin-left: 0.6rem; min-width: 1.4rem; text-align: center; vertical-align: middle; border-radius: 50%; }
+        .wc-wizard .chip-badge { display: inline-block; font-size: 1.3rem; font-weight: 800; padding: 0 0.5rem; margin-left: 0.6rem; min-width: 1.4rem; text-align: center; vertical-align: middle; border-radius: 50%; }
         .wc-wizard .chip-badge.main { background: var(--wc-purple); color: #fff; }
         .wc-wizard .chip-badge.sub { background: var(--wc-border-light); color: var(--wc-text); }
 
@@ -1628,7 +1628,7 @@ function initNavi() {
            색상 자체는 원래 .active가 쓰던 진한 보라 solid 배경(테두리선 없이 꽉 채움)을
            그대로 가져왔다(연한 배경+왼쪽 테두리선 스타일은 이전 요청에서 이미 되돌림). */
         .wc-wizard .genre-nav-item.shown { background: var(--wc-purple); border-left-color: var(--wc-purple-dark); color: #fff; }
-        .wc-wizard .genre-nav-count { min-width: 2rem; height: 2rem; padding: 0 0.5rem; border-radius: 999px; background: var(--wc-border-light); color: #fff; font-size: 1.1rem; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
+        .wc-wizard .genre-nav-count { min-width: 2rem; height: 2rem; padding: 0 0.5rem; border-radius: 999px; background: var(--wc-border-light); color: #fff; font-size: 1.3rem; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
         .wc-wizard .genre-nav-count.has { background: var(--wc-purple); }
         .wc-wizard .genre-nav-item.shown .genre-nav-count { background: #fff; color: var(--wc-purple); }
 
@@ -1647,7 +1647,7 @@ function initNavi() {
         }
         .wc-wizard .group-title-text { display: flex; align-items: center; }
         .wc-wizard .group-title .g-badge {
-          background: var(--wc-purple); color: #fff; font-size: 1.15rem; font-weight: 800;
+          background: var(--wc-purple); color: #fff; font-size: 1.3rem; font-weight: 800;
           width: 1.8rem; height: 1.8rem; display: grid; place-items: center; flex: none; border-radius: 50%; margin-left: 0.8rem;
         }
 
@@ -1659,7 +1659,7 @@ function initNavi() {
           display: inline-flex; align-items: center; gap: 0.6rem; font-size: 1.3rem; font-weight: 700; color: #fff;
           background: var(--wc-border); border-radius: 0.4rem; padding: 0.4rem 1rem; margin-bottom: 1rem;
         }
-        .wc-wizard .stage-count { background: var(--wc-purple); border-radius: 999px; min-width: 1.9rem; height: 1.9rem; padding: 0 0.5rem; display: inline-flex; align-items: center; justify-content: center; font-size: 1.15rem; }
+        .wc-wizard .stage-count { background: var(--wc-purple); border-radius: 999px; min-width: 1.9rem; height: 1.9rem; padding: 0 0.5rem; display: inline-flex; align-items: center; justify-content: center; font-size: 1.3rem; }
 
         /* 칸을 공유 테두리로 나누는 "표" 느낌 대신, 실제 웰콘이 쓰는 방식대로 카드마다
            둥근 테두리를 두르고 gap으로 떨어뜨려서 알약형 타일처럼 보이게 한다.
@@ -1708,10 +1708,10 @@ function initNavi() {
         /* 이전엔 배경색이 .opt.dim 카드 배경(--wc-box-bg)과 똑같아서 태그가 카드에
            묻혀 거의 안 보였다 - 흰 배경+테두리로 대비를 주고 글자도 키웠다. */
         .wc-wizard .own-tag {
-          display: inline-block; font-size: 1.2rem; font-weight: 700; color: var(--wc-text-sub); background: #fff;
+          display: inline-block; font-size: 1.3rem; font-weight: 700; color: var(--wc-text-sub); background: #fff;
           border: 0.1rem solid var(--wc-border-light); padding: 0.2rem 0.7rem; border-radius: 0.4rem; white-space: nowrap;
         }
-        .wc-wizard .pos-badge { display: inline-block; font-size: 0.9rem; font-weight: 700; padding: 0.15rem 0.5rem; border-radius: 0.4rem; white-space: nowrap; }
+        .wc-wizard .pos-badge { display: inline-block; font-size: 1.3rem; font-weight: 700; padding: 0.15rem 0.5rem; border-radius: 0.4rem; white-space: nowrap; }
         .wc-wizard .pos-badge.main { background: var(--wc-purple); color: #fff; }
         .wc-wizard .pos-badge.sub-pos { background: #fff; color: var(--wc-purple); border: 0.1rem solid var(--wc-purple); }
         /* 3단계에서 우리 회사로 고른 항목은 참고 배지만 중립색으로 보여준다. */
@@ -1744,25 +1744,25 @@ function initNavi() {
         .wc-wizard .sum-head .edit { color: var(--wc-purple); font-weight: 600; cursor: pointer; }
         .wc-wizard .sum-body { padding: 2rem 2.2rem; display: flex; flex-wrap: wrap; gap: 0.6rem; min-height: 6rem; align-content: flex-start; }
         .wc-wizard .tag { border: 0.1rem solid var(--wc-border-light); background: #fff; font-size: 1.5rem; padding: 0.5rem 1rem; color: var(--wc-text); border-radius: 0.6rem; max-width: 100%; word-break: keep-all; overflow-wrap: anywhere; }
-        .wc-wizard .tag em { font-style: normal; color: var(--wc-border); font-size: 1.25rem; margin-right: 0.4rem; }
+        .wc-wizard .tag em { font-style: normal; color: var(--wc-border); font-size: 1.3rem; margin-right: 0.4rem; }
         .wc-wizard .sum-none { color: var(--wc-border); font-size: 1.45rem; }
         .wc-wizard .sum-groups { display: flex; flex-direction: column; gap: 1.2rem; width: 100%; }
-        .wc-wizard .sum-group-label { font-size: 1.25rem; font-weight: 700; color: var(--wc-border); letter-spacing: 0.02em; margin-bottom: 0.6rem; }
+        .wc-wizard .sum-group-label { font-size: 1.3rem; font-weight: 700; color: var(--wc-border); letter-spacing: 0.02em; margin-bottom: 0.6rem; }
         .wc-wizard .sum-group .tag-row { display: flex; flex-wrap: wrap; gap: 0.6rem; }
         .wc-wizard .sum-group .sum-none { display: block; }
         /* 장르별 소그룹 - 보조포지션/희망 파트너처럼 항목이 여러 장르에 걸쳐 많아질 수 있는
            카드는 장르 소제목으로 나눠 한눈에 훑기 쉽게 한다 */
         .wc-wizard .sum-subgroup { margin-top: 1rem; }
         .wc-wizard .sum-subgroup:first-child { margin-top: 0.6rem; }
-        .wc-wizard .sum-subgroup-label { font-size: 1.2rem; font-weight: 600; color: var(--wc-text-sub); margin-bottom: 0.5rem; }
+        .wc-wizard .sum-subgroup-label { font-size: 1.3rem; font-weight: 600; color: var(--wc-text-sub); margin-bottom: 0.5rem; }
 
         /* ===== STEP4: 장르별 포지션 막대그래프 ===== */
         .wc-wizard .chart-card { border: 0.1rem solid var(--wc-border-light); background: #fff; margin-top: 2rem; border-radius: 1.2rem; overflow: hidden; }
         /* 요약카드(장르/하는 일/희망 파트너)에 비해 이 차트는 정보성이 낮은 보조 자료라
            문구·여백을 눌러서 존재감을 줄였다. */
-        .wc-wizard .chart-head { padding: 1.1rem 1.6rem; background: var(--wc-box-bg); border-bottom: 0.1rem solid var(--wc-border-light); font-size: 1.25rem; font-weight: 700; color: var(--wc-text-sub); border-radius: 1.2rem 1.2rem 0 0; }
+        .wc-wizard .chart-head { padding: 1.1rem 1.6rem; background: var(--wc-box-bg); border-bottom: 0.1rem solid var(--wc-border-light); font-size: 1.3rem; font-weight: 700; color: var(--wc-text-sub); border-radius: 1.2rem 1.2rem 0 0; }
         .wc-wizard .chart-body { padding: 1.4rem 1.6rem 1.2rem; }
-        .wc-wizard .chart-legend { display: flex; flex-wrap: wrap; gap: 1.1rem; margin-bottom: 1rem; font-size: 1.15rem; color: var(--wc-text-sub); }
+        .wc-wizard .chart-legend { display: flex; flex-wrap: wrap; gap: 1.1rem; margin-bottom: 1rem; font-size: 1.3rem; color: var(--wc-text-sub); }
         .wc-wizard .lg-item { display: flex; align-items: center; gap: 0.5rem; }
         .wc-wizard .lg-swatch { width: 0.9rem; height: 0.9rem; display: inline-block; flex: none; }
         /* Chart.js 막대 색은 verbatim JS(CHART_SEG_META)에 #6d28d9/#8b5cf6로 하드코딩돼 있어
@@ -4530,7 +4530,7 @@ const rightGenreLabelsPlugin = {
     if (!yScale) return;
     const { ctx, chartArea } = chart;
     ctx.save();
-    ctx.font = "12px 'Pretendard', 'Malgun Gothic', sans-serif";
+    ctx.font = "13px 'Pretendard', 'Malgun Gothic', sans-serif";
     ctx.fillStyle = "#464C53";
     ctx.textAlign = "left";
     ctx.textBaseline = "middle";
