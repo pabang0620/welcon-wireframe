@@ -1123,8 +1123,8 @@ function initNavi() {
         <ol class="krds-step-wrap">
             <li class="done"> <span> <i class="step">STEP 1</i> <span class="step-tit">약관동의</span> </span> </li>
             <li class="done"> <span> <em class="sr-only">STEP 2</em> <i class="step">STEP 2</i> <span class="step-tit">개인인증</span> </span> </li>
-            <li class="done"> <span> <i class="step">STEP 3</i> <span class="step-tit">회원정보입력 및 사업자 인증</span> </span> </li>
-            <li class="active"> <span> <i class="step">STEP 4</i> <span class="step-tit">기업정보입력</span> </span> </li>
+            <li class="done" id="stepLi3"> <span> <i class="step">STEP 3</i> <span class="step-tit">회원정보입력 및 사업자 인증</span> </span> </li>
+            <li class="active" id="stepLi4"> <span> <i class="step">STEP 4</i> <span class="step-tit">기업정보입력</span> </span> </li>
             <li> <span> <i class="step">STEP 5</i> <span class="step-tit">가입완료</span> </span> </li>
         </ol>
         <!-- //스텝 영역 -->
@@ -4803,13 +4803,29 @@ document.getElementById("btnConfirmDone").onclick = closeWizardModal;
 document.getElementById("wcShowGenreBtn").onclick = function () {
   document.getElementById("wcGenreSectionWrap").hidden = false;
   document.getElementById("wcModuleBoxWrap").hidden = true;
+  setBreadcrumbStep(true);
 };
 // 2026-09-14: 장르 섹션 상단 "이전" 버튼 - 누르면 장르 섹션을 다시 숨기고
 // 공통모듈 박스(버튼 포함)를 되살린다.
 document.getElementById("wcBackToModuleBtn").onclick = function () {
   document.getElementById("wcGenreSectionWrap").hidden = true;
   document.getElementById("wcModuleBoxWrap").hidden = false;
+  setBreadcrumbStep(false);
 };
+// 2026-09-14: 상단 STEP 진행표시줄을 공통모듈(개념상 STEP3)/분야선택(개념상 STEP4)
+// 전환에 맞춰 동기화한다.
+function setBreadcrumbStep(atStep4) {
+  const li3 = document.getElementById("stepLi3");
+  const li4 = document.getElementById("stepLi4");
+  if (!li3 || !li4) return;
+  if (atStep4) {
+    li3.className = "done";
+    li4.className = "active";
+  } else {
+    li3.className = "active";
+    li4.className = "";
+  }
+}
 
 // 2026-09-14: "공통모듈" 단어가 아직 미확정이라, 데모를 보는 사람이 후보 4개(담당 업무 /
 // 맞춤 정보 / 업무매칭 / 업무 포지션) 중 골라볼 수 있게 하는 라이브 선택기. 실제 채택 로직이
@@ -4829,6 +4845,7 @@ if (wcLabelPicker) {
   wcLabelPicker.addEventListener("change", e => applyModuleLabel(e.target.value));
   applyModuleLabel(wcLabelPicker.value);
 }
+setBreadcrumbStep(false);
 
 wireSearchBox("catSearchBox", "catSearch", "catSearchClear", v => { st.catQ = v; drawCatStep(); });
 wireSearchBox("wishSearchBox", "wishSearch", "wishSearchClear", v => { st.wishQ = v; drawWishStep(); });
