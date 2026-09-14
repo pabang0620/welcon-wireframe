@@ -4845,7 +4845,17 @@ if (wcLabelPicker) {
   wcLabelPicker.addEventListener("change", e => applyModuleLabel(e.target.value));
   applyModuleLabel(wcLabelPicker.value);
 }
-setBreadcrumbStep(false);
+// 2026-09-15: URL에 ?view=genre가 있으면 페이지 로드 즉시 "다음"을 누른 상태(분야 선택
+// 섹션)로 바로 진입한다 - 다른 프로젝트에서 이 데모로 "상세장르 체험하기" 링크를 걸 때
+// https://pabang0620.github.io/welcon-wireframe/?view=genre 로 연결하면 됨.
+const wcUrlParams = new URLSearchParams(location.search);
+if (wcUrlParams.get("view") === "genre") {
+  document.getElementById("wcGenreSectionWrap").hidden = false;
+  document.getElementById("wcModuleBoxWrap").hidden = true;
+  setBreadcrumbStep(true);
+} else {
+  setBreadcrumbStep(false);
+}
 
 wireSearchBox("catSearchBox", "catSearch", "catSearchClear", v => { st.catQ = v; drawCatStep(); });
 wireSearchBox("wishSearchBox", "wishSearch", "wishSearchClear", v => { st.wishQ = v; drawWishStep(); });
