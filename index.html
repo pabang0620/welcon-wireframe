@@ -1843,6 +1843,7 @@ function initNavi() {
 </div>
 </div>
 
+<div id="wcModuleBoxWrap">
 <!-- 공통모듈 선택하기 - 장르 섹션과 동일한 마크업(member-form-header+form-grid) 스타일의 박스로 표시(2026-09-10) -->
 <div class="member-form-header mgt-30" id="wc-module-field-row">
     <h3 class="form-section-title">공통모듈</h3>
@@ -1860,13 +1861,13 @@ function initNavi() {
                      이 카드는 메인 폼에 남아 있으므로 계속 보인다). 선택된 게 없으면 빈
                      카드를 보이지 않으려고 기본은 숨김(display:none) - drawMainPageGenreChart가
                      데이터가 생기면 보이게 켠다. -->
-                <!-- TEMP-HIDDEN 2026-09-11: "확인" 눌렀을 때 나오는 이 차트 카드를 "일단"(임시로)
-                     숨김(사용자 요청, 삭제 아님) - 마크업만 주석처리하고 drawMainPageGenreChart()
-                     JS 호출은 그대로 둔다. renderGenreChartInto()가 이미 `if (!wrap || !canvas)
-                     return;`으로 대상 엘리먼트가 없으면 안전하게 no-op 하도록 짜여 있어서(원래
-                     이 함수 자체가 재사용을 염두에 두고 방어적으로 작성됨), 마크업이 사라져도
-                     에러 없이 조용히 아무 일도 안 한다 - 별도 방어 코드 추가가 필요 없었다.
-                     되살릴 때는 TEMP-HIDDEN-START/END 마커 줄만 제거하면 된다. -->
+                <!-- 2026-09-14: 위 2026-09-11 주석은 위저드 4단계(완료 화면) 진입 시 이미 쓰던
+                     "포지션 분포" 차트(drawGenreChart/computeGenreChartData)를 재사용해 이 공통모듈
+                     박스 안에도 같은 그래프를 그린다는 설명이다(drawMainPageGenreChart 참고, 모달을
+                     닫아도 이 카드는 메인 폼에 남아 있으므로 계속 보인다). 정상적으로 마크업이 살아있는
+                     상태이고 JS도 그대로 연결돼 있어(drawSummaryStep → drawGenreChart +
+                     drawMainPageGenreChart) "확인"으로 위저드를 완료하면 자동으로 그려진다 - 별도로
+                     숨겨진 부분은 없다. -->
                 <div class="chart-card" id="mainPageGenreChartCard" style="display:none; margin-top:1.6rem;">
                     <div class="chart-head">포지션 분포</div>
                     <div class="chart-body">
@@ -1889,6 +1890,8 @@ function initNavi() {
 <div class="btn-wrap" id="wcShowGenreBtnWrap" style="margin-top:2rem;">
     <button type="button" class="btn-save btn-xlarge" id="wcShowGenreBtn">다음<i class="button-icon03"></i></button>
 </div>
+</div>
+<!-- //wcModuleBoxWrap -->
 
 <!-- TEMP-HIDDEN 2026-09-11: "장르" 섹션 전체(장르 체크박스 11개 + 장르별 회사카테고리
      wrap002001~007 + 기타 장르 divGenreEtc1/2) 임시 숨김(사용자 요청, 삭제 아님).
@@ -1901,6 +1904,9 @@ function initNavi() {
      wrapper div(#wcGenreSectionWrap)로 감싼다 - 장르 섹션 원본 마크업은 한 글자도
      바꾸지 않았다. -->
 <div id="wcGenreSectionWrap" hidden>
+<div class="btn-wrap" id="wcBackToModuleBtnWrap" style="margin-bottom:2rem;">
+    <button type="button" class="btn-pre btn-xlarge" id="wcBackToModuleBtn"><i class="button-icon04"></i>이전</button>
+</div>
 <div class="member-form-header mgt-30">
     <h3 class="form-section-title">장르</h3>
 </div>
@@ -4787,7 +4793,13 @@ document.getElementById("btnConfirmDone").onclick = closeWizardModal;
 // 버튼 자신(wrap)은 숨겨 중복 클릭을 막는다(단계적 노출, 사용자 요청).
 document.getElementById("wcShowGenreBtn").onclick = function () {
   document.getElementById("wcGenreSectionWrap").hidden = false;
-  document.getElementById("wcShowGenreBtnWrap").hidden = true;
+  document.getElementById("wcModuleBoxWrap").hidden = true;
+};
+// 2026-09-14: 장르 섹션 상단 "이전" 버튼 - 누르면 장르 섹션을 다시 숨기고
+// 공통모듈 박스(버튼 포함)를 되살린다.
+document.getElementById("wcBackToModuleBtn").onclick = function () {
+  document.getElementById("wcGenreSectionWrap").hidden = true;
+  document.getElementById("wcModuleBoxWrap").hidden = false;
 };
 
 wireSearchBox("catSearchBox", "catSearch", "catSearchClear", v => { st.catQ = v; drawCatStep(); });
