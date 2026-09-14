@@ -4,8 +4,8 @@
 
 <meta charset="utf-8" name="viewport" content="width=device-width, intial-scale=1.0">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="format-detection" content="telephone=no">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="format-detection" content="telephone=no">
 <meta name="contextPath" content="">
 
 <link rel="shortcut icon" href="https://welcon.kocca.kr/static/mng/images/favicon.png">
@@ -27,23 +27,6 @@
 <link rel="stylesheet" type="text/css" href="https://welcon.kocca.kr/static/wcdn2025/css/frt/content.css">
 <link rel="stylesheet" type="text/css" href="https://welcon.kocca.kr/static/wcdn2025/css/frt/member.css">
 <link rel="stylesheet" type="text/css" href="https://welcon.kocca.kr/static/wcdn2025/css/frt/mypage.css">
-
-<!-- 장르별 상세 필드 박스 분리용 추가 CSS (클론 작업, 2026-09-14) -->
-<style>
-/*
-  #contentList(장르 선택 시 #detailGenereContainer의 .form-row가 복제되어 들어오는 영역)에
-  한해서만 각 .form-row를 박스로 분리한다. 상단 "장르" 라디오 선택 행(.form-grid > .form-row,
-  591행 이전 원본 마크업)은 이 선택자 범위 밖이므로 영향을 받지 않는다.
-  색상은 기존 member.css 팔레트(테두리 #B1B8BE)를 재사용하고, border-radius는 요청대로
-  4px까지만 사용한다(box-shadow·그라데이션 없음).
-*/
-#contentList > .form-row {
-  border: 1px solid #B1B8BE;
-  border-radius: 4px;
-  padding: 16px 20px;
-  background: #fff;
-}
-</style>
 
 </head>
 <body>
@@ -532,6 +515,13 @@
   하위 필드가 전혀 없다(라디오 클릭 후 DOM/네트워크 요청으로도 재확인함):
     스타트업(002008) / 스토리(002011) / 기타(002010)
   다른 폼 필드(콘텐츠명·소개·연도·경쟁력·이미지 업로드 등)는 이번 클론 범위가 아니다.
+
+  2026-09-14 재수정: 하위 필드 영역(#contentList) 각 .form-row에 개별 테두리를 넣었던
+  커스텀 CSS를 제거했다. 실사이트 재확인(로그인 후 Playwright DOM/computed style 실측) 결과
+  개별 .form-row에는 border가 전혀 없고(0px none), 대신 "상세장르"라는 소제목(h3.form-section-title,
+  상단 "콘텐츠 정보"와 동일한 .member-form-header 패턴)이 #contentList 바로 위에 추가로 나타나며
+  그 아래 #contentList 전체가 하나의 .form-grid 박스(우측/하단/좌측 테두리 + 하단 라운드)로
+  보인다. 그래서 개별 박스 대신 상단에 "상세장르" 제목 블록을 추가하는 쪽으로 수정했다.
 -->
 
 <form id="myContents" novalidate="novalidate">
@@ -595,6 +585,13 @@
             </div>
           </div>
         </div>
+      </div>
+
+      <!-- ②-0 상세장르 섹션 제목 - 실사이트 실측(2026-09-14): 장르 선택 시 #contentList와
+           함께 나타나는 .member-form-header.contentDiv > h3.form-section-title("상세장르").
+           상단 "콘텐츠 정보" 헤더와 동일한 마크업/클래스를 그대로 재현했다. -->
+      <div class="member-form-header contentDiv" id="contentListHeader" style="display:none;">
+        <h3 class="form-section-title">상세장르</h3>
       </div>
 
       <!-- ② 장르별 상세 필드 - 장르 선택 시 여기로 클론되어 표시됨 -->
@@ -999,6 +996,7 @@
 (function () {
   function showDetailGenres(genreCd) {
     var contentList = document.getElementById('contentList');
+    var contentListHeader = document.getElementById('contentListHeader');
     contentList.innerHTML = '';
 
     var templates = document.querySelectorAll('#detailGenereContainer [data-name="' + genreCd + '"]');
@@ -1009,8 +1007,10 @@
         contentList.appendChild(clone);
       }
       contentList.style.display = '';
+      contentListHeader.style.display = '';
     } else {
       contentList.style.display = 'none';
+      contentListHeader.style.display = 'none';
     }
   }
 
