@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<title>콘텐츠정보 등록 - 장르/상세항목 클론</title>
+
+<meta charset="utf-8" name="viewport" content="width=device-width, intial-scale=1.0">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="format-detection" content="telephone=no">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="contextPath" content="">
+
+<link rel="shortcut icon" href="https://welcon.kocca.kr/static/mng/images/favicon.png">
+
+<!-- 기존 css -->
+<link rel="stylesheet" type="text/css" href="https://welcon.kocca.kr/static/frt/css/ko/base.css">
+<link rel="stylesheet" type="text/css" href="https://welcon.kocca.kr/static/cmm/css/new-sub.css">
+
+<!-- css -->
+<link rel="stylesheet" type="text/css" href="https://welcon.kocca.kr/static/wcdn2025/fonts/pretendard/pretendard-gov-subset.css">
+<link rel="stylesheet" type="text/css" href="https://welcon.kocca.kr/static/wcdn2025/libs/swiper/swiper-bundle.min.css">
+<link rel="stylesheet" type="text/css" href="https://welcon.kocca.kr/static/wcdn2025/libs/krds/css/component/output.css">
+<link rel="stylesheet" type="text/css" href="https://welcon.kocca.kr/static/wcdn2025/libs/krds/css/common/common.css">
+<link rel="stylesheet" type="text/css" href="https://welcon.kocca.kr/static/wcdn2025/libs/flag/css/flag-icon.css">
+<link rel="stylesheet" type="text/css" href="https://welcon.kocca.kr/static/wcdn2025/libs/fontawesome-free-7.0.1/css/all.css">
+
+<link rel="stylesheet" type="text/css" href="https://welcon.kocca.kr/static/wcdn2025/css/frt/root.css">
+<link rel="stylesheet" type="text/css" href="https://welcon.kocca.kr/static/wcdn2025/css/frt/layout.css">
+<link rel="stylesheet" type="text/css" href="https://welcon.kocca.kr/static/wcdn2025/css/frt/content.css">
+<link rel="stylesheet" type="text/css" href="https://welcon.kocca.kr/static/wcdn2025/css/frt/member.css">
+<link rel="stylesheet" type="text/css" href="https://welcon.kocca.kr/static/wcdn2025/css/frt/mypage.css">
+
+<!-- 장르별 상세 필드 박스 분리용 추가 CSS (클론 작업, 2026-09-14) -->
+<style>
+/*
+  #contentList(장르 선택 시 #detailGenereContainer의 .form-row가 복제되어 들어오는 영역)에
+  한해서만 각 .form-row를 박스로 분리한다. 상단 "장르" 라디오 선택 행(.form-grid > .form-row,
+  591행 이전 원본 마크업)은 이 선택자 범위 밖이므로 영향을 받지 않는다.
+  색상은 기존 member.css 팔레트(테두리 #B1B8BE)를 재사용하고, border-radius는 요청대로
+  4px까지만 사용한다(box-shadow·그라데이션 없음).
+*/
+#contentList > .form-row {
+  border: 1px solid #B1B8BE;
+  border-radius: 4px;
+  padding: 16px 20px;
+  background: #fff;
+}
+</style>
+
+</head>
+<body>
+<div id="wrap" class="">
+
+<!-- 헤더 영역 -->
+<header id="krds-header">
+    <!-- 헤더 컨텐츠 영역  -->
+    <div class="header-in">
+        <!-- 헤더 상단 기타메뉴 -->
+        <div class="header-container">
+            <!-- 헤더 utility-->
+            <div class="header-utility-wrap">
+                <div class="header-utility">
+                     <ul class="utility-list">
+                            <li>
+                                <a href="/ko/support/about-welcon" class="krds-btn small text drop-btn"> 고객지원</a>
+                            </li>
+                            <li>
+                               <a href="/en/buyer/main" class="krds-btn small text " lang="en">English</a>
+                            </li>
+                        </ul>
+                </div>
+            </div>
+            <!-- //헤더 utility-->
+            <div class="inner">
+                <div class="header-branding">
+                    <h1 class="logo"> <a href="/"> <span class="sr-only">WelCon</span> </a> </h1>
+                    <!-- 메인메뉴 : 데스크탑 -->
+                    <nav class="krds-main-menu">
+                        <div class="inner">
+                            <ul class="gnb-menu" aria-label="메인 메뉴">
+                                <li>
+                                    <button type="button" class="gnb-main-trigger" data-trigger="gnb" data-gnb-no="gnb01" aria-controls="gnb-main-menu-9r7coz8" aria-expanded="false" aria-haspopup="true">행사·사업신청</button>
+                                    <div class="gnb-toggle-wrap" id="gnb-main-menu-9r7coz8">
+                                        <div class="gnb-main-list" data-has-submenu="true">
+                                            <ul>
+                                                <li>
+                                                    <button type="button" class="gnb-sub-trigger active" data-trigger="gnb" aria-controls="gnb-sub-menu-nwifyyv" aria-expanded="true" aria-haspopup="true">행사참가신청</button>
+                                                    <div class="gnb-sub-list active" id="gnb-sub-menu-nwifyyv">
+                                                        <div class="gnb-sub-content">
+                                                            <h2 class="sub-title"> 행사참가신청 <span class="line-divider"></span> <a href="/event/all" class="krds-btn link basic small"><span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
+                                                            <p class="txt">KOCCA가 주관 및 개최하는 국내외 콘텐츠 행사 참가 신청이 가능합니다.</p>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-i01eohb" aria-expanded="false" aria-haspopup="true">연간행사일정</button>
+                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-i01eohb">
+                                                        <div class="gnb-sub-content">
+                                                            <h2 class="sub-title"> 연간행사일정<span class="line-divider"></span><a href="/event/schedule" class="krds-btn link basic small"> <span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
+                                                            <p class="txt">연간 KOCCA 해외진출 행사 및 마켓 일정을 한눈에 확인할 수 있습니다.</p>
+                                                        </div>
+                                                        <div class="gnb-sub-banner layer-bg01">
+                                                            <i class="svg-icon ico-layer01"></i>
+                                                            <a href="/ko/event/schedule">
+                                                            <div>
+                                                                <p class="banner-tit">2026년 연간 행사 일정</p>
+                                                                <p class="banner-txt">B2B/B2C/쇼케이스 등 포함한 일정 확인</p>
+                                                               <i class="svg-icon card-arrow"></i>
+                                                            </div>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                 <li>
+                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-5lvo45f" aria-expanded="false" aria-haspopup="true">해외마켓정보</button>
+                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-5lvo45f">
+                                                        <div class="gnb-sub-content">
+                                                            <h2 class="sub-title"> 해외마켓정보<span class="line-divider"></span><a href="/ko/ovsinfo" class="krds-btn link basic small"> <span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
+                                                            <p class="txt">해외 주요 콘텐츠 장르별 마켓의 특징, 콘텐츠 등을 분석한 정보를 제공합니다.</p>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                 <li>
+                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-1hnfxkr" aria-expanded="false" aria-haspopup="true">지원사업정보</button>
+                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-1hnfxkr">
+                                                        <div class="gnb-sub-content">
+                                                            <h2 class="sub-title"> 지원사업정보<span class="line-divider"></span><a href="/info/business" class="krds-btn link basic small"> <span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
+                                                            <p class="txt">콘텐츠 기업을 위한 KOCCA 및 유관기관의 해외진출 지원사업을 쉽게 확인할 수 있습니다.</p>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <button type="button" class="gnb-main-trigger" data-trigger="gnb" data-gnb-no="gnb02" aria-controls="gnb-main-menu-gpx3d67" aria-expanded="false" aria-haspopup="true">상담·컨설팅</button>
+                                    <div class="gnb-toggle-wrap" id="gnb-main-menu-gpx3d67">
+                                        <div class="gnb-main-list" data-has-submenu="true">
+                                            <ul>
+                                                <li>
+                                                    <button type="button" class="gnb-sub-trigger active" data-trigger="gnb" aria-controls="gnb-sub-menu-ueptosb" aria-expanded="true" aria-haspopup="true">해외진출상담</button>
+                                                    <div class="gnb-sub-list between active" id="gnb-sub-menu-ueptosb">
+                                                        <div class="gnb-sub-content">
+                                                            <h2 class="sub-title"> 해외진출상담<span class="line-divider"></span><a href="/business/counsel-guide" class="krds-btn link basic small"> <span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
+                                                            <p class="txt">국내 콘텐츠 기업을 위한 해외진출 전략 및 비즈니스 상담을 제공합니다.</p>
+                                                        </div>
+                                                        <div class="gnb-sub-banner layer-bg05">
+                                                            <div class="layer-txt-box01">
+                                                                <p class="consult-tit">해외진출상담?</p>
+                                                                <p class="consult-txt">전문가에게 무료 상담을 받아보세요.</p>
+                                                            </div>
+                                                            <div class="layer-txt-box02">
+                                                                <p class="consult-center">콘텐츠해외진출지원센터</p>
+                                                                <p class="consult-num">02-6441-3621</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-0gvhw02" aria-expanded="false" aria-haspopup="true">해외진출역량진단</button>
+                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-0gvhw02">
+                                                        <div class="gnb-sub-content">
+                                                            <h2 class="sub-title"> 해외진출역량진단<span class="line-divider"></span><a href="/business/level-test-intro" class="krds-btn link basic small"> <span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
+                                                            <p class="txt">기업의 해외진출 역량을 진단하고 단계별 개선 방향을 안내합니다.</p>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-ll5myn9" aria-expanded="false" aria-haspopup="true">해외진출계약서식</button>
+                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-ll5myn9">
+                                                        <div class="gnb-sub-content">
+                                                            <h2 class="sub-title"> 해외진출계약서식<span class="line-divider"></span><a href="/business/contract-form" class="krds-btn link basic small"> <span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
+                                                            <p class="txt">해외 수출 및 진출에 필요한 표준 계약서식을 장르별로 제공합니다.</p>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-h39w9bs" aria-expanded="false" aria-haspopup="true">해외진출 FAQ</button>
+                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-h39w9bs">
+                                                        <div class="gnb-sub-content">
+                                                            <h2 class="sub-title">해외진출 FAQ<span class="line-divider"></span><a href="/business/faq" class="krds-btn link basic small"> <span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
+                                                            <p class="txt">해외진출 과정에서 자주 묻는 세무, 회계, 계약, 법률 등의 실무 질문에 대한 핵심 정보를 제공합니다.</p>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-7ze0qcf" aria-expanded="false" aria-haspopup="true">해외진출 기초정보</button>
+                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-7ze0qcf">
+                                                        <div class="gnb-sub-content">
+                                                            <h2 class="sub-title">해외진출 기초정보<span class="line-divider"></span></h2>
+                                                            <ul>
+                                                                <li><a href="/ko/ovmk/company-info">기업정보</a></li>
+                                                                <li><a href="/ko/ovmk/media-info">매체정보</a></li>
+                                                                <li><a href="/ko/ovmk/biz-culture">비즈니스·문화 코드</a></li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </li>
+                                 <li>
+                                    <button type="button" class="gnb-main-trigger" data-trigger="gnb" data-gnb-no="gnb03" aria-controls="gnb-main-menu-7tekgda" aria-expanded="false" aria-haspopup="true">해외법률·정책</button>
+                                    <div class="gnb-toggle-wrap" id="gnb-main-menu-7tekgda">
+                                        <div class="gnb-main-list" data-has-submenu="true">
+                                            <ul>
+                                                <li>
+                                                    <button type="button" class="gnb-sub-trigger active" data-trigger="gnb" aria-controls="gnb-sub-menu-9bor68v" aria-expanded="true" aria-haspopup="true">콘텐츠 법령</button>
+                                                    <div class="gnb-sub-list between active" id="gnb-sub-menu-9bor68v">
+                                                        <div class="gnb-sub-content">
+                                                            <h2 class="sub-title">콘텐츠 법령<span class="line-divider"></span></h2>
+                                                            <ul>
+                                                                <li><a href="/law/l1">국가별 법령분류체계</a></li>
+                                                                <li><a href="/law/l2">기본법</a></li>
+                                                                <li><a href="/law/l3">시행령</a></li>
+                                                                <li><a href="/law/l4">규칙</a></li>
+                                                                <li><a href="/law/l5">가이드라인</a></li>
+                                                                <li><a href="/law/l6">분쟁사례</a></li>
+                                                                <li><a href="/law/l9">기타</a></li>
+                                                            </ul>
+                                                        </div>
+                                                        <div class="gnb-sub-banner layer-bg02">
+                                                            <p class="banner-txt02"><strong>콘텐츠 수출에 필수</strong>적인<br><strong>법률 및 정책 정보</strong>를<br>체계적으로 안내해 드립니다.</p>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-fwhd6v3" aria-expanded="false" aria-haspopup="true">진출단계별 법규제정보</button>
+                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-fwhd6v3">
+                                                        <div class="gnb-sub-content">
+                                                            <h2 class="sub-title"> 진출단계별 법규제정보<span class="line-divider"></span><a href="/regulation" class="krds-btn link basic small"> <span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
+                                                            <p class="txt">해외 비즈니스 단계별로 필요한 법과 규제 정보를 제공합니다.</p>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-vxwpayb" aria-expanded="false" aria-haspopup="true">기관·협회</button>
+                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-vxwpayb">
+                                                        <div class="gnb-sub-content">
+                                                            <h2 class="sub-title">기관·협회<span class="line-divider"></span></h2>
+                                                            <ul>
+                                                                <li><a href="/ko/ovmk/organ-support">기관</a></li>
+                                                                <li><a href="/ko/ovmk/assoc-support">협회</a></li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-u5qr6e8" aria-expanded="false" aria-haspopup="true">지원정책</button>
+                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-u5qr6e8">
+                                                        <div class="gnb-sub-content">
+                                                            <h2 class="sub-title">지원정책<span class="line-divider"></span><a href="/ko/ovmk/support-policy" class="krds-btn link basic small"> <span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
+                                                            <p class="txt">주요 국가의 콘텐츠산업 지원제도와 정부 정책을 제공합니다.</p>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <button type="button" class="gnb-main-trigger" data-trigger="gnb" data-gnb-no="gnb04" aria-controls="gnb-main-menu-79sq7lo" aria-expanded="false" aria-haspopup="true">해외동향·통계</button>
+                                    <div class="gnb-toggle-wrap" id="gnb-main-menu-79sq7lo">
+                                        <div class="gnb-main-list" data-has-submenu="true">
+                                            <ul>
+                                                <li>
+                                                    <button type="button" class="gnb-sub-trigger active" data-trigger="gnb" aria-controls="gnb-sub-menu-wl4w0wt" aria-expanded="true" aria-haspopup="true">콘텐츠뉴스</button>
+                                                    <div class="gnb-sub-list between active" id="gnb-sub-menu-wl4w0wt">
+                                                        <div class="gnb-sub-content">
+                                                            <h2 class="sub-title">콘텐츠뉴스<span class="line-divider"></span> <a href="/ko/info/news" class="krds-btn link basic small"><span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
+                                                            <p class="txt">해외 콘텐츠 관련 뉴스와 이슈를 모아 제공합니다.</p>
+                                                        </div>
+                                                        <div class="gnb-sub-banner layer-bg03">
+                                                            <a href="/ko/info/statistics">
+                                                            <div>
+                                                                <p class="banner-tit02">2025<br>해외 콘텐츠시장 분석(글로벌)<br>자료 다운로드</p>
+                                                                <p class="banner-txt03">글로벌 콘텐츠 시장 규모 및 전망을<br> 확인할 수 있습니다. </p>
+                                                               <i class="svg-icon card-arrow"></i>
+                                                            </div>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-et5zh4u" aria-expanded="false" aria-haspopup="true">글로벌리포트</button>
+                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-et5zh4u">
+                                                        <div class="gnb-sub-content">
+                                                            <h2 class="sub-title">글로벌리포트<span class="line-divider"></span><a href="/ko/info/report" class="krds-btn link basic small"> <span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
+                                                            <p class="txt">콘텐츠 산업동향과 심층 분석 리포트를 통합해 국가 및 장르별 시장 변화를 깊이 있게 제공합니다.</p>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-l5hkmmf" aria-expanded="false" aria-haspopup="true">글로벌트렌드</button>
+                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-l5hkmmf">
+                                                        <div class="gnb-sub-content">
+                                                            <h2 class="sub-title">글로벌트렌드<span class="line-divider"></span><a href="/ko/info/trend" class="krds-btn link basic small"> <span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
+                                                            <p class="txt">전 세계 콘텐츠 트렌드, 한류 동향, 규제, 지재권, 이슈, 글로벌 마켓 정보를 한곳에서 제공합니다.</p>
+                                                        </div>
+
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-gxmbb9u" aria-expanded="false" aria-haspopup="true">해외시장통계</button>
+                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-gxmbb9u">
+                                                        <div class="gnb-sub-content">
+                                                            <h2 class="sub-title">해외시장통계<span class="line-divider"></span><a href="/ko/info/statistics" class="krds-btn link basic small"> <span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
+                                                            <p class="txt">국가별, 장르별 해외 콘텐츠 시장 규모와 산업 데이터를 제공합니다.</p>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <button type="button" class="gnb-main-trigger" data-trigger="gnb" data-gnb-no="gnb05" aria-controls="gnb-main-menu-4dsjjm1" aria-expanded="false" aria-haspopup="true">W·인사이트</button>
+                                    <div class="gnb-toggle-wrap" id="gnb-main-menu-4dsjjm1">
+                                        <div class="gnb-main-list" data-has-submenu="true">
+                                            <ul>
+                                                <li>
+                                                    <button type="button" class="gnb-sub-trigger active" data-trigger="gnb" aria-controls="gnb-sub-menu-q607uav" aria-expanded="true" aria-haspopup="true">WelCon 토픽</button>
+                                                    <div class="gnb-sub-list between active" id="gnb-sub-menu-q607uav">
+                                                        <div class="gnb-sub-content">
+                                                            <h2 class="sub-title">WelCon 토픽 <span class="line-divider"></span> <a href="/ko/ovmk/topic" class="krds-btn link basic small"><span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
+                                                            <p class="txt">콘텐츠 현안 분석과 콘텐츠 관련 정보를 통합해 주요 이슈를 깊이 있게 다룹니다.</p>
+                                                        </div>
+                                                        <div class="gnb-sub-banner layer-bg04">
+                                                            <a href="/ko/info/statistics">
+                                                            <div>
+                                                                <p class="banner-tit02">2025<br>해외 콘텐츠시장 분석(글로벌)<br>자료 다운로드</p>
+                                                                <p class="banner-txt03">글로벌 콘텐츠 시장 규모 및 전망을<br> 확인할 수 있습니다. </p>
+                                                               <i class="svg-icon card-arrow"></i>
+                                                            </div>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-32ox3p1" aria-expanded="false" aria-haspopup="true">WelCon 인사이드</button>
+                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-32ox3p1">
+                                                        <div class="gnb-sub-content">
+                                                            <h2 class="sub-title">WelCon 인사이드<span class="line-divider"></span><a href="/ko/ovmk/inside" class="krds-btn link basic small"> <span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
+                                                            <p class="txt">해외 전문가 및 기업 인터뷰와 콘텐츠 이용행태 분석을 통해 생생한 현장 인사이트를 전합니다.</p>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-nimj1h7" aria-expanded="false" aria-haspopup="true">WelCon 포커스</button>
+                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-nimj1h7">
+                                                        <div class="gnb-sub-content">
+                                                            <h2 class="sub-title">WelCon 포커스<span class="line-divider"></span><a href="/ko/ovmk/focus" class="krds-btn link basic small"> <span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
+                                                            <p class="txt">글로벌 콘텐츠 시장을 다룬 연구, 정책, 산업 보고서를 체계적으로 제공합니다.</p>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li><a href="/support/office" class="gnb-main-trigger is-link " data-trigger="gnb">해외비즈니스센터</a> </li>
+                                <li><a href="https://welcon.kocca.kr/emp" class="gnb-main-trigger is-link" data-trigger="gnb" target="_blank" title="새 창 열림">마켓플레이스<i class="svg-icon ico-go"></i></a></li>
+                            </ul>
+                        </div>
+                    </nav>
+                    <!-- //메인메뉴 : 데스크탑 -->
+                </div>
+
+                    <div class="header-right">
+                        <div class="header-actions">
+                            <button type="button" class="btn-navi sch open-modal" title="통합검색 레이어" data-target="popTotalSch" data-func="initPanel" id="totalSearch"> 통합검색</button>
+                            <button type="button" class="btn-navi all" aria-controls="mobile-nav">전체메뉴</button>
+                            <a href="/welcon/login.do" class="btn-navi login">로그인</a>
+                            <button type="button" onclick="goUrl('/ko/signup');" class="btn-navi join">회원가입</button>
+                       </div>
+                   </div>
+
+
+            </div>
+        </div>
+        <!-- //헤더 상단 기타메뉴 -->
+    </div>
+    <!-- //헤더 컨텐츠 영역  -->
+
+    <!-- 메인메뉴 : 모바일 -->
+    <div id="mobile-nav" class="krds-main-menu-mobile" style="display: none;">
+        <div class="gnb-wrap">
+            <div class="gnb-header">
+                <div class="gnb-utils">
+                    <ul class="utility-list">
+                        <li>
+                           <a href="/en/buyer/main" class="krds-btn small text " lang="en">English</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="gnb-login">
+                        <button type="button" class="krds-btn large text" onclick="goUrl('/welcon/login.do');"><i class="svg-icon ico-log"></i> 로그인</button>
+                        <button type="button" class="krds-btn large text" onclick="fnLocation('signup');return false;"><i class="svg-icon ico-join"></i> 회원가입</button>
+                </div>
+                <div class="gnb-service-menu">
+                    <a href="/ko/support/office" class="link bsinesscenter">해외비즈니스센터</a>
+                    <a href="https://welcon.kocca.kr/emp" class="link marketplace">마켓플레이스</a>
+                </div>
+            </div>
+            <div class="gnb-body">
+                <div class="gnb-menu">
+                    <div class="menu-wrap">
+                        <ul role="tablist">
+                            <li role="none"> <a href="#mGnb-anchor1" class="gnb-main-trigger active" role="tab" aria-selected="false" aria-controls="mGnb-anchor1" id="tab-0">행사·사업신청</a> </li>
+                            <li role="none"> <a href="#mGnb-anchor2" class="gnb-main-trigger" role="tab" aria-selected="false" aria-controls="mGnb-anchor2" id="tab-1">상담·컨설팅</a> </li>
+                            <li role="none"> <a href="#mGnb-anchor3" class="gnb-main-trigger" role="tab" aria-selected="false" aria-controls="mGnb-anchor3" id="tab-2">해외법률·정책</a> </li>
+                            <li role="none"> <a href="#mGnb-anchor4" class="gnb-main-trigger" role="tab" aria-selected="false" aria-controls="mGnb-anchor4" id="tab-3">해외동향·통계</a> </li>
+                            <li role="none"> <a href="#mGnb-anchor5" class="gnb-main-trigger" role="tab" aria-selected="false" aria-controls="mGnb-anchor5" id="tab-4">W·인사이트</a> </li>
+                            <li role="none"> <a href="#mGnb-anchor6" class="gnb-main-trigger" role="tab" aria-selected="false" aria-controls="mGnb-anchor6" id="tab-5">고객지원</a> </li>
+
+                        </ul>
+                    </div>
+                    <div class="submenu-wrap">
+                        <div class="gnb-sub-list" id="mGnb-anchor1" role="tabpanel" aria-labelledby="tab-0">
+                            <h2 class="sub-title">행사·사업신청</h2>
+                            <ul>
+                                <li><a href="/ko/event/all" class="gnb-sub-trigger">행사참가신청</a></li>
+                                <li><a href="/ko/event/schedule" class="gnb-sub-trigger">연간행사일정</a></li>
+                                <li><a href="/ko/ovsinfo" class="gnb-sub-trigger">해외마켓정보</a></li>
+                                <li><a href="/ko/info/business" class="gnb-sub-trigger">지원사업정보</a></li>
+                            </ul>
+                        </div>
+                        <div class="gnb-sub-list" id="mGnb-anchor2" role="tabpanel" aria-labelledby="tab-1">
+                            <h2 class="sub-title">상담·컨설팅</h2>
+                            <ul>
+                                <li><a href="/ko/business/counsel-guide" class="gnb-sub-trigger">해외진출상담</a></li>
+                                <li><a href="/ko/business/level-test-intro" class="gnb-sub-trigger">해외진출역량진단</a></li>
+                                <li><a href="/ko/business/contract-form" class="gnb-sub-trigger">해외진출계약서식</a></li>
+                                <li><a href="/ko/business/faq" class="gnb-sub-trigger">해외진출 FAQ</a></li>
+                                <li><a href="#" class="gnb-sub-trigger has-depth3" aria-expanded="false">해외진출기초정보</a>
+                                      <div class="depth3-wrap">
+                                        <ul>
+                                            <li><a href="/ko/ovmk/company-info" class="depth3-trigger">기업정보</a></li>
+                                            <li><a href="/ko/ovmk/media-info" class="depth3-trigger">매체정보</a></li>
+                                            <li><a href="/ko/ovmk/biz-culture" class="depth3-trigger">비즈니스·문화 코드</a></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="gnb-sub-list" id="mGnb-anchor3" role="tabpanel" aria-labelledby="tab-2">
+                            <h2 class="sub-title">해외법률·정책</h2>
+                            <ul>
+                                <li><a href="#" class="gnb-sub-trigger has-depth3" aria-expanded="false">콘텐츠 법령</a>
+                                      <div class="depth3-wrap">
+                                        <ul>
+                                            <li><a href="/ko/law/l1" class="depth3-trigger">국가별 법령분류체계</a></li>
+                                            <li><a href="/ko/law/l2" class="depth3-trigger">기본법</a></li>
+                                            <li><a href="/ko/law/l3" class="depth3-trigger">시행령</a></li>
+                                            <li><a href="/ko/law/l4" class="depth3-trigger">규칙</a></li>
+                                            <li><a href="/ko/law/l5" class="depth3-trigger">가이드라인</a></li>
+                                            <li><a href="/ko/law/l6" class="depth3-trigger">분쟁사례</a></li>
+                                            <li><a href="/ko/law/l9" class="depth3-trigger">기타</a></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li><a href="/ko/regulation" class="gnb-sub-trigger">진출단계별 법규제정보</a></li>
+                                 <li><a href="#" class="gnb-sub-trigger has-depth3" aria-expanded="false">기관·협회</a>
+                                      <div class="depth3-wrap">
+                                        <ul>
+                                            <li><a href="/ko/ovmk/organ-support" class="depth3-trigger">기관</a></li>
+                                            <li><a href="/ko/ovmk/assoc-support" class="depth3-trigger">협회</a></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li><a href="/ko/ovmk/support-policy" class="gnb-sub-trigger">지원정책</a></li>
+                            </ul>
+                        </div>
+                        <div class="gnb-sub-list" id="mGnb-anchor4" role="tabpanel" aria-labelledby="tab-3">
+                            <h2 class="sub-title">해외동향·통계</h2>
+                            <ul>
+                                <li><a href="/ko/info/news" class="gnb-sub-trigger">콘텐츠뉴스</a></li>
+                                <li><a href="/ko/info/report" class="gnb-sub-trigger">글로벌리포트</a></li>
+                                <li><a href="/ko/info/trend" class="gnb-sub-trigger">글로벌트렌드</a></li>
+                                <li><a href="/ko/info/statistics" class="gnb-sub-trigger">해외시장통계</a></li>
+                            </ul>
+                        </div>
+                        <div class="gnb-sub-list" id="mGnb-anchor5" role="tabpanel" aria-labelledby="tab-4">
+                            <h2 class="sub-title">W·인사이트</h2>
+                            <ul>
+                                <li><a href="/ko/ovmk/topic" class="gnb-sub-trigger">WelCon 토픽</a></li>
+                                <li><a href="/ko/ovmk/inside" class="gnb-sub-trigger">WelCon 인사이드</a></li>
+                                <li><a href="/ko/ovmk/focus" class="gnb-sub-trigger">WelCon 포커스</a></li>
+                            </ul>
+                        </div>
+                        <div class="gnb-sub-list" id="mGnb-anchor6" role="tabpanel" aria-labelledby="tab-5">
+                            <h2 class="sub-title">고객지원</h2>
+                            <ul>
+                                <li><a href="/ko/support/about-welcon" class="gnb-sub-trigger">WelCon 소개</a></li>
+                                <li><a href="/ko/support/notice" class="gnb-sub-trigger">공지사항</a></li>
+                                <li><a href="/ko/support/newsletter" class="gnb-sub-trigger">뉴스레터</a></li>
+                                <li><a href="/ko/support/qna-guide" class="gnb-sub-trigger">문의하기</a></li>
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" class="krds-btn medium icon" id="close-nav"> <span class="sr-only">전체메뉴 닫기</span> <i class="svg-icon ico-popup-close"></i> </button>
+        </div>
+    </div>
+
+    <!-- //메인메뉴 : 모바일 -->
+</header>
+<!-- //헤더 영역 -->
+
+<div id="sub_container">
+    <div class="sub_content">
+
+        <div class="sub-contents-area">
+
+<!--
+  welcon.kocca.kr "콘텐츠정보 등록" 페이지(로그인 필요, /ko/my/user/contents/contentsRegForm.do)의
+  "콘텐츠 정보" 섹션 중 2개 컨트롤을 클론한 정적 HTML.
+    1) 장르 선택 라디오 (name="genreCd", 11개)
+    2) 장르 선택 시 하단에 나타나는 장르별 상세 입력 필드 (#detailGenereContainer 템플릿을
+       #contentList로 클론). 필드명은 장르마다 다르다 - 세부장르(genreDtlCd)뿐 아니라
+       콘텐츠 유형(contentsCd) / 타겟연령(ageCd) / 플랫폼(platformCd) / 분량(volumeMin,
+       volumeEpCount) / 클라이언트용량(volumeCd) / 아트(artCd) / 서비스단계(serviceCd) /
+       제작단계(stepCd) / 상품유형·상품분류(productCd)까지 실사이트 DOM을 2026-09-14
+       재크롤링(Playwright, 로그인 세션)으로 실측해 11개 장르 전부 반영했다.
+  실측 결과 실제로 하위 필드가 존재하는 장르는 8개뿐이다:
+    방송(002001) / 게임(002002) / 캐릭터(002003) / 만화(002004) / 애니메이션(002005) /
+    패션(002006) / 음악(002007) / 신기술 융합콘텐츠(002009)
+  나머지 3개 장르는 실사이트 #detailGenereContainer에 해당 data-name 블록 자체가 없어
+  하위 필드가 전혀 없다(라디오 클릭 후 DOM/네트워크 요청으로도 재확인함):
+    스타트업(002008) / 스토리(002011) / 기타(002010)
+  다른 폼 필드(콘텐츠명·소개·연도·경쟁력·이미지 업로드 등)는 이번 클론 범위가 아니다.
+-->
+
+<form id="myContents" novalidate="novalidate">
+  <div class="mypage-news">
+    <div class="member-form-content-area mgt-30">
+
+      <div class="member-form-header">
+        <h3 class="form-section-title">콘텐츠 정보</h3>
+      </div>
+
+      <div class="form-grid">
+        <!-- ① 장르 -->
+        <div class="form-row">
+          <div for="companyZip" class="form-label required">장르</div>
+          <div class="form-input-group" id="genreCdGroup">
+            <div class="krds-radio-area">
+              <div class="krds-form-check">
+                <input type="radio" class="valid" id="genreCd0" name="genreCd" value="002001">
+                <label for="genreCd0">방송</label>
+              </div>
+              <div class="krds-form-check">
+                <input type="radio" class="valid" id="genreCd1" name="genreCd" value="002002">
+                <label for="genreCd1">게임</label>
+              </div>
+              <div class="krds-form-check">
+                <input type="radio" class="valid" id="genreCd2" name="genreCd" value="002003">
+                <label for="genreCd2">캐릭터</label>
+              </div>
+              <div class="krds-form-check">
+                <input type="radio" class="valid" id="genreCd3" name="genreCd" value="002004">
+                <label for="genreCd3">만화</label>
+              </div>
+              <div class="krds-form-check">
+                <input type="radio" class="valid" id="genreCd4" name="genreCd" value="002005">
+                <label for="genreCd4">애니메이션</label>
+              </div>
+              <div class="krds-form-check">
+                <input type="radio" class="valid" id="genreCd5" name="genreCd" value="002006">
+                <label for="genreCd5">패션</label>
+              </div>
+              <div class="krds-form-check">
+                <input type="radio" class="valid" id="genreCd6" name="genreCd" value="002007">
+                <label for="genreCd6">음악</label>
+              </div>
+              <div class="krds-form-check">
+                <input type="radio" class="valid" id="genreCd7" name="genreCd" value="002008">
+                <label for="genreCd7">스타트업</label>
+              </div>
+              <div class="krds-form-check">
+                <input type="radio" class="valid" id="genreCd8" name="genreCd" value="002009">
+                <label for="genreCd8">신기술 융합콘텐츠</label>
+              </div>
+              <div class="krds-form-check">
+                <input type="radio" class="valid" id="genreCd9" name="genreCd" value="002011">
+                <label for="genreCd9">스토리</label>
+              </div>
+              <div class="krds-form-check">
+                <input type="radio" class="valid" id="genreCd10" name="genreCd" value="002010">
+                <label for="genreCd10">기타</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ② 장르별 상세 필드 - 장르 선택 시 여기로 클론되어 표시됨 -->
+      <div class="form-grid contentDiv" id="contentList" style="display:none;"></div>
+
+    </div>
+  </div>
+</form>
+
+<!-- 장르별 상세 필드 원본 템플릿 (화면에는 노출되지 않음, 장르 선택 시 이 중 일치하는 data-name 전체를 #contentList로 복제) -->
+<div id="detailGenereContainer" style="display:none;">
+
+  <!-- 방송 (002001) -->
+  <div class="form-row" data-name="002001" style="display:none">
+    <label for="contentsCd1" class="form-label required">콘텐츠 유형</label>
+    <div class="form-input-group">
+      <select name="contentsCd" id="contentsCd1" class="form-select wpct50">
+        <option value="">---- 콘텐츠 유형 ----</option>
+        <option value="006001">TV 드라마(단편)</option>
+        <option value="006002">TV 드라마(미니시리즈)</option>
+        <option value="006003">TV 드라마(장편)</option>
+        <option value="006004">다큐멘터리</option>
+        <option value="006005">시사/교양 프로그램</option>
+        <option value="006006">예능 프로그램</option>
+        <option value="006007">시트콤</option>
+        <option value="006008">음악 프로그램</option>
+        <option value="006009">포맷(Scripted)</option>
+        <option value="006010">포맷(Non-Script)</option>
+        <option value="006011">스포츠</option>
+        <option value="006012">웹/모바일 콘텐츠</option>
+        <option value="006013">3D/AR/VR</option>
+        <option value="006014">어린이 교육</option>
+        <option value="006015">4K Ultra HD</option>
+        <option value="006016">예술</option>
+        <option value="006017">애니메이션</option>
+        <option value="006018">코미디</option>
+        <option value="006019">성인물</option>
+        <option value="006020">영화</option>
+        <option value="006021">게임</option>
+        <option value="006022">뉴스</option>
+        <option value="006023">리얼리티</option>
+        <option value="006024">SF</option>
+        <option value="006025">기타</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-row" data-name="002001" style="display:none">
+    <label for="platformCd" class="form-label required">플랫폼</label>
+    <div class="form-input-group">
+      <select name="platformCd" id="platformCd" class="form-select wpct50">
+        <option value="">---- 플랫폼 ----</option>
+        <option value="007001">TV채널</option>
+        <option value="007002">케이블</option>
+        <option value="007003">위성</option>
+        <option value="007004">IPTV</option>
+        <option value="007005">온라인 비디오 플랫폼/MCN</option>
+        <option value="007006">OTT 오퍼레이터</option>
+        <option value="007007">모바일 오퍼레이터</option>
+        <option value="007008">소셜네트워크</option>
+        <option value="007009">온라인 출판</option>
+        <option value="007010">기내 방송</option>
+        <option value="007011">기타</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-row" data-name="002001" style="display:none">
+    <label for="ageCd1" class="form-label required">타겟연령</label>
+    <div class="form-input-group">
+      <select name="ageCd" id="ageCd1" class="form-select wpct50">
+        <option value="">---- 타겟연령 ----</option>
+        <option value="040001">영유아</option>
+        <option value="040002">프리스쿨</option>
+        <option value="040003">어린이</option>
+        <option value="040004">청소년</option>
+        <option value="040005">가족용</option>
+        <option value="040006">성인</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-row" data-name="002001" style="display:none">
+    <label for="volumeMin1" class="form-label required">분량(분)</label>
+    <div class="form-input-group">
+      <input type="text" name="volumeMin" id="volumeMin1" size="10" maxlength="10" class="form-input wpct30" value="">
+    </div>
+  </div>
+  <div class="form-row" data-name="002001" style="display:none">
+    <label for="volumeEpCount1" class="form-label required">분량(편)</label>
+    <div class="form-input-group">
+      <input type="text" name="volumeEpCount" id="volumeEpCount1" size="10" maxlength="10" class="form-input wpct30" value="">
+    </div>
+  </div>
+
+  <!-- 게임 (002002) -->
+  <div class="form-row" data-name="002002" style="display:none">
+    <label for="contentsCd2" class="form-label required">콘텐츠 유형</label>
+    <div class="form-input-group">
+      <select name="contentsCd" id="contentsCd2" class="form-select wpct50">
+        <option value="">---- 콘텐츠 유형 ----</option>
+        <option value="019001">RPG</option>
+        <option value="019002">MOBA</option>
+        <option value="019003">FPS/TPS</option>
+        <option value="019004">캐주얼</option>
+        <option value="019005">아케이드</option>
+        <option value="019006">레이싱/러닝</option>
+        <option value="019007">교육용</option>
+        <option value="019008">보드/퍼즐</option>
+        <option value="019009">스포츠</option>
+        <option value="019010">시뮬레이션</option>
+        <option value="019011">액션/어드벤처</option>
+        <option value="019012">전략</option>
+        <option value="019013">기타</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-row" data-name="002002" style="display:none">
+    <label for="volumeCd" class="form-label required">클라이언트용량</label>
+    <div class="form-input-group">
+      <select name="volumeCd" id="volumeCd" class="form-select wpct50">
+        <option value="">---- 콘텐츠 유형 ----</option>
+        <option value="035001">100MB 미만</option>
+        <option value="035002">100MB 이상 500MB 미만</option>
+        <option value="035003">500MB 이상 1GB 미만</option>
+        <option value="035004">5GB 이상 10GB 미만</option>
+        <option value="035005">10GB 이상</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-row" data-name="002002" style="display:none">
+    <label for="artCd" class="form-label required">아트</label>
+    <div class="form-input-group">
+      <select name="artCd" id="artCd" class="form-select wpct50">
+        <option value="">---- 아트 ----</option>
+        <option value="020001">2D</option>
+        <option value="020002">3D</option>
+        <option value="020003">AR</option>
+        <option value="020004">VR</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-row" data-name="002002" style="display:none">
+    <label for="serviceCd" class="form-label required">서비스단계</label>
+    <div class="form-input-group">
+      <select name="serviceCd" id="serviceCd" class="form-select wpct50">
+        <option value="">---- 서비스단계 ----</option>
+        <option value="036001">제작중</option>
+        <option value="036002">출시예정</option>
+        <option value="036003">서비스 중</option>
+        <option value="036004">서비스 종료</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-row" data-name="002002" style="display:none">
+    <label for="ageCd2" class="form-label required">타겟연령</label>
+    <div class="form-input-group">
+      <select name="ageCd" id="ageCd2" class="form-select wpct50">
+        <option value="">---- 타겟연령 ----</option>
+        <option value="022001">전연령</option>
+        <option value="022002">아동</option>
+        <option value="022003">청소년</option>
+        <option value="022004">성인</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- 캐릭터 (002003) -->
+  <div class="form-row" data-name="002003" style="display:none">
+    <label for="genreDtlCd1" class="form-label required">세부장르</label>
+    <div class="form-input-group">
+      <select name="genreDtlCd" id="genreDtlCd1" class="form-select wpct50">
+        <option value="">---- 세부장르 ----</option>
+        <option value="025001">코믹액션</option>
+        <option value="025002">슬랩스틱</option>
+        <option value="025003">코미디</option>
+        <option value="025004">에듀테인먼트</option>
+        <option value="025005">시트콤</option>
+        <option value="025006">액션/히어로</option>
+        <option value="025007">판타지/어드벤처</option>
+        <option value="025008">엔터테인먼트</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-row" data-name="002003" style="display:none">
+    <label for="contentsCd3" class="form-label required">콘텐츠 유형</label>
+    <div class="form-input-group">
+      <select name="contentsCd" id="contentsCd3" class="form-select wpct50">
+        <option value="">---- 콘텐츠 유형 ----</option>
+        <option value="026001">애니메이션</option>
+        <option value="026002">실사 영상콘텐츠(시리즈, 영화)</option>
+        <option value="026003">캐릭터</option>
+        <option value="026004">기타 (게임, 만화, 광고, 연예 등)</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-row" data-name="002003" style="display:none">
+    <label for="ageCd3" class="form-label required">타겟연령</label>
+    <div class="form-input-group">
+      <select name="ageCd" id="ageCd3" class="form-select wpct50">
+        <option value="">---- 타겟연령 ----</option>
+        <option value="027001">영유아</option>
+        <option value="027002">프리스쿨</option>
+        <option value="027003">어린이</option>
+        <option value="027004">청소년</option>
+        <option value="027005">성인</option>
+        <option value="027006">전체</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-row" data-name="002003" style="display:none">
+    <label for="stepCd1" class="form-label required">제작단계</label>
+    <div class="form-input-group">
+      <select name="stepCd" id="stepCd1" class="form-select wpct50">
+        <option value="">---- 제작단계 ----</option>
+        <option value="037001">제작중</option>
+        <option value="037002">완성된 프로그램</option>
+        <option value="037003">IP</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-row" data-name="002003" style="display:none">
+    <label for="productCd1" class="form-label required">상품유형</label>
+    <div class="form-input-group">
+      <select name="productCd" id="productCd1" class="form-select wpct50">
+        <option value="">---- 상품유형 ----</option>
+        <option value="028001">완구</option>
+        <option value="028002">문구</option>
+        <option value="028003">기타</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- 만화 (002004) -->
+  <div class="form-row" data-name="002004" style="display:none">
+    <label for="contentsCd4" class="form-label required">콘텐츠 유형</label>
+    <div class="form-input-group">
+      <select name="contentsCd" id="contentsCd4" class="form-select wpct50">
+        <option value="">---- 콘텐츠 유형 ----</option>
+        <option value="015001">모바일온라인(스크롤뷰)</option>
+        <option value="015002">모바일온라인(컷/페이지뷰)</option>
+        <option value="015003">출판(잡지/단행본/신문)</option>
+        <option value="015004">E북</option>
+        <option value="015005">기타</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-row" data-name="002004" style="display:none">
+    <label for="ageCd4" class="form-label required">타겟연령</label>
+    <div class="form-input-group">
+      <select name="ageCd" id="ageCd4" class="form-select wpct50">
+        <option value="">---- 타겟연령 ----</option>
+        <option value="016001">전연령</option>
+        <option value="016002">아동</option>
+        <option value="016003">청소년</option>
+        <option value="016004">성인</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-row" data-name="002004" style="display:none">
+    <label for="volumeEpCount2" class="form-label required">분량</label>
+    <div class="form-input-group">
+      <input type="text" name="volumeEpCount" id="volumeEpCount2" maxlength="10" class="form-input wpct30" value="">
+    </div>
+  </div>
+
+  <!-- 애니메이션 (002005) -->
+  <div class="form-row" data-name="002005" style="display:none">
+    <label for="genreDtlCd2" class="form-label required">세부장르</label>
+    <div class="form-input-group">
+      <select name="genreDtlCd" id="genreDtlCd2" class="form-select wpct50">
+        <option value="">---- 세부장르 ----</option>
+        <option value="010001">코믹액션</option>
+        <option value="010002">슬랩스틱</option>
+        <option value="010003">코미디</option>
+        <option value="010004">에듀테인먼트</option>
+        <option value="010005">시트콤</option>
+        <option value="010006">액션</option>
+        <option value="010007">판타지/어드벤처</option>
+        <option value="010008">엔터테인먼트</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-row" data-name="002005" style="display:none">
+    <label for="contentsCd5" class="form-label required">콘텐츠 유형</label>
+    <div class="form-input-group">
+      <select name="contentsCd" id="contentsCd5" class="form-select wpct50">
+        <option value="">---- 콘텐츠 유형 ----</option>
+        <option value="011001">2D 애니메이션</option>
+        <option value="011002">3D 애니메이션</option>
+        <option value="011003">실사 애니메이션</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-row" data-name="002005" style="display:none">
+    <label for="ageCd5" class="form-label required">타겟연령</label>
+    <div class="form-input-group">
+      <select name="ageCd" id="ageCd5" class="form-select wpct50">
+        <option value="">---- 타겟연령 ----</option>
+        <option value="012001">영유아</option>
+        <option value="012002">프리스쿨</option>
+        <option value="012003">어린이</option>
+        <option value="012004">청소년</option>
+        <option value="012005">가족용</option>
+        <option value="012006">성인</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-row" data-name="002005" style="display:none">
+    <label for="stepCd2" class="form-label required">제작단계</label>
+    <div class="form-input-group">
+      <select name="stepCd" id="stepCd2" class="form-select wpct50">
+        <option value="">---- 제작단계 ----</option>
+        <option value="041001">제작 중인 프로젝트</option>
+        <option value="041002">완성된 프로그램</option>
+        <option value="041003">IP</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-row" data-name="002005" style="display:none">
+    <label for="volumeMin2" class="form-label required">분량(분)</label>
+    <div class="form-input-group">
+      <input type="text" name="volumeMin" id="volumeMin2" maxlength="10" class="form-input wpct30" value="">
+    </div>
+  </div>
+  <div class="form-row" data-name="002005" style="display:none">
+    <label for="volumeEpCount3" class="form-label required">분량(편)</label>
+    <div class="form-input-group">
+      <input type="text" name="volumeEpCount" id="volumeEpCount3" maxlength="10" class="form-input wpct50" value="">
+    </div>
+  </div>
+
+  <!-- 패션 (002006) -->
+  <div class="form-row" data-name="002006" style="display:none">
+    <label for="productCd2" class="form-label required">상품분류</label>
+    <div class="form-input-group">
+      <select name="productCd" id="productCd2" class="form-select wpct50">
+        <option value="">---- 상품분류 ----</option>
+        <option value="031001">남성복</option>
+        <option value="031002">여성복</option>
+        <option value="031003">신발</option>
+        <option value="031004">가방</option>
+        <option value="031005">모자</option>
+        <option value="031006">액세서리</option>
+        <option value="031007">기타</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- 음악 (002007) -->
+  <div class="form-row" data-name="002007" style="display:none">
+    <label for="genreDtlCd3" class="form-label required">세부장르</label>
+    <div class="form-input-group">
+      <select name="genreDtlCd" id="genreDtlCd3" class="form-select wpct50">
+        <option value="">---- 세부장르 ----</option>
+        <option value="033001">발라드</option>
+        <option value="033002">댄스</option>
+        <option value="033003">랩/힙합</option>
+        <option value="033004">R&amp;B/소울</option>
+        <option value="033005">인디음악</option>
+        <option value="033006">록/메탈</option>
+        <option value="033007">트로트</option>
+        <option value="033008">포크/블루스</option>
+      </select>
+    </div>
+  </div>
+
+  <!--
+    스타트업(002008)은 실사이트에 하위 필드가 없다(data-name="002008" 블록 자체가 존재하지 않음,
+    2026-09-14 라디오 클릭+네트워크 요청 확인으로 재검증). 여기에 템플릿을 추가하지 않는다.
+  -->
+
+  <!-- 신기술 융합콘텐츠 (002009) -->
+  <!--
+    실사이트 select 옵션이 "세부장르"라는 라벨과 달리 VR/AR/MR 등이 아니라
+    방송/게임/캐릭터/만화/애니메이션/패션/음악/기타(다른 장르명)로 되어 있다.
+    이질적으로 보이지만 실사이트 DOM 그대로 옮긴 값이다.
+  -->
+  <div class="form-row" data-name="002009" style="display:none">
+    <label for="genreDtlCd4" class="form-label required">세부장르</label>
+    <div class="form-input-group">
+      <select name="genreDtlCd" id="genreDtlCd4" class="form-select wpct50">
+        <option value="">---- 세부장르 ----</option>
+        <option value="034001">방송</option>
+        <option value="034002">게임</option>
+        <option value="034003">캐릭터</option>
+        <option value="034004">만화</option>
+        <option value="034005">애니메이션</option>
+        <option value="034006">패션</option>
+        <option value="034007">음악</option>
+        <option value="034008">기타</option>
+      </select>
+    </div>
+  </div>
+
+  <!--
+    스토리(002011)·기타(002010)도 실사이트에 하위 필드가 없다(data-name 블록 없음,
+    2026-09-14 재검증). 여기에 템플릿을 추가하지 않는다.
+  -->
+
+</div>
+
+<script>
+//<![CDATA[
+(function () {
+  function showDetailGenres(genreCd) {
+    var contentList = document.getElementById('contentList');
+    contentList.innerHTML = '';
+
+    var templates = document.querySelectorAll('#detailGenereContainer [data-name="' + genreCd + '"]');
+    if (templates.length > 0) {
+      for (var i = 0; i < templates.length; i++) {
+        var clone = templates[i].cloneNode(true);
+        clone.style.display = '';
+        contentList.appendChild(clone);
+      }
+      contentList.style.display = '';
+    } else {
+      contentList.style.display = 'none';
+    }
+  }
+
+  var radios = document.querySelectorAll('input[name="genreCd"]');
+  for (var i = 0; i < radios.length; i++) {
+    radios[i].addEventListener('change', function () {
+      if (this.checked) {
+        showDetailGenres(this.value);
+      }
+    });
+  }
+})();
+//]]>
+</script>
+
+        </div>
+        <!--E. sub-contents-area-->
+    </div>
+    <!--E. sub-content-->
+</div>
+<!--E. sub_container-->
+
+<!-- 푸터 영역 -->
+<footer id="krds-footer">
+    <div class="f-btm">
+        <div class="f-btm-box">
+                <ul class="f-menu">
+                    <li><a href="/ko/support/privacy-policy" class="krds-btn small text col-violet" target="_blank" title="새 창 열림">개인정보처리방침</a></li>
+                    <li><a href="/ko/support/terms-of-use" class="krds-btn small text">이용약관</a></li>
+                    <li><a href="/ko/support/information-utilization-policy" class="krds-btn small text">정보활용방침</a></li>
+                    <li><a href="/ko/support/sitemap" class="krds-btn small text">사이트맵</a></li>
+                    <li><a href="https://kocca.kr" class="krds-btn small text col-violet" target="_blank" title="새 창 열림">한국콘텐츠진흥원</a></li>
+                    <li><a href="javascript:void(0);" class="krds-btn small text link site-tit" role="button" aria-expanded="false" aria-controls="related-list">관련기관 바로가기</a>
+                        <div class="Relativ-view" id="related-list" style="display:none">
+                            <ul class="realtive-list">
+                                <li><a target="_blank" href="https://www.mcst.go.kr" title="문화체육관광부(새 창 열림)">문화체육관광부</a></li>
+                                <li><a target="_blank" href="https://www.kotra.or.kr" title="대한무역투자진흥공사(새 창 열림)">대한무역투자진흥공사</a></li>
+                                <li><a target="_blank" href="http://kofice.or.kr" title="한국국제문화교류진흥원(새 창 열림)">한국국제문화교류진흥원</a></li>
+                                <li><a target="_blank" href="https://www.kf.or.kr" title="한국국제교류재단(새 창 열림)">한국국제교류재단</a></li>
+                                <li><a target="_blank" href="https://www.kcisa.kr" title="한국문화정보원(새 창 열림)">한국문화정보원</a></li>
+                                <li><a target="_blank" href="https://www.kita.net" title="한국무역협회(새 창 열림)">한국무역협회</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+        </div>
+    </div>
+    <div class="inner">
+        <!-- f-cnt 영역 -->
+        <div class="f-cnt">
+            <!-- f-info-left 영역 -->
+            <div class="f-info-left">
+                <div class="f-logo"> <span class="f-kocca">KOCCA</span> <span class="f-welcon">WelCon</span> </div>
+                <div class="f-left-box">
+                    <ul class="info-txt">
+                        <li class="col-violet"><span>Helpdesk</span> 1566-9984</li>
+                        <li class="col-violet">welcon@kocca.kr</li>
+                    </ul>
+                    <p class="info-addr">58326 전남광주통합특별시 나주시 교육길 35 (빛가람동 351) 한국콘텐츠진흥원<br>
+                    <span>사업자등록번호 105-82-17272</span></p>
+                </div>
+                <!-- 모바일에서f-menu-->
+                <div class="m-f-btm-box">
+                        <ul class="f-menu">
+                            <li><a href="/ko/support/privacy-policy" class="krds-btn small text col-violet" target="_blank" title="새 창 열림">개인정보처리방침</a></li>
+                            <li><a href="/ko/support/terms-of-use" class="krds-btn small text">이용약관</a></li>
+                            <li><a href="/ko/support/information-utilization-policy" class="krds-btn small text">정보활용방침</a></li>
+                            <li><a href="/ko/support/sitemap" class="krds-btn small text">사이트맵</a></li>
+                            <li><a href="https://kocca.kr" class="krds-btn small text col-violet" target="_blank" title="새 창 열림">한국콘텐츠진흥원</a></li>
+                        </ul>
+                </div>
+                <!-- //모바일에서f-menu-->
+            </div>
+            <!-- f-info-right 영역 -->
+            <div class="f-info-right">
+                <div class="link-sns">
+                  <a href="https://www.linkedin.com/company/kocca-welcon" class="krds-btn xlarge icon border" target="_blank" title="새 창 열림">
+                    <span class="sr-only">링크드인</span>
+                    <i class="svg-icon ico-linkdin"></i>
+                  </a>
+                 <a href="https://www.instagram.com/kocca_official" class="krds-btn xlarge icon border" target="_blank" title="새 창 열림">
+                    <span class="sr-only">인스타그램</span>
+                    <i class="svg-icon ico-instagram"></i>
+                  </a>
+                  <a href="https://www.youtube.com/channel/UC3IS4moogXMW0eJSVYzBdig" class="krds-btn xlarge icon border" target="_blank" title="새 창 열림">
+                    <span class="sr-only">유튜브</span>
+                    <i class="svg-icon ico-youtube"></i>
+                  </a>
+
+                  <a href="https://blog.naver.com/koccablog15" class="krds-btn xlarge icon border" target="_blank" title="새 창 열림">
+                    <span class="sr-only">블로그</span>
+                    <i class="svg-icon ico-blog"></i>
+                  </a>
+                </div>
+                <div class="">
+                    <a href="http://webwatch.or.kr" title="새창" target="_blank" class="f-mark">
+                    <img src="../assets/static/wcdn2025/img/frt/main/WA_Mark.png" alt="과학기술정보통신부 WA(WEB접근성) 품질인증 마크, 웹와치(WebWatch) 2026.7.30 ~ 2027.7.29" title="WA 품질인증 마크, 웹와치(WebWatch) 2026.7.30 ~ 2027.7.29" width="120">
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!-- //f-cnt 영역 -->
+        <div class="f-copy">
+            <div class="f-cleft">본 페이지에 게시된 이메일 주소가 자동 수집되는 것을 거부하며, 이를 위반시 정보통신법에 의해 처벌됨을 유념하시기 바랍니다.</div>
+            <div class="f-cright">COPYRIGHT ⓒ 한국콘텐츠진흥원. ALL RIGHTS RESERVED.</div>
+        </div>
+    </div>
+</footer>
+<!-- //푸터 영역 -->
+
+</div>
+
+</body></html>
