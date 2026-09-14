@@ -3733,7 +3733,7 @@ const STEP_LABELS = ["", "활동 분야", "내가 하는 일", "희망 파트너
 const MODAL_TITLES = ["", "활동 분야를 선택해 주세요", "귀하가 하는 일을 선택해주세요", "귀하가 찾고 있는 파트너 유형을 선택해주세요", "완료"];
 // 원래 본문 h1 아래 있던 보조 설명 문단 - 2·3단계는 제목과 함께 모달 상단으로 옮기고
 // 본문에서는 뺐다. 옮기지 않은 1단계는 본문에 그대로 있으니 여기선 빈 문자열.
-const MODAL_DESCS = ["", "해당하는 분야를 모두 선택할 수 있습니다.", "가장 대표적인 역할 하나가 주포지션이 되며, 보조포지션 배지를 누르면 주포지션을 바꿀 수 있습니다.", "다른 장르의 기업도 선택할 수 있습니다.", ""];
+const MODAL_DESCS = ["", "해당하는 분야를 모두 선택할 수 있습니다.", "가장 대표적인 역할 하나가 주포지션이 되며, 보조포지션 배지를 누르면 주포지션을 바꿀 수 있습니다.", "다른 장르의 사람도 선택할 수 있습니다.", ""];
 const SEP = "||";
 
 /* ===== 상태 ===== */
@@ -4519,6 +4519,29 @@ function highlightSummaryFor(genre, type) {
   });
 }
 
+/* 2026-09-15 신설: 가로 막대 차트의 장르명이 왼쪽에만 보여서, 막대가 길어지면 오른쪽 끝
+   막대가 어느 장르인지 눈으로 따라가기 번거로웠다 - 오른쪽에도 같은 장르명을 미러링해서
+   그린다. Chart.js 카테고리 축은 한쪽에만 라벨을 띄우는 게 기본이라, afterDraw 훅으로
+   직접 텍스트를 그리는 플러그인으로 구현했다. */
+const rightGenreLabelsPlugin = {
+  id: "rightGenreLabels",
+  afterDraw(chart) {
+    const yScale = chart.scales.y;
+    if (!yScale) return;
+    const { ctx, chartArea } = chart;
+    ctx.save();
+    ctx.font = "12px 'Pretendard', 'Malgun Gothic', sans-serif";
+    ctx.fillStyle = "#464C53";
+    ctx.textAlign = "left";
+    ctx.textBaseline = "middle";
+    chart.data.labels.forEach((label, i) => {
+      const y = yScale.getPixelForTick(i);
+      ctx.fillText(label, chartArea.right + 8, y);
+    });
+    ctx.restore();
+  }
+};
+
 /* wrapId/canvasId 자리에 "포지션 분포" 막대그래프를 그린다 - 위저드 내부(4단계 요약)
    캔버스와 메인 폼 "공통모듈" 박스 캔버스가 이 함수 하나를 공유한다(2026-09-11, 위저드
    완료 시 공통모듈 박스에도 같은 그래프를 보여달라는 요청으로 drawGenreChart에서 분리).
@@ -4579,15 +4602,21 @@ function renderGenreChartInto(wrapId, canvasId, getInstance, setInstance, cardId
       // main/sub는 왼쪽 축(x)에서 이어 쌓이는 "genre" 스택, wish는 오른쪽 가장자리가
       // 0%인 별도 축(x2)에 배정해 방향만 반대로 자라게 한다.
       stack: key === "wish" ? "wish" : "genre",
-      xAxisID: key === "wish" ? "x2" : "x"
+      xAxisID: key === "wish" ? "x2" : "x",
+      // 2026-09-15: stack이 다른 두 그룹(genre/wish)이 Chart.js 기본 그룹핑 때문에
+      // 위아래로 갈라져 그려지는 문제 수정 - grouped:false로 같은 행(카테고리 슬롯)에
+      // 겹쳐서 그리게 강제한다(의도한 디자인: 왼쪽/오른쪽에서 각각 자라나 한 행에 표시).
+      grouped: false
     };
   });
 
   setInstance(new Chart(canvas, {
     type: "bar",
     data: { labels: data.map(d => d.genre), datasets: datasets },
+    plugins: [rightGenreLabelsPlugin],
     options: {
       indexAxis: "y",
+      layout: { padding: { right: 90 } },
       responsive: true,
       maintainAspectRatio: false,
       animation: { duration: 200 },
