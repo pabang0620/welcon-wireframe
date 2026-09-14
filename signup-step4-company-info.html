@@ -3080,34 +3080,4 @@ $(document).on("click", "section[id^='diMyFavoriteWrap_']", function(e){
 
 </script>
 
-<!-- 시연용 데모 버튼 - 실제 사이트에는 없음 -->
-<style>
-#wcDemoScrollBtn {
-  position: fixed;
-  right: 2.4rem;
-  bottom: 2.4rem;
-  z-index: 999;
-  width: 7.2rem;
-  height: 7.2rem;
-  border-radius: 50%;
-  border: none;
-  background: #4f0099;
-  color: #fff;
-  font-size: 1.3rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
-  cursor: pointer;
-  box-shadow: 0 0.4rem 1.2rem rgba(0,0,0,0.28);
-}
-#wcDemoScrollBtn:hover { background: #350066; }
-</style>
-<button type="button" id="wcDemoScrollBtn">시연용</button>
-<script>
-document.getElementById('wcDemoScrollBtn').onclick = function() {
-    var target = document.getElementById('wc-module-field-row');
-    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-};
-</script>
-
 <div class="gnb-backdrop"></div></body></html>
