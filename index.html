@@ -1140,10 +1140,16 @@ function initNavi() {
             <!-- 필수 표시 안내 -->
 
             <!-- 폼 헤더 -->
-            <!-- TEMP-HIDDEN 2026-09-11: "기업정보" 섹션 타이틀 임시 숨김(사용자 요청, 삭제
-                 아님) - 되살릴 때는 TEMP-HIDDEN-START/END 마커 줄만 제거. -->
+            <!-- 2026-09-16: 공통모듈(STEP3 개념)/기업정보 나머지 항목(STEP4 개념) 단계적 노출
+                 복원 - 이 헤더부터 아래 입력폼·장르·제출버튼까지가 "다음" 클릭 후에만 보이는
+                 STEP4 콘텐츠 그룹이다. -->
+            <div id="wcCompanyInfoHeaderWrap" hidden>
+            <div class="btn-wrap" id="wcBackToModuleBtnWrap" style="margin-bottom:2rem;">
+                <button type="button" class="btn-pre btn-xlarge" id="wcBackToModuleBtn"><i class="button-icon04"></i>이전</button>
+            </div>
             <div class="member-form-header">
                 <h3 class="form-section-title">기업정보</h3>
+            </div>
             </div>
             <!-- //폼 헤더 -->
 
@@ -1158,12 +1164,9 @@ function initNavi() {
             <input type="hidden" id="snsUrlArr" name="seller.snsUrlArr" value="">
 
 
-                <!-- TEMP-HIDDEN 2026-09-10: 공통모듈 박스 위 입력 필드 전체를 "일단" 임시로
-                     화면에서 숨김(사용자 요청, 삭제 아님). 기존 소스 내 작은 라벨 주석
-                     (회사명 국문 라벨 주석 등)은 HTML 주석은 중첩이 불가능해 그대로 두고
-                     그 사이사이 구간만 나눠 TEMP-HIDDEN-START/END 쌍으로 감쌌다.
-                     되살릴 때는 아래 TEMP-HIDDEN-START/END 마커 줄만 전부 제거하면
-                     원래 마크업이 그대로 복원된다(원본 내용은 한 글자도 바꾸지 않음). -->
+                <!-- 2026-09-16: STEP4 콘텐츠 그룹(wcCompanyInfoHeaderWrap과 함께 "다음" 클릭
+                     후에만 노출) 시작 지점. -->
+                <div id="wcCompanyInfoFormWrap" hidden>
                 <div class="form-grid">
 
                     <!-- 회사명(국문) -->
@@ -1422,6 +1425,8 @@ function initNavi() {
                         </div>
                     </div>
                 </div>
+                </div>
+                <!-- //wcCompanyInfoFormWrap -->
                 <!-- //SNS-->
 
 
@@ -1866,6 +1871,9 @@ function initNavi() {
         </div>
     </div>
 </div>
+<div class="btn-wrap" id="wcShowGenreBtnWrap" style="margin-top:2rem;">
+    <button type="button" class="btn-save btn-xlarge" id="wcShowGenreBtn">다음<i class="button-icon03"></i></button>
+</div>
 </div>
 <!-- //wcModuleBoxWrap -->
 
@@ -1879,7 +1887,7 @@ function initNavi() {
      이번엔 "다음" 버튼으로 나중에 다시 보여줘야 해서 주석이 아니라 hidden 속성을 가진
      wrapper div(#wcGenreSectionWrap)로 감싼다 - 장르 섹션 원본 마크업은 한 글자도
      바꾸지 않았다. -->
-<div id="wcGenreSectionWrap">
+<div id="wcGenreSectionWrap" hidden>
 <div class="member-form-header mgt-30">
     <h3 class="form-section-title">장르</h3>
 </div>
@@ -3086,16 +3094,12 @@ function validateGenre() {
                 <div id="prevErrorsMsgGroup" class="textc">
 
                 </div>
-                <!-- TEMP-HIDDEN 2026-09-11: 폼 전체 제출 버튼(취소/완료, fnMain()/fnSave()) 임시
-                     숨김(사용자 요청, 삭제 아님) - "공통모듈" 박스 위/앞쪽 폼 필드들이 대거
-                     숨겨진 채라 이 버튼들이 공통모듈 박스 바로 아래에 걸쳐 보이는 상태였다.
-                     버튼 마크업만 숨기고 fnMain()/fnSave() 함수 정의 자체는 그대로 둔다(다른
-                     곳에서 쓰일 수 있어 손대지 않는 원칙 - 재검색 결과 이 두 버튼에서만
-                     호출되지만 함수는 그대로 보존). 되살릴 때는 TEMP-HIDDEN-START/END 마커
-                     줄만 제거하면 된다. -->
+                <!-- 2026-09-16: 제출 버튼도 STEP4 콘텐츠 그룹 - "다음" 클릭 후에만 노출. -->
+                <div id="wcSubmitBtnWrap" hidden>
                 <div class="btn-wrap">
                     <button type="button" class="btn-pre btn-xlarge" onclick="fnMain();return false;"><i class="button-icon04"></i>취소</button>
                     <button type="button" class="btn-save btn-xlarge open-modal" data-target="modalPwchange" onclick="fnSave('_target5');return false;">완료<i class="button-icon03"></i></button>
+                </div>
                 </div>
             <input type="hidden" name="" value=""></form>
         </div>
@@ -4786,6 +4790,49 @@ document.getElementById("wizardModal").onclick = e => { if (e.target.id === "wiz
 // 부르는 btnNext("처음부터 다시")와 달리 상태를 안 건드리므로, 닫은 뒤 메인 폼 "공통모듈"
 // 박스에 이미 그려진 차트(drawMainPageGenreChart)가 그대로 보인다.
 document.getElementById("btnConfirmDone").onclick = closeWizardModal;
+
+// 2026-09-16: 공통모듈(STEP3 개념)/기업정보 나머지 항목(STEP4 개념) 단계적 노출 복원.
+// "다음"을 누르면 공통모듈 박스가 사라지고 기업정보 헤더+입력폼+장르+제출버튼이 나타난다.
+// "이전"을 누르면 반대로 되돌아간다. 상단 STEP 진행표시줄도 같이 동기화한다.
+const WC_STEP4_WRAPS = ["wcCompanyInfoHeaderWrap", "wcCompanyInfoFormWrap", "wcGenreSectionWrap", "wcSubmitBtnWrap"];
+function showStep4Content(show) {
+  WC_STEP4_WRAPS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.hidden = !show;
+  });
+  const moduleBox = document.getElementById("wcModuleBoxWrap");
+  if (moduleBox) moduleBox.hidden = show;
+}
+function setBreadcrumbStep(atStep4) {
+  const li3 = document.getElementById("stepLi3");
+  const li4 = document.getElementById("stepLi4");
+  if (!li3 || !li4) return;
+  if (atStep4) {
+    li3.className = "done";
+    li4.className = "active";
+  } else {
+    li3.className = "active";
+    li4.className = "";
+  }
+}
+document.getElementById("wcShowGenreBtn").onclick = function () {
+  showStep4Content(true);
+  setBreadcrumbStep(true);
+};
+document.getElementById("wcBackToModuleBtn").onclick = function () {
+  showStep4Content(false);
+  setBreadcrumbStep(false);
+};
+// URL에 ?view=genre가 있으면 페이지 로드 즉시 STEP4 콘텐츠부터 보여준다 - 다른 프로젝트에서
+// "상세장르 체험하기" 링크(https://pabang0620.github.io/welcon-wireframe/?view=genre)로
+// 바로 연결할 때 쓴다.
+const wcUrlParams = new URLSearchParams(location.search);
+if (wcUrlParams.get("view") === "genre") {
+  showStep4Content(true);
+  setBreadcrumbStep(true);
+} else {
+  setBreadcrumbStep(false);
+}
 
 // 2026-09-16: "공통모듈" 단어가 아직 미확정이라, 데모를 보는 사람이 후보 4개(담당 업무 /
 // 맞춤 정보 / 업무 매칭 / 업무 포지션) 중 골라볼 수 있게 하는 라이브 선택기. 실제 채택 로직이
