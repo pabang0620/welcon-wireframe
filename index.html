@@ -1140,16 +1140,8 @@ function initNavi() {
             <!-- 필수 표시 안내 -->
 
             <!-- 폼 헤더 -->
-            <!-- 2026-09-16: 공통모듈(STEP3 개념)/기업정보 나머지 항목(STEP4 개념) 단계적 노출
-                 복원 - 이 헤더부터 아래 입력폼·장르·제출버튼까지가 "다음" 클릭 후에만 보이는
-                 STEP4 콘텐츠 그룹이다. -->
-            <div id="wcCompanyInfoHeaderWrap" hidden>
-            <div class="btn-wrap" id="wcBackToModuleBtnWrap" style="margin-bottom:2rem;">
-                <button type="button" class="btn-pre btn-xlarge" id="wcBackToModuleBtn"><i class="button-icon04"></i>이전</button>
-            </div>
             <div class="member-form-header">
                 <h3 class="form-section-title">기업정보</h3>
-            </div>
             </div>
             <!-- //폼 헤더 -->
 
@@ -1164,9 +1156,6 @@ function initNavi() {
             <input type="hidden" id="snsUrlArr" name="seller.snsUrlArr" value="">
 
 
-                <!-- 2026-09-16: STEP4 콘텐츠 그룹(wcCompanyInfoHeaderWrap과 함께 "다음" 클릭
-                     후에만 노출) 시작 지점. -->
-                <div id="wcCompanyInfoFormWrap" hidden>
                 <div class="form-grid">
 
                     <!-- 회사명(국문) -->
@@ -1425,8 +1414,6 @@ function initNavi() {
                         </div>
                     </div>
                 </div>
-                </div>
-                <!-- //wcCompanyInfoFormWrap -->
                 <!-- //SNS-->
 
 
@@ -1856,6 +1843,24 @@ function initNavi() {
                      상태이고 JS도 그대로 연결돼 있어(drawSummaryStep → drawGenreChart +
                      drawMainPageGenreChart) "확인"으로 위저드를 완료하면 자동으로 그려진다 - 별도로
                      숨겨진 부분은 없다. -->
+                <!-- 2026-09-16: 위저드 완료화면의 "활동 장르/내가 하는 일/희망 파트너" 요약
+                     3박스를 메인 폼 공통모듈 박스에도 미러링한다(그래프처럼) - 모달을 닫아도
+                     그래프만 남는 게 아니라 이 3박스도 같이 남아있어야 한다는 요청으로 추가.
+                     기본은 숨김(display:none), drawSummaryStep()이 데이터를 채우면서 보이게 켠다. -->
+                <div class="sum-grid" id="mainPageSumGrid" style="display:none; margin-top:1.6rem;">
+                    <div class="sum-card">
+                        <div class="sum-head"><span>장르</span></div>
+                        <div class="sum-body" id="mainPageSumGenre"></div>
+                    </div>
+                    <div class="sum-card">
+                        <div class="sum-head"><span>내가 하는 일</span></div>
+                        <div class="sum-body" id="mainPageSumCat"></div>
+                    </div>
+                    <div class="sum-card">
+                        <div class="sum-head"><span>희망 파트너</span></div>
+                        <div class="sum-body" id="mainPageSumWish"></div>
+                    </div>
+                </div>
                 <div class="chart-card" id="mainPageGenreChartCard" style="display:none; margin-top:1.6rem;">
                     <div class="chart-head">포지션 분포</div>
                     <div class="chart-body">
@@ -1871,9 +1876,6 @@ function initNavi() {
         </div>
     </div>
 </div>
-<div class="btn-wrap" id="wcShowGenreBtnWrap" style="margin-top:2rem;">
-    <button type="button" class="btn-save btn-xlarge" id="wcShowGenreBtn">다음<i class="button-icon03"></i></button>
-</div>
 </div>
 <!-- //wcModuleBoxWrap -->
 
@@ -1887,7 +1889,7 @@ function initNavi() {
      이번엔 "다음" 버튼으로 나중에 다시 보여줘야 해서 주석이 아니라 hidden 속성을 가진
      wrapper div(#wcGenreSectionWrap)로 감싼다 - 장르 섹션 원본 마크업은 한 글자도
      바꾸지 않았다. -->
-<div id="wcGenreSectionWrap" hidden>
+<div id="wcGenreSectionWrap">
 <div class="member-form-header mgt-30">
     <h3 class="form-section-title">장르</h3>
 </div>
@@ -3095,7 +3097,7 @@ function validateGenre() {
 
                 </div>
                 <!-- 2026-09-16: 제출 버튼도 STEP4 콘텐츠 그룹 - "다음" 클릭 후에만 노출. -->
-                <div id="wcSubmitBtnWrap" hidden>
+                <div id="wcSubmitBtnWrap">
                 <div class="btn-wrap">
                     <button type="button" class="btn-pre btn-xlarge" onclick="fnMain();return false;"><i class="button-icon04"></i>취소</button>
                     <button type="button" class="btn-save btn-xlarge open-modal" data-target="modalPwchange" onclick="fnSave('_target5');return false;">완료<i class="button-icon03"></i></button>
@@ -4685,8 +4687,8 @@ function drawSummaryStep() {
     ? sumGroup("희망", wishGenres, genreTag)
     : '<div class="sum-group"><div class="sum-group-label">희망</div><span class="sum-none">선택하지 않음</span></div>';
   const genreHtml = sumGroup("활동", actGenres, genreTag) + wishGenreBlock;
-  document.getElementById("sumGenre").innerHTML =
-    genreHtml ? '<div class="sum-groups">' + genreHtml + '</div>' : '<span class="sum-none">없음</span>';
+  const sumGenreHtml = genreHtml ? '<div class="sum-groups">' + genreHtml + '</div>' : '<span class="sum-none">없음</span>';
+  document.getElementById("sumGenre").innerHTML = sumGenreHtml;
 
   /* 우리 회사 카드: 주포지션(정확히 1개) / 보조포지션(복수, 0개면 그룹째 숨김) */
   const mainKey = getMainKey();
@@ -4706,8 +4708,8 @@ function drawSummaryStep() {
     ? '<div class="sum-group"><div class="sum-group-label">보조포지션</div>' + sumSubgroupsByGenre(subKeys, posTag("pos-sub", false)) + '</div>'
     : "";
   const catHtml = sumGroup("주포지션", mainKeys, posTag("pos-main", true)) + subGroupHtml;
-  document.getElementById("sumCat").innerHTML =
-    catHtml ? '<div class="sum-groups">' + catHtml + '</div>' : '<span class="sum-none">없음</span>';
+  const sumCatHtml = catHtml ? '<div class="sum-groups">' + catHtml + '</div>' : '<span class="sum-none">없음</span>';
+  document.getElementById("sumCat").innerHTML = sumCatHtml;
 
   /* 찾는 파트너 카드: 장르별로 묶어서 보여준다 */
   const wishKeys = [...st.wishes];
@@ -4717,8 +4719,20 @@ function drawSummaryStep() {
     return '<span class="tag" data-hl-genre="' + p[0] + '" data-hl-type="wish">' + label + '</span>';
   };
   const wishHtml = sumSubgroupsByGenre(wishKeys, wishTag);
-  document.getElementById("sumWish").innerHTML =
-    wishHtml ? '<div class="sum-groups"><div class="sum-group">' + wishHtml + '</div></div>' : '<span class="sum-none">선택하지 않음</span>';
+  const sumWishHtml = wishHtml ? '<div class="sum-groups"><div class="sum-group">' + wishHtml + '</div></div>' : '<span class="sum-none">선택하지 않음</span>';
+  document.getElementById("sumWish").innerHTML = sumWishHtml;
+
+  // 2026-09-16: 위 3개 요약(활동 장르/내가 하는 일/희망 파트너)을 메인 폼 "공통모듈" 박스에도
+  // 그래프처럼 미러링한다 - 모달을 닫아도 그래프뿐 아니라 이 3박스도 같이 남아있어야 한다는
+  // 요청으로 추가.
+  const mainPageSumGenre = document.getElementById("mainPageSumGenre");
+  const mainPageSumCat = document.getElementById("mainPageSumCat");
+  const mainPageSumWish = document.getElementById("mainPageSumWish");
+  const mainPageSumGrid = document.getElementById("mainPageSumGrid");
+  if (mainPageSumGenre) mainPageSumGenre.innerHTML = sumGenreHtml;
+  if (mainPageSumCat) mainPageSumCat.innerHTML = sumCatHtml;
+  if (mainPageSumWish) mainPageSumWish.innerHTML = sumWishHtml;
+  if (mainPageSumGrid) mainPageSumGrid.style.display = "";
 }
 
 /* ===== 검색창 배선 ===== */
@@ -4790,49 +4804,6 @@ document.getElementById("wizardModal").onclick = e => { if (e.target.id === "wiz
 // 부르는 btnNext("처음부터 다시")와 달리 상태를 안 건드리므로, 닫은 뒤 메인 폼 "공통모듈"
 // 박스에 이미 그려진 차트(drawMainPageGenreChart)가 그대로 보인다.
 document.getElementById("btnConfirmDone").onclick = closeWizardModal;
-
-// 2026-09-16: 공통모듈(STEP3 개념)/기업정보 나머지 항목(STEP4 개념) 단계적 노출 복원.
-// "다음"을 누르면 공통모듈 박스가 사라지고 기업정보 헤더+입력폼+장르+제출버튼이 나타난다.
-// "이전"을 누르면 반대로 되돌아간다. 상단 STEP 진행표시줄도 같이 동기화한다.
-const WC_STEP4_WRAPS = ["wcCompanyInfoHeaderWrap", "wcCompanyInfoFormWrap", "wcGenreSectionWrap", "wcSubmitBtnWrap"];
-function showStep4Content(show) {
-  WC_STEP4_WRAPS.forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.hidden = !show;
-  });
-  const moduleBox = document.getElementById("wcModuleBoxWrap");
-  if (moduleBox) moduleBox.hidden = show;
-}
-function setBreadcrumbStep(atStep4) {
-  const li3 = document.getElementById("stepLi3");
-  const li4 = document.getElementById("stepLi4");
-  if (!li3 || !li4) return;
-  if (atStep4) {
-    li3.className = "done";
-    li4.className = "active";
-  } else {
-    li3.className = "active";
-    li4.className = "";
-  }
-}
-document.getElementById("wcShowGenreBtn").onclick = function () {
-  showStep4Content(true);
-  setBreadcrumbStep(true);
-};
-document.getElementById("wcBackToModuleBtn").onclick = function () {
-  showStep4Content(false);
-  setBreadcrumbStep(false);
-};
-// URL에 ?view=genre가 있으면 페이지 로드 즉시 STEP4 콘텐츠부터 보여준다 - 다른 프로젝트에서
-// "상세장르 체험하기" 링크(https://pabang0620.github.io/welcon-wireframe/?view=genre)로
-// 바로 연결할 때 쓴다.
-const wcUrlParams = new URLSearchParams(location.search);
-if (wcUrlParams.get("view") === "genre") {
-  showStep4Content(true);
-  setBreadcrumbStep(true);
-} else {
-  setBreadcrumbStep(false);
-}
 
 // 2026-09-16: "공통모듈" 단어가 아직 미확정이라, 데모를 보는 사람이 후보 4개(담당 업무 /
 // 맞춤 정보 / 업무 매칭 / 업무 포지션) 중 골라볼 수 있게 하는 라이브 선택기. 실제 채택 로직이
