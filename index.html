@@ -21,7 +21,7 @@
 
 
 
-        <title>회원가입 - 기업정보</title>
+        <title>회원가입 - 회원정보입력 및 사업자 인증</title>
         <meta id="meta_og_title" property="og:title" content="콘텐츠수출마케팅플랫폼">
         <meta id="meta_og_url" property="og:url" content="https://welcon.kocca.kr">
         <meta id="meta_og_type" property="og:type" content="website">
@@ -81,7 +81,7 @@
 <link href="https://welcon.kocca.kr/static/mng/css/popModal.min.css?v=20260825181323341" rel="stylesheet">
 <script src="https://welcon.kocca.kr/static/mng/js/popModal.js?v=20260825181323341'/&gt;"></script>
 
-<script async="" data-requirecontext="_" data-requiremodule="https://welcon.kocca.kr/static/cmm/js/welcon/common.js?v=20260825181323341" src="https://welcon.kocca.kr/static/cmm/js/welcon/common.js?v=20260825181323341"></script><script async="" data-requirecontext="_" data-requiremodule="module/mng" src="https://welcon.kocca.kr/static/cmm/js/welcon/lib/../module/mng.js"></script><script async="" data-requirecontext="_" data-requiremodule="ajax-form" src="https://welcon.kocca.kr/static/cmm/js/welcon/lib/ajax-form.js"></script><script async="" data-requirecontext="_" data-requiremodule="pickadate" src="https://welcon.kocca.kr/static/cmm/js/welcon/lib/pickadate.js"></script><script async="" data-requirecontext="_" data-requiremodule="module/base" src="https://welcon.kocca.kr/static/cmm/js/welcon/lib/../module/base.js"></script><script async="" data-requirecontext="_" data-requiremodule="i18n" src="https://welcon.kocca.kr/static/cmm/js/welcon/lib/i18n.js"></script><script async="" data-requirecontext="_" data-requiremodule="datepicker" src="https://welcon.kocca.kr/static/cmm/js/welcon/lib/../vendor/pickadate/picker.date.js"></script><script async="" data-requirecontext="_" data-requiremodule="handlebars" src="https://welcon.kocca.kr/static/cmm/js/welcon/lib/../vendor/handlebars.amd.min.js"></script><script async="" data-requirecontext="_" data-requiremodule="picker" src="https://welcon.kocca.kr/static/cmm/js/welcon/lib/../vendor/pickadate/picker.js"></script><script async="" data-requirecontext="_" data-requiremodule="polyglot" src="https://welcon.kocca.kr/static/cmm/js/welcon/lib/../vendor/polyglot.min.js"></script></head>
+</head>
 
 <body>
 <div id="wrap" class="">
@@ -257,6 +257,9 @@ document.addEventListener("DOMContentLoaded", () => {
                             <li>
                                <a href="/en/buyer/main" class="krds-btn small text " lang="en">English</a>
                             </li>
+                           <!-- <li>
+                                <button type="button" class="krds-btn small text open-modal" data-target="modal_adjust_display"> <i class="svg-icon ico-view-mode"></i> 글자&middot;화면 설정 </button>
+                            </li> -->
                         </ul>
                 </div>
             </div>
@@ -269,22 +272,27 @@ document.addEventListener("DOMContentLoaded", () => {
                         <div class="inner">
                             <ul class="gnb-menu" aria-label="메인 메뉴">
                                 <li>
-                                    <button type="button" class="gnb-main-trigger" data-trigger="gnb" data-gnb-no="gnb01" aria-controls="gnb-main-menu-9r7coz8" aria-expanded="false" aria-haspopup="true">행사·사업신청</button>
-                                    <div class="gnb-toggle-wrap" id="gnb-main-menu-9r7coz8">
+                                    <button type="button" class="gnb-main-trigger" data-trigger="gnb" data-gnb-no="gnb01" aria-controls="gnb-main-menu-cuglb7i" aria-expanded="false" aria-haspopup="true">행사·사업신청</button>
+                                    <!-- gnb-toggle-wrap -->
+                                    <div class="gnb-toggle-wrap" id="gnb-main-menu-cuglb7i">
+                                        <!-- gnb-main-list -->
                                         <div class="gnb-main-list" data-has-submenu="true">
                                             <ul>
                                                 <li>
-                                                    <button type="button" class="gnb-sub-trigger active" data-trigger="gnb" aria-controls="gnb-sub-menu-nwifyyv" aria-expanded="true" aria-haspopup="true">행사참가신청</button>
-                                                    <div class="gnb-sub-list active" id="gnb-sub-menu-nwifyyv">
+                                                    <button type="button" class="gnb-sub-trigger active" data-trigger="gnb" aria-controls="gnb-sub-menu-sx18uq9" aria-expanded="true" aria-haspopup="true">행사참가신청</button>
+                                                    <!-- gnb-sub-list -->
+                                                    <div class="gnb-sub-list active" id="gnb-sub-menu-sx18uq9">
                                                         <div class="gnb-sub-content">
                                                             <h2 class="sub-title"> 행사참가신청 <span class="line-divider"></span> <a href="/event/all" class="krds-btn link basic small"><span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
                                                             <p class="txt">KOCCA가 주관 및 개최하는 국내외 콘텐츠 행사 참가 신청이 가능합니다.</p>
                                                         </div>
                                                     </div>
+                                                    <!-- //gnb-sub-list -->
                                                 </li>
                                                 <li>
-                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-i01eohb" aria-expanded="false" aria-haspopup="true">연간행사일정</button>
-                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-i01eohb">
+                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-lmjxrwg" aria-expanded="false" aria-haspopup="true">연간행사일정</button>
+                                                    <!-- gnb-sub-list -->
+                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-lmjxrwg">
                                                         <div class="gnb-sub-content">
                                                             <h2 class="sub-title"> 연간행사일정<span class="line-divider"></span><a href="/event/schedule" class="krds-btn link basic small"> <span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
                                                             <p class="txt">연간 KOCCA 해외진출 행사 및 마켓 일정을 한눈에 확인할 수 있습니다.</p>
@@ -300,37 +308,47 @@ document.addEventListener("DOMContentLoaded", () => {
                                                             </a>
                                                         </div>
                                                     </div>
+                                                    <!-- //gnb-sub-list -->
                                                 </li>
                                                  <li>
-                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-5lvo45f" aria-expanded="false" aria-haspopup="true">해외마켓정보</button>
-                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-5lvo45f">
+                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-ktvn55w" aria-expanded="false" aria-haspopup="true">해외마켓정보</button>
+                                                    <!-- gnb-sub-list -->
+                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-ktvn55w">
                                                         <div class="gnb-sub-content">
                                                             <h2 class="sub-title"> 해외마켓정보<span class="line-divider"></span><a href="/ko/ovsinfo" class="krds-btn link basic small"> <span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
                                                             <p class="txt">해외 주요 콘텐츠 장르별 마켓의 특징, 콘텐츠 등을 분석한 정보를 제공합니다.</p>
                                                         </div>
                                                     </div>
+                                                    <!-- //gnb-sub-list -->
                                                 </li>
                                                  <li>
-                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-1hnfxkr" aria-expanded="false" aria-haspopup="true">지원사업정보</button>
-                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-1hnfxkr">
+                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-6hhm9wb" aria-expanded="false" aria-haspopup="true">지원사업정보</button>
+                                                    <!-- gnb-sub-list -->
+                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-6hhm9wb">
                                                         <div class="gnb-sub-content">
                                                             <h2 class="sub-title"> 지원사업정보<span class="line-divider"></span><a href="/info/business" class="krds-btn link basic small"> <span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
                                                             <p class="txt">콘텐츠 기업을 위한 KOCCA 및 유관기관의 해외진출 지원사업을 쉽게 확인할 수 있습니다.</p>
                                                         </div>
                                                     </div>
+                                                    <!-- //gnb-sub-list -->
                                                 </li>
                                             </ul>
                                         </div>
+                                        <!-- //gnb-main-list -->
                                     </div>
+                                    <!-- //gnb-toggle-wrap -->
                                 </li>
                                 <li>
-                                    <button type="button" class="gnb-main-trigger" data-trigger="gnb" data-gnb-no="gnb02" aria-controls="gnb-main-menu-gpx3d67" aria-expanded="false" aria-haspopup="true">상담·컨설팅</button>
-                                    <div class="gnb-toggle-wrap" id="gnb-main-menu-gpx3d67">
+                                    <button type="button" class="gnb-main-trigger" data-trigger="gnb" data-gnb-no="gnb02" aria-controls="gnb-main-menu-7rj94vg" aria-expanded="false" aria-haspopup="true">상담·컨설팅</button>
+                                    <!-- gnb-toggle-wrap -->
+                                    <div class="gnb-toggle-wrap" id="gnb-main-menu-7rj94vg">
+                                        <!-- gnb-main-list -->
                                         <div class="gnb-main-list" data-has-submenu="true">
                                             <ul>
                                                 <li>
-                                                    <button type="button" class="gnb-sub-trigger active" data-trigger="gnb" aria-controls="gnb-sub-menu-ueptosb" aria-expanded="true" aria-haspopup="true">해외진출상담</button>
-                                                    <div class="gnb-sub-list between active" id="gnb-sub-menu-ueptosb">
+                                                    <button type="button" class="gnb-sub-trigger active" data-trigger="gnb" aria-controls="gnb-sub-menu-5kw7b7i" aria-expanded="true" aria-haspopup="true">해외진출상담</button>
+                                                    <!-- gnb-sub-list -->
+                                                    <div class="gnb-sub-list between active" id="gnb-sub-menu-5kw7b7i">
                                                         <div class="gnb-sub-content">
                                                             <h2 class="sub-title"> 해외진출상담<span class="line-divider"></span><a href="/business/counsel-guide" class="krds-btn link basic small"> <span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
                                                             <p class="txt">국내 콘텐츠 기업을 위한 해외진출 전략 및 비즈니스 상담을 제공합니다.</p>
@@ -346,37 +364,45 @@ document.addEventListener("DOMContentLoaded", () => {
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    <!-- //gnb-sub-list -->
                                                 </li>
                                                 <li>
-                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-0gvhw02" aria-expanded="false" aria-haspopup="true">해외진출역량진단</button>
-                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-0gvhw02">
+                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-ubto3ak" aria-expanded="false" aria-haspopup="true">해외진출역량진단</button>
+                                                    <!-- gnb-sub-list -->
+                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-ubto3ak">
                                                         <div class="gnb-sub-content">
                                                             <h2 class="sub-title"> 해외진출역량진단<span class="line-divider"></span><a href="/business/level-test-intro" class="krds-btn link basic small"> <span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
                                                             <p class="txt">기업의 해외진출 역량을 진단하고 단계별 개선 방향을 안내합니다.</p>
                                                         </div>
                                                     </div>
+                                                    <!-- //gnb-sub-list -->
                                                 </li>
                                                 <li>
-                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-ll5myn9" aria-expanded="false" aria-haspopup="true">해외진출계약서식</button>
-                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-ll5myn9">
+                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-tyxo2jd" aria-expanded="false" aria-haspopup="true">해외진출계약서식</button>
+                                                    <!-- gnb-sub-list -->
+                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-tyxo2jd">
                                                         <div class="gnb-sub-content">
                                                             <h2 class="sub-title"> 해외진출계약서식<span class="line-divider"></span><a href="/business/contract-form" class="krds-btn link basic small"> <span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
                                                             <p class="txt">해외 수출 및 진출에 필요한 표준 계약서식을 장르별로 제공합니다.</p>
                                                         </div>
                                                     </div>
+                                                    <!-- //gnb-sub-list -->
                                                 </li>
                                                 <li>
-                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-h39w9bs" aria-expanded="false" aria-haspopup="true">해외진출 FAQ</button>
-                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-h39w9bs">
+                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-jez0olf" aria-expanded="false" aria-haspopup="true">해외진출 FAQ</button>
+                                                    <!-- gnb-sub-list -->
+                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-jez0olf">
                                                         <div class="gnb-sub-content">
                                                             <h2 class="sub-title">해외진출 FAQ<span class="line-divider"></span><a href="/business/faq" class="krds-btn link basic small"> <span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
                                                             <p class="txt">해외진출 과정에서 자주 묻는 세무, 회계, 계약, 법률 등의 실무 질문에 대한 핵심 정보를 제공합니다.</p>
                                                         </div>
                                                     </div>
+                                                    <!-- //gnb-sub-list -->
                                                 </li>
                                                 <li>
-                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-7ze0qcf" aria-expanded="false" aria-haspopup="true">해외진출 기초정보</button>
-                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-7ze0qcf">
+                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-xplevsu" aria-expanded="false" aria-haspopup="true">해외진출 기초정보</button>
+                                                    <!-- gnb-sub-list -->
+                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-xplevsu">
                                                         <div class="gnb-sub-content">
                                                             <h2 class="sub-title">해외진출 기초정보<span class="line-divider"></span></h2>
                                                             <ul>
@@ -386,19 +412,25 @@ document.addEventListener("DOMContentLoaded", () => {
                                                             </ul>
                                                         </div>
                                                     </div>
+                                                    <!-- //gnb-sub-list -->
                                                 </li>
                                             </ul>
                                         </div>
+                                        <!-- //gnb-main-list -->
                                     </div>
+                                    <!-- //gnb-toggle-wrap -->
                                 </li>
                                  <li>
-                                    <button type="button" class="gnb-main-trigger" data-trigger="gnb" data-gnb-no="gnb03" aria-controls="gnb-main-menu-7tekgda" aria-expanded="false" aria-haspopup="true">해외법률·정책</button>
-                                    <div class="gnb-toggle-wrap" id="gnb-main-menu-7tekgda">
+                                    <button type="button" class="gnb-main-trigger" data-trigger="gnb" data-gnb-no="gnb03" aria-controls="gnb-main-menu-ir7vqxf" aria-expanded="false" aria-haspopup="true">해외법률·정책</button>
+                                    <!-- gnb-toggle-wrap -->
+                                    <div class="gnb-toggle-wrap" id="gnb-main-menu-ir7vqxf">
+                                        <!-- gnb-main-list -->
                                         <div class="gnb-main-list" data-has-submenu="true">
                                             <ul>
                                                 <li>
-                                                    <button type="button" class="gnb-sub-trigger active" data-trigger="gnb" aria-controls="gnb-sub-menu-9bor68v" aria-expanded="true" aria-haspopup="true">콘텐츠 법령</button>
-                                                    <div class="gnb-sub-list between active" id="gnb-sub-menu-9bor68v">
+                                                    <button type="button" class="gnb-sub-trigger active" data-trigger="gnb" aria-controls="gnb-sub-menu-wcq3m3j" aria-expanded="true" aria-haspopup="true">콘텐츠 법령</button>
+                                                    <!-- gnb-sub-list -->
+                                                    <div class="gnb-sub-list between active" id="gnb-sub-menu-wcq3m3j">
                                                         <div class="gnb-sub-content">
                                                             <h2 class="sub-title">콘텐츠 법령<span class="line-divider"></span></h2>
                                                             <ul>
@@ -415,19 +447,23 @@ document.addEventListener("DOMContentLoaded", () => {
                                                             <p class="banner-txt02"><strong>콘텐츠 수출에 필수</strong>적인<br><strong>법률 및 정책 정보</strong>를<br>체계적으로 안내해 드립니다.</p>
                                                         </div>
                                                     </div>
+                                                    <!-- //gnb-sub-list -->
                                                 </li>
                                                 <li>
-                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-fwhd6v3" aria-expanded="false" aria-haspopup="true">진출단계별 법규제정보</button>
-                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-fwhd6v3">
+                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-48ts9oh" aria-expanded="false" aria-haspopup="true">진출단계별 법규제정보</button>
+                                                    <!-- gnb-sub-list -->
+                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-48ts9oh">
                                                         <div class="gnb-sub-content">
                                                             <h2 class="sub-title"> 진출단계별 법규제정보<span class="line-divider"></span><a href="/regulation" class="krds-btn link basic small"> <span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
                                                             <p class="txt">해외 비즈니스 단계별로 필요한 법과 규제 정보를 제공합니다.</p>
                                                         </div>
                                                     </div>
+                                                    <!-- //gnb-sub-list -->
                                                 </li>
                                                 <li>
-                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-vxwpayb" aria-expanded="false" aria-haspopup="true">기관·협회</button>
-                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-vxwpayb">
+                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-qkvdzat" aria-expanded="false" aria-haspopup="true">기관·협회</button>
+                                                    <!-- gnb-sub-list -->
+                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-qkvdzat">
                                                         <div class="gnb-sub-content">
                                                             <h2 class="sub-title">기관·협회<span class="line-divider"></span></h2>
                                                             <ul>
@@ -436,28 +472,36 @@ document.addEventListener("DOMContentLoaded", () => {
                                                             </ul>
                                                         </div>
                                                     </div>
+                                                    <!-- //gnb-sub-list -->
                                                 </li>
                                                 <li>
-                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-u5qr6e8" aria-expanded="false" aria-haspopup="true">지원정책</button>
-                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-u5qr6e8">
+                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-9cmisdv" aria-expanded="false" aria-haspopup="true">지원정책</button>
+                                                    <!-- gnb-sub-list -->
+                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-9cmisdv">
                                                         <div class="gnb-sub-content">
                                                             <h2 class="sub-title">지원정책<span class="line-divider"></span><a href="/ko/ovmk/support-policy" class="krds-btn link basic small"> <span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
                                                             <p class="txt">주요 국가의 콘텐츠산업 지원제도와 정부 정책을 제공합니다.</p>
                                                         </div>
                                                     </div>
+                                                    <!-- //gnb-sub-list -->
                                                 </li>
                                             </ul>
                                         </div>
+                                        <!-- //gnb-main-list -->
                                     </div>
+                                    <!-- //gnb-toggle-wrap -->
                                 </li>
                                 <li>
-                                    <button type="button" class="gnb-main-trigger" data-trigger="gnb" data-gnb-no="gnb04" aria-controls="gnb-main-menu-79sq7lo" aria-expanded="false" aria-haspopup="true">해외동향·통계</button>
-                                    <div class="gnb-toggle-wrap" id="gnb-main-menu-79sq7lo">
+                                    <button type="button" class="gnb-main-trigger" data-trigger="gnb" data-gnb-no="gnb04" aria-controls="gnb-main-menu-1w9lf98" aria-expanded="false" aria-haspopup="true">해외동향·통계</button>
+                                    <!-- gnb-toggle-wrap -->
+                                    <div class="gnb-toggle-wrap" id="gnb-main-menu-1w9lf98">
+                                       <!-- gnb-main-list -->
                                         <div class="gnb-main-list" data-has-submenu="true">
                                             <ul>
                                                 <li>
-                                                    <button type="button" class="gnb-sub-trigger active" data-trigger="gnb" aria-controls="gnb-sub-menu-wl4w0wt" aria-expanded="true" aria-haspopup="true">콘텐츠뉴스</button>
-                                                    <div class="gnb-sub-list between active" id="gnb-sub-menu-wl4w0wt">
+                                                    <button type="button" class="gnb-sub-trigger active" data-trigger="gnb" aria-controls="gnb-sub-menu-zmtwfvc" aria-expanded="true" aria-haspopup="true">콘텐츠뉴스</button>
+                                                    <!-- gnb-sub-list -->
+                                                    <div class="gnb-sub-list between active" id="gnb-sub-menu-zmtwfvc">
                                                         <div class="gnb-sub-content">
                                                             <h2 class="sub-title">콘텐츠뉴스<span class="line-divider"></span> <a href="/ko/info/news" class="krds-btn link basic small"><span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
                                                             <p class="txt">해외 콘텐츠 관련 뉴스와 이슈를 모아 제공합니다.</p>
@@ -472,29 +516,34 @@ document.addEventListener("DOMContentLoaded", () => {
                                                             </a>
                                                         </div>
                                                     </div>
+                                                    <!-- //gnb-sub-list -->
                                                 </li>
                                                 <li>
-                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-et5zh4u" aria-expanded="false" aria-haspopup="true">글로벌리포트</button>
-                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-et5zh4u">
+                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-qve5bo6" aria-expanded="false" aria-haspopup="true">글로벌리포트</button>
+                                                    <!-- gnb-sub-list -->
+                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-qve5bo6">
                                                         <div class="gnb-sub-content">
                                                             <h2 class="sub-title">글로벌리포트<span class="line-divider"></span><a href="/ko/info/report" class="krds-btn link basic small"> <span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
                                                             <p class="txt">콘텐츠 산업동향과 심층 분석 리포트를 통합해 국가 및 장르별 시장 변화를 깊이 있게 제공합니다.</p>
                                                         </div>
                                                     </div>
+                                                    <!-- //gnb-sub-list -->
                                                 </li>
                                                 <li>
-                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-l5hkmmf" aria-expanded="false" aria-haspopup="true">글로벌트렌드</button>
-                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-l5hkmmf">
+                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-ajr8oo5" aria-expanded="false" aria-haspopup="true">글로벌트렌드</button>
+                                                    <!-- gnb-sub-list -->
+                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-ajr8oo5">
                                                         <div class="gnb-sub-content">
                                                             <h2 class="sub-title">글로벌트렌드<span class="line-divider"></span><a href="/ko/info/trend" class="krds-btn link basic small"> <span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
                                                             <p class="txt">전 세계 콘텐츠 트렌드, 한류 동향, 규제, 지재권, 이슈, 글로벌 마켓 정보를 한곳에서 제공합니다.</p>
                                                         </div>
 
                                                     </div>
+                                                    <!-- //gnb-sub-list -->
                                                 </li>
                                                 <li>
-                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-gxmbb9u" aria-expanded="false" aria-haspopup="true">해외시장통계</button>
-                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-gxmbb9u">
+                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-5i3dopb" aria-expanded="false" aria-haspopup="true">해외시장통계</button>
+                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-5i3dopb">
                                                         <div class="gnb-sub-content">
                                                             <h2 class="sub-title">해외시장통계<span class="line-divider"></span><a href="/ko/info/statistics" class="krds-btn link basic small"> <span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
                                                             <p class="txt">국가별, 장르별 해외 콘텐츠 시장 규모와 산업 데이터를 제공합니다.</p>
@@ -503,16 +552,21 @@ document.addEventListener("DOMContentLoaded", () => {
                                                 </li>
                                             </ul>
                                         </div>
+                                        <!-- //gnb-main-list -->
                                     </div>
+                                    <!-- //gnb-toggle-wrap -->
                                 </li>
                                 <li>
-                                    <button type="button" class="gnb-main-trigger" data-trigger="gnb" data-gnb-no="gnb05" aria-controls="gnb-main-menu-4dsjjm1" aria-expanded="false" aria-haspopup="true">W·인사이트</button>
-                                    <div class="gnb-toggle-wrap" id="gnb-main-menu-4dsjjm1">
+                                    <button type="button" class="gnb-main-trigger" data-trigger="gnb" data-gnb-no="gnb05" aria-controls="gnb-main-menu-vhjiye5" aria-expanded="false" aria-haspopup="true">W·인사이트</button>
+                                    <!-- gnb-toggle-wrap -->
+                                    <div class="gnb-toggle-wrap" id="gnb-main-menu-vhjiye5">
+                                        <!-- gnb-main-list -->
                                         <div class="gnb-main-list" data-has-submenu="true">
                                             <ul>
                                                 <li>
-                                                    <button type="button" class="gnb-sub-trigger active" data-trigger="gnb" aria-controls="gnb-sub-menu-q607uav" aria-expanded="true" aria-haspopup="true">WelCon 토픽</button>
-                                                    <div class="gnb-sub-list between active" id="gnb-sub-menu-q607uav">
+                                                    <button type="button" class="gnb-sub-trigger active" data-trigger="gnb" aria-controls="gnb-sub-menu-c5ykyy9" aria-expanded="true" aria-haspopup="true">WelCon 토픽</button>
+                                                    <!-- gnb-sub-list -->
+                                                    <div class="gnb-sub-list between active" id="gnb-sub-menu-c5ykyy9">
                                                         <div class="gnb-sub-content">
                                                             <h2 class="sub-title">WelCon 토픽 <span class="line-divider"></span> <a href="/ko/ovmk/topic" class="krds-btn link basic small"><span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
                                                             <p class="txt">콘텐츠 현안 분석과 콘텐츠 관련 정보를 통합해 주요 이슈를 깊이 있게 다룹니다.</p>
@@ -529,8 +583,9 @@ document.addEventListener("DOMContentLoaded", () => {
                                                     </div>
                                                 </li>
                                                 <li>
-                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-32ox3p1" aria-expanded="false" aria-haspopup="true">WelCon 인사이드</button>
-                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-32ox3p1">
+                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-l1576cd" aria-expanded="false" aria-haspopup="true">WelCon 인사이드</button>
+                                                    <!-- gnb-sub-list -->
+                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-l1576cd">
                                                         <div class="gnb-sub-content">
                                                             <h2 class="sub-title">WelCon 인사이드<span class="line-divider"></span><a href="/ko/ovmk/inside" class="krds-btn link basic small"> <span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
                                                             <p class="txt">해외 전문가 및 기업 인터뷰와 콘텐츠 이용행태 분석을 통해 생생한 현장 인사이트를 전합니다.</p>
@@ -538,8 +593,9 @@ document.addEventListener("DOMContentLoaded", () => {
                                                     </div>
                                                 </li>
                                                 <li>
-                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-nimj1h7" aria-expanded="false" aria-haspopup="true">WelCon 포커스</button>
-                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-nimj1h7">
+                                                    <button type="button" class="gnb-sub-trigger" data-trigger="gnb" aria-controls="gnb-sub-menu-7l8fs3b" aria-expanded="false" aria-haspopup="true">WelCon 포커스</button>
+                                                    <!-- gnb-sub-list -->
+                                                    <div class="gnb-sub-list between" id="gnb-sub-menu-7l8fs3b">
                                                         <div class="gnb-sub-content">
                                                             <h2 class="sub-title">WelCon 포커스<span class="line-divider"></span><a href="/ko/ovmk/focus" class="krds-btn link basic small"> <span class="baro-go">바로가기</span><i class="svg-icon ico-angle right"></i> </a> </h2>
                                                             <p class="txt">글로벌 콘텐츠 시장을 다룬 연구, 정책, 산업 보고서를 체계적으로 제공합니다.</p>
@@ -548,7 +604,9 @@ document.addEventListener("DOMContentLoaded", () => {
                                                 </li>
                                             </ul>
                                         </div>
+                                        <!-- //gnb-main-list -->
                                     </div>
+                                    <!-- //gnb-toggle-wrap -->
                                 </li>
                                 <li><a href="/support/office" class="gnb-main-trigger is-link " data-trigger="gnb">해외비즈니스센터</a> </li>
                                 <li><a href="https://welcon.kocca.kr/emp" class="gnb-main-trigger is-link" data-trigger="gnb" target="_blank" title="새 창 열림">마켓플레이스<i class="svg-icon ico-go"></i></a></li>
@@ -556,6 +614,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         </div>
                     </nav>
                     <!-- //메인메뉴 : 데스크탑 -->
+                    <!-- 메인메뉴 : 데스크탑 //-->
                 </div>
 
                     <div class="header-right">
@@ -577,7 +636,9 @@ document.addEventListener("DOMContentLoaded", () => {
     <!-- 메인메뉴 : 모바일 -->
     <div id="mobile-nav" class="krds-main-menu-mobile" style="display: none;">
         <div class="gnb-wrap">
+            <!-- gnb-header -->
             <div class="gnb-header">
+                <!-- gnb-utils -->
                 <div class="gnb-utils">
                     <ul class="utility-list">
                         <li>
@@ -585,16 +646,28 @@ document.addEventListener("DOMContentLoaded", () => {
                         </li>
                     </ul>
                 </div>
+                <!-- //gnb-utils -->
+                <!-- gnb-login -->
                 <div class="gnb-login">
+
+
                         <button type="button" class="krds-btn large text" onclick="goUrl('/welcon/login.do');"><i class="svg-icon ico-log"></i> 로그인</button>
                         <button type="button" class="krds-btn large text" onclick="fnLocation('signup');return false;"><i class="svg-icon ico-join"></i> 회원가입</button>
+
                 </div>
+                <!-- //gnb-login -->
+                <!-- gnb-service-menu -->
                 <div class="gnb-service-menu">
                     <a href="/ko/support/office" class="link bsinesscenter">해외비즈니스센터</a>
                     <a href="https://welcon.kocca.kr/emp" class="link marketplace">마켓플레이스</a>
                 </div>
+                <!-- gnb-service-menu -->
             </div>
+            <!-- //gnb-header -->
+
+            <!-- gnb-body -->
             <div class="gnb-body">
+                <!-- gnb-menu -->
                 <div class="gnb-menu">
                     <div class="menu-wrap">
                         <ul role="tablist">
@@ -692,9 +765,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     </div>
                 </div>
+                <!-- //gnb-menu -->
             </div>
+            <!-- //gnb-body -->
 
+            <!-- gnb-close -->
             <button type="button" class="krds-btn medium icon" id="close-nav"> <span class="sr-only">전체메뉴 닫기</span> <i class="svg-icon ico-popup-close"></i> </button>
+            <!-- //gnb-close -->
         </div>
     </div>
 
@@ -714,56 +791,81 @@ document.addEventListener("DOMContentLoaded", () => {
             <!--S. sub-contents-area -->
             <div class="sub-contents-area">
 
-<!-- <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script> -->
-<script src="https://welcon.kocca.kr/static/cmm/js/welcon/lib/daum/postcode.v2.js?v=20260825181323341"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <script>
+//<![CDATA[
 
 /* ********************************************************
  * 초기화 작업
  ******************************************************** */
 $(document).ready(function(){
     // title
-    document.title = "회원가입 - 기업정보";
+    document.title = "회원가입 - 회원정보입력 및 사업자 인증";
 
-    $('#addBtn').on('click', function(e) {
-        e.preventDefault();
-        let nextIdx = $('.snsUrl').length - 1;
-        let titleIdx = nextIdx + 1;
-        const tpl = $("#snsTpl").html();
 
-        let newItem =tpl.replace(/{IDX}/g, nextIdx);
-        newItem = newItem.replace(/{TITLE_IDX}/g, titleIdx);    // 26.07.13 웹접근성 title 인덱스 추가
 
-        const snsList = $('#snsList');
-        snsList.find('.empty-row').remove();
-        snsList.append(newItem);
-    });
 
-    $('#snsList').on('click', '.delete-btn', function() {
-        $(this).closest('.sns-item').remove();
-
-        const snsList = $('#snsList');
-        if (snsList.children('.sns-item').length === 0) {
-            snsList.append(`
-            <li class="sns-item empty-row" role="row">
-                <div role="cell">
-                    등록된 내용이 없습니다. 추가버튼 누른후 등록해 주세요.
-                </div>
-            </li>
-        `);
+    $('#aCertCompany').on('click', function() {
+        let compName = $("#companyNameKo").val();
+        let comNo = $("#companyNo").val();
+        if (compName == "") {
+            alert("회사명을 입력바랍니다.");
+            $("#companyNameKo").focus();
+             return;
         }
+
+        if ($("#sellerYn").val() ==  "Y" && comNo == "") {
+            alert("사업자번호를 입력바랍니다.");
+            $("#companyNo").focus();
+             return;
+        }
+
+        $.ajax({
+            type: "post",
+            url: "/cmm/cert/company.do",
+            data : {"companyName": compName, "companyNo": comNo},
+            success: function(res) {
+                if (res.status == "SUCCESS") {
+                    alert(res.message);
+                    $("#certck").val("Y");
+                    fnCompanyNoChk();
+                } else {
+                    alert(res.message);
+                    $("#certck").val("N");
+                }
+            },
+            error: function (jqXHR, status, error) {
+                alert("서버와 통신 중 에러가 발생하였습니다.");
+            }
+        });
     });
 
-    //기타장르 입력창 show/hide
-    $('input:checkbox[name="genre"][value="002010"]').on('click', function() {
-        WELCON.Util.checkGenreEtc($(this).is(':checked'));
+    $('#companyNo, #companyNameKo').on('change', function() {
+        $('#certck').val("N");
+        $('#subMemberYn').val("N");
+        $("#sellerId").val("");
     });
+
     util.initInputDataType();
 });
 /* ********************************************************
  * 메인 으로 가기
  ******************************************************** */
 function fnMain(){
+
     var f = confirm("취소하시겠습니까?");
     if(f){
         var varForm    = document.forms["listForm"];
@@ -776,90 +878,65 @@ function fnMain(){
     }
 }
 /* ********************************************************
- * 저장
+ * 페이지 이동
  ******************************************************** */
-function fnSave(val){
+function fnMove(val) {
+    if ($("#sellerYn").val() ==  "Y" && $('#certck').val() != "Y") {
+        alert("사업자번호를 인증하시기 바랍니다.");
+         return false;
+    }
+
     let varForm = document.forms["signUp"];
     var validateResult = $("#"+varForm.id).valid();
     if (!validateResult) return;
 
-    var beforeSubmitResult = fnBeforeSubmit();
+    var beforeSubmitResult = fnBeforeSubmit(val);
     if (!beforeSubmitResult) return;
 
-    var f = confirm("완료하시겠습니까?");
-    if (f) {
-        $(varForm).append("<input type='hidden' name='_target5'/>");
-        $("input[name='finish']").val("Y");
-        $(varForm).submit();
+    var f = confirm("저장하시겠습니까?");
+    if(f){
         WELCON.Util.showProgress();
+
+        if ($("#subMemberYn").val() == "Y") {
+            var isContinue = true;
+
+            if (isContinue) {
+
+                varForm.submit();
+            }
+            else return false;
+
+        } else {
+            $(varForm).submit();
+        }
+    } else {
+        return false;
     }
 }
 
 /* ********************************************************
  * jquery validation submitHandler() 내부에 있는  비즈니스 로직 분리 (2022.09)
  ******************************************************** */
-function fnBeforeSubmit() {
-    var snsChk = false;
-    $("tr[id^='snsTr']").each(function(idx, elmt) {
-        var currIdx = Number(elmt.id.replace("snsTr", ""));
-        if(!$("[name='seller.snsList.snsCode["+currIdx+"]").val()){
-            alert("SNS 채널을 입력하세요.");
-            $("[name='seller.snsList.snsCode["+currIdx+"]").focus();
-            snsChk = true;
-             return false;
+function fnBeforeSubmit(val) {
+    if($("#subMemberYn").val() == "Y"){
+        $("input[name='_target']").prop("name", "_finish");
+        $("input[name='finish']").val("Y");
+    }else{
+        if($("input[name='_finish']").length > 0){
+            $("input[name='_finish']").prop("name", "_target");
         }
+        $("input[name='_target']").prop("name", val);
+        $("input[name='finish']").val("N");
+    }
 
-        if(!$("[name='seller.snsList.snsUrl["+currIdx+"]").val()){
-            alert("SNS URL을 입력하세요.");
-            $("[name='seller.snsList.snsUrl["+currIdx+"]").focus();
-            snsChk = true;
-             return false;
-        }
-    });
-    if(snsChk){
+    if($("#sellerYn").val() ==  "Y" && $("#certck").val() == "N"){
+        alert("사업자번호를 인증하시기 바랍니다.");
          return false;
     }
-
-    if ($("input[id='genreMappingList.genreCds10']:checked").length > 0) {
-        if(!$("#genreEtc").val()){
-            alert("기타 장르를 입력해주세요.");
-            $("#genreEtc").focus();
-             return;
-        }
-    }
-
-    var snsCodeArr = "";
-    $("[name^='seller.snsList.snsCode']").each(function(i) {
-        if($(this).prop('selected', true)) { snsCodeArr += "," + $(this).val();}
-    });
-    snsCodeArr = snsCodeArr.substring(1);
-    $("#snsCodeArr").val(snsCodeArr.substr(0, snsCodeArr.length-1 ));
-
-    var snsUrlArr = "";
-    $("input[name^='seller.snsList.snsUrl']").each(function(i) {
-        snsUrlArr += "," + $(this).val();
-    });
-    snsUrlArr = snsUrlArr.substring(1);
-    $("#snsUrlArr").val(snsUrlArr.substr(0, snsUrlArr.length-1 ));
-
-    var genreArr = "";
-    if (typeof(mergeGenre) == "function") genreArr = mergeGenre(this);
-    $("#genreArr").val(genreArr);
 
     return true;
 }
 
-/* ********************************************************
- * (저장 후)페이지 이동
- ******************************************************** */
-function fnMove(val){
-    $("input[name='_target']").prop("name", val);
-    $("input[name='finish']").val("N");
-
-    var varForm    = document.forms["signUp"];
-    WELCON.Util.hideProgress();
-    varForm.submit();
-}
 /* ********************************************************
  * validation
  ******************************************************** */
@@ -870,213 +947,132 @@ $(function(){
 
         rules: {
 
-            "seller.companyNo": { required:true, minlength:10, maxlength:10, number:true },
-            "seller.companyNameKo": { required:true, maxbyte:100 },
-            "seller.companyNameEn": { required:true, maxbyte:100 },
-            "seller.ceoName": { required:true, maxbyte:100 },
-            "seller.womanYn": { required:true, maxbyte:1 },
+            "member.loginId": { required:true, maxbyte:50, strtStrChk : true, idCheck : true, idDuplChk : true },
+            "member.password": { required:true, minbyte:9, maxbyte:16, passCheck1: true, passCheck2: true, passCheck3: true },
+            "member.password2": { required:true, maxbyte:100, require_second:["member.password", "비밀번호", "password2", "비밀번호 확인"], equalTo: '#password' },
+
+            "member.name": { required:true, maxbyte:100 },
+            "member.firstName": { required:true, maxbyte:50 },
+            "member.lastName": { required:true, maxbyte:49 },
+            "member.email": { required:true, maxbyte:100, email:true, emailDuplChk : true },
+            "member.phoneCd": { required:true, maxbyte:4 },
+            "member.phone": { required:true, maxbyte:30, phoneDuplChk : true, phonenumber:true },
 
 
-            "seller.companyZip": { required:true, maxbyte:5 },
-            "seller.companyAddr1Ko": { required:true, maxbyte:255 },
-            "seller.companyAddr2Ko": { required:true, maxbyte:255 },
-            "seller.companyAddr1En": { required:true, maxbyte:255 },
-            "seller.companyAddr2En": { required:true, maxbyte:255 },
-            "seller.companyMainTel": { required:true, maxbyte:30, phonenumber:true },
-            "seller.companyFax": { required:false, maxbyte:30, phonenumber:true },
-            "seller.siteUrl": { required:false, maxbyte:255 },
-
-            "seller.movieUrl": { required:false, maxbyte:100 },
-            "seller.introKo": { required:true, maxbyte:4000 },
-            "seller.introEn": { required:true, maxbyte:4000 },
-            "seller.bizKo": { required:false, maxbyte:4000 },
-            "seller.bizEn": { required:false, maxbyte:4000 },
-            genre: { required:true, maxbyte:20 },
-            "seller.genreEtc": { required:false, maxbyte:100 },
-
-
-            imgAtchFile_3: {
-                required: {
-                    depends: function(element) {
-                        if($(element).val() == '' || $(element).val() == null){
-
-                            return true;
-                        }
+            "seller.companyNameKo": { required:{
+                    depends:function(){
+                        $(this).val($.trim($(this).val()));
+                        return true;
                     }
-                }
-            },
+                }, maxbyte:100 },
+            "seller.companyNo": { required:true, minlength:10, maxlength:10, number:true },
+            "member.companyDept": { required:true, maxbyte:100 },
+            "member.companyTelCd": { required:true, maxbyte:4, number:true },
+            "member.companyTel": { required:true, maxbyte:30, phonenumber:true },
 
 
-            imgAtchFile_1: { required:false },
-            imgAtchFile_2: { required:false },
+            "member.emailYn": { required:true, maxbyte:1 },
+            "member.smsYn": { required:true, maxbyte:1 },
 
+            "member.phoneAuth": { required:false, maxbyte:100 },
+            "member.ipinAuth": { required:false, maxbyte:100 },
         },
         messages: {
+
+            "member.loginId": { required:"아이디 은(는) 필수 항목입니다."
+                    , maxbyte:"아이디 은(는) {0}자 이하로 입력해주세요."
+                    , strtStrChk : "첫 번째 문자는 영문 또는 숫자만 사용 가능합니다."
+                    , idCheck : "6~16자의 영문, 숫자와 특수기호(-),(_)만 사용 가능합니다."
+                    , idDuplChk : "해당 아이디는 사용하실 수 없습니다."},
+            "member.password": { required:"비밀번호 은(는) 필수 항목입니다."
+                    , minbyte:"비밀번호 은(는) {0}자 이상으로 입력해주세요."
+                    , maxbyte:"비밀번호 은(는) {0}자 이하로 입력해주세요."
+                    , passCheck1 : "비밀번호는 영문,숫자,특수문자 포함한 9-16자 이내로 입력해 주세요."
+                    , passCheck2 : "동일문자를 3번 이상 사용할 수 없습니다."
+                    , passCheck3 : "연속된 문자열을 3번 이상 사용할 수 없습니다."
+                    , require_second: "{1} 입력시 {3} (은)는 필수항목입니다."},
+            "member.password2": { required:"비밀번호 확인 은(는) 필수 항목입니다."
+                    , maxbyte:"비밀번호 확인 은(는) {0}자 이하로 입력해주세요."
+                    , equalTo: "비밀번호 항목과 일치하지 않습니다." },
+
+            "member.name": { required:"이름 은(는) 필수 항목입니다."
+                    , maxbyte:"이름 은(는) {0}자 이하로 입력해주세요." },
+            "member.firstName": { required:"이름(영문) 은(는) 필수 항목입니다."
+                    , maxbyte:"이름(영문) 은(는) {0}자 이하로 입력해주세요." },
+            "member.lastName": { required:"이름(영문 성) 은(는) 필수 항목입니다."
+                    , maxbyte:"이름(영문 성) 은(는) {0}자 이하로 입력해주세요." },
+            "member.email": { required:"이메일 은(는) 필수 항목입니다."
+                    , maxbyte:"이메일 은(는) {0}자 이하로 입력해주세요."
+                    , email:"이메일 형식이 올바르지 않습니다."
+                    , emailDuplChk : "동일 이메일 주소로 가입된 회원정보가 존재합니다."},
+            "member.phoneCd": { required:"휴대폰국가번호 은(는) 필수 항목입니다."
+                    , maxbyte:"휴대폰국가번호 은(는) {0}자 이하로 입력해주세요." },
+            "member.phone": { required:"휴대폰 은(는) 필수 항목입니다."
+                    , maxbyte:"휴대폰 은(는) {0}자 이하로 입력해주세요."
+                    , phoneDuplChk : "동일 휴대폰 번호로 가입된 회원정보가 존재합니다."},
+
+
+            "seller.companyNameKo": { required:"회사명 은(는) 필수 항목입니다."
+                , maxbyte:"회사명 은(는) {0}자 이하로 입력해주세요." },
             "seller.companyNo": { required:"사업자등록번호 은(는) 필수 항목입니다."
-                    , minlength:"사업자등록번호 은(는) 10자리로 입력해주세요."
-                    , maxlength:"사업자등록번호 은(는) 10자리로 입력해주세요."
-                    , number:"사업자등록번호 은(는) 숫자만 입력해주세요." },
-            "seller.companyNameKo": { required:"회사명(국문) 은(는) 필수 항목입니다."
-                    , maxbyte:"회사명(국문) 은(는) {0}자 이하로 입력해주세요." },
-            "seller.companyNameEn": { required:"회사명(영문) 은(는) 필수 항목입니다."
-                    , maxbyte:"회사명(영문) 은(는) {0}자 이하로 입력해주세요." },
-            "seller.ceoName": { required:"대표자 은(는) 필수 항목입니다."
-                    , maxbyte:"대표자 은(는) {0}자 이하로 입력해주세요." },
-            "seller.womanYn": { required:"여성 기업 여부 은(는) 필수 항목입니다."
-                    , maxbyte:"여성 기업 여부 은(는) {0}자 이하로 입력해주세요." },
-
-            "seller.companyZip": { required:"우편번호 은(는) 필수 항목입니다."
-                    , maxbyte:"우편번호 은(는) {0}자 이하로 입력해주세요." },
-            "seller.companyAddr1Ko": { required:"주소(국문) 은(는) 필수 항목입니다."
-                    , maxbyte:"주소(국문) 은(는) {0}자 이하로 입력해주세요." },
-            "seller.companyAddr2Ko": { required:"상세 주소(국문) 은(는) 필수 항목입니다."
-                    , maxbyte:"상세 주소(국문) 은(는) {0}자 이하로 입력해주세요." },
-            "seller.companyAddr1En": { required:"주소(영문) 은(는) 필수 항목입니다."
-                    , maxbyte:"주소(영문) 은(는) {0}자 이하로 입력해주세요." },
-            "seller.companyAddr2En": { required:"상세 주소(영문) 은(는) 필수 항목입니다."
-                    , maxbyte:"상세 주소(영문) 은(는) {0}자 이하로 입력해주세요." },
-            "seller.companyMainTel": { required:"대표 전화 은(는) 필수 항목입니다."
-                    , maxbyte:"대표 전화 은(는) {0}자 이하로 입력해주세요."
-                    , phonenumber:"대표 전화 은(는) 00-0000-0000 형식으로 입력해주세요."},
-            "seller.companyFax": { required:"팩스 은(는) 필수 항목입니다."
-                    , maxbyte:"팩스 은(는) {0}자 이하로 입력해주세요."
-                    , phonenumber:"팩스 은(는) 00-0000-0000 형식으로 입력해주세요."},
-            "seller.siteUrl": { required:"홈페이지 URL 은(는) 필수 항목입니다."
-                    , maxbyte:"홈페이지 URL 은(는) {0}자 이하로 입력해주세요." },
-            "seller.movieUrl": { required:"동영상 URL 은(는) 필수 항목입니다."
-                    , maxbyte:"동영상 URL 은(는) {0}자 이하로 입력해주세요." },
+                , minlength:"사업자등록번호 은(는) 10자리로 입력해주세요."
+                , maxlength:"사업자등록번호 은(는) 10자리로 입력해주세요."
+                , number:"사업자등록번호 은(는) 숫자만 입력해주세요." },
+            "member.companyDept": { required:"부서 및 직책 은(는) 필수 항목입니다."
+                    , maxbyte:"부서 및 직책 은(는) {0}자 이하로 입력해주세요." },
+            "member.companyTelCd": { required:"사무실 전화 국가번호 은(는) 필수 항목입니다."
+                    , maxbyte:"사무실 전화 국가번호 은(는) {0}자 이하로 입력해주세요."
+                    , number:"사무실 전화 국가번호는 숫자만 입력가능합니다."},
+            "member.companyTel": { required:"사무실 전화 은(는) 필수 항목입니다."
+                    , maxbyte:"사무실 전화 은(는) {0}자 이하로 입력해주세요." },
 
 
-            "seller.introKo": { required:"회사 소개(국문) 은(는) 필수 항목입니다."
-                    , maxbyte:"회사 소개(국문) 은(는) {0}자 이하로 입력해주세요." },
-            "seller.introEn": { required:"회사 소개(영문) 은(는) 필수 항목입니다."
-                    , maxbyte:"회사 소개(영문) 은(는) {0}자 이하로 입력해주세요." },
-            "seller.bizKo": { required:"주요 사업 현황(국문) 은(는) 필수 항목입니다."
-                    , maxbyte:"주요 사업 현황(국문) 은(는) {0}자 이하로 입력해주세요." },
-            "seller.bizEn": { required:"주요 사업 현황(영문) 은(는) 필수 항목입니다."
-                    , maxbyte:"주요 사업 현황(영문) 은(는) {0}자 이하로 입력해주세요." },
-                imgAtchFile_3: { required:"회사 로고 은(는) 필수 항목입니다."},
+            "member.emailYn": { required:"EMAIL 수신여부 은(는) 필수 항목입니다."
+                    , maxbyte:"EMAIL 수신여부 은(는) {0}자 이하로 입력해주세요." },
+            "member.smsYn": { required:"SMS 수신여부 은(는) 필수 항목입니다."
+                    , maxbyte:"SMS 수신여부 은(는) {0}자 이하로 입력해주세요." },
 
-
-
-            genre: { required:"장르 은(는) 필수 항목입니다."
-                    , maxbyte:"장르 은(는) {0}자 이하로 입력해주세요."},
-            "seller.genreEtc": { required:"기타 장르 은(는) 필수 항목입니다."
-                    , maxbyte:"기타 장르 은(는) {0}자 이하로 입력해주세요." },
-            imgAtchFile_1: { required:"대표 이미지(목록) 은(는) 필수 항목입니다."},
-            imgAtchFile_2: { required:"대표 이미지(상세) 은(는) 필수 항목입니다."},
-
-        }
+            "member.phoneAuth": { required:"휴대폰인증 은(는) 필수 항목입니다."
+                    , maxbyte:"휴대폰인증 은(는) {0}자 이하로 입력해주세요." },
+            "member.ipinAuth": { required:"I-PIN인증 은(는) 필수 항목입니다."
+                    , maxbyte:"I-PIN인증 은(는) {0}자 이하로 입력해주세요." },
+        },
     });
 
 });
-
-
 
 /* ********************************************************
- * 장르 선택
+ * 서브아이디 체크
  ******************************************************** */
-$(document).on("click", "input[name='genre']", function(){
-    var genreValue = $(this).val();
-    var chk = $(this).prop("checked");
-    if(chk) {
-        addGenreCompanyRequireRule(genreValue);
+function fnCompanyNoChk() {
+    let companyNo = $("#companyNo").val();
+    if(companyNo != "") {
+        $.ajax({
+            url : "/cmm/companyNoChk-data.do",
+            type: "POST",
+            data : {"companyNo": companyNo},
+            success: function(data, status, jqXHR) {
+                if (data.resultStr) {
+                    console.log("subMember");
+                    $("#subMemberYn").val("Y");
+                    $("#sellerId").val(data.resultStr);
+                } else {
+                    console.log("n seller");
+                    $("#subMemberYn").val("N");
+                    $("#sellerId").val("");
+                }
+            },
+            error: function (jqXHR, status, error) {
+                alert("서버와 통신 중 에러가 발생하였습니다.");
+            }
+        });
     } else {
-        removeGenreCompanyRequireRule(genreValue)
-    }
-});
-
-$(function(){
-    showGenreRequiredLabel();
-});
-
-
-/* ********************************************************
- * 이미지 처리
- ******************************************************** */
-function fnAfterLoaded() {
-    console.log('==Start fnAfterLoaded==');
-
-    $('#btn_imgAtchFile_1').click(function(e) {
-        e.preventDefault();
-        $('#imgAtchFile_1').trigger('click');
-    });
-
-    $('#btn_imgAtchFile_2').click(function(e) {
-        e.preventDefault();
-        $('#imgAtchFile_2').trigger('click');
-    });
-
-    $('#btn_imgAtchFile_3').click(function(e) {
-        e.preventDefault();
-        $('#imgAtchFile_3').trigger('click');
-    });
-
-}
-
-function errorFileUpload(input, error) {
-    if(error.name == "InvalidFileExtensionError") {
-        alert(error.message);
-    } else {
-        alert("이미지는 {0}px x {0}px 이상이어야 합니다.".replace("{0}", input.minWidth).replace("{1}", input.minHeight));
+        alert("사업자등록번호를 입력해주세요.");
+        $("#companyNo").focus();
+         return;
     }
 }
-
-/* ********************************************************
- * 우편번호 조회
- ******************************************************** */
-function openSearchZipPopup(){
-    new daum.Postcode({
-        oncomplete: function(data){
-            var fullAddr = '';
-            var extraAddr = '';
-            var engAddr = '';
-            var zipcode = '';
-
-            fullAddr = data.roadAddress;
-            zipcode = data.zonecode;
-            engAddr = data.roadAddressEnglish;
-
-            if(data.bname !== ''){
-                   extraAddr += data.bname;
-            }
-            if(data.buildingName !== ''){
-                extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
-            }
-            fullAddr += (extraAddr !== '' ? ' ('+ extraAddr +')' : '');
-            $('#companyZip').val(zipcode);
-
-            $('#companyAddr1Ko').val(fullAddr);
-            $('#companyAddr1En').val(engAddr);
-            $('#companyAddr2Ko').focus();
-        }
-    }).open();
-}
-
-/* ********************************************************
- * 이미지표출 위치 안내 팝업
- ******************************************************** */
-function helpImageView() {
-      var width = 680;
-      var height = 600;
-      var top = 0;
-      var left = 0;
-      var url = "/cmm/popup/helpImageView.do";
-      var name = "HelpImageView"
-      var openWindows = window.open(url,name, "width="+width+",height="+height+",top="+top+",left="+left+",toolbar=no,status=no,location=no,scrollbars=yes,menubar=no,resizable=yes");
-}
-/* ********************************************************
- * 유튜브URL 등록 안내 팝업
- ******************************************************** */
-function helpUrlView() {
-      var width = 680;
-      var height = 600;
-      var top = 0;
-      var left = 0;
-      var url = "/cmm/popup/helpUrlView.do";
-      var name = "HelpUrlView"
-      var openWindows = window.open(url,name, "width="+width+",height="+height+",top="+top+",left="+left+",toolbar=no,status=no,location=no,scrollbars=yes,menubar=no,resizable=yes");
-}
+//]]
 </script>
 
 <script>
@@ -1098,9 +1094,14 @@ function initNavi() {
     <nav class="breadcrumb-wrap" aria-label="현재 경로" id="breadcrumb">
         <ol class="breadcrumb">
             <li class="home"><a href="/" class="txt">Home</a></li>
+
+
+
                 <li><a href="/ko/signup" id="naviSelfLink" class="txt">
 
     회원가입</a></li>
+
+
         </ol>
     </nav>
 
@@ -1114,22 +1115,47 @@ function initNavi() {
 </div>
 
 
+<!-- 회원가입 폼 -->
+<form id="signUp" name="signUp" class="member-form" action="/ko/signup" method="post" enctype="multipart/form-data" novalidate="novalidate">
+
+
+
+
+
+
+
+
+
+
+
+
+<input type="hidden" name="_page" value="3">
+<input type="hidden" name="_target" id="_target">
+<input type="hidden" name="finish" value="N">
+<input type="hidden" name="sellerYn" id="sellerYn" value="Y">
+<input type="hidden" name="seller.companyTypeCd" id="companyTypeCd" value="CM">
+<input type="hidden" id="subMemberYn" name="member.subMemberYn" value="N">
+<input type="hidden" id="sellerId" name="seller.sellerId" value="">
+<input type="hidden" id="tmpVisualImageFileId" name="seller.tmpVisualImageFileId" value="">
+<input type="hidden" id="tmpLogoImageFileId" name="seller.tmpLogoImageFileId" value="">
+<input type="hidden" id="certck" name="certck" value="N"><!-- 사업자인증여부체크 -->
+
 <!-- S.conts-area -->
 <div class="conts-area">
     <!-- 개인인증 단계 영역 -->
     <div class="terms-agree-box">
-        <p class="terms-step-tit">기업정보입력</p>
+        <p class="terms-step-tit">회원정보입력 및 사업자 인증</p>
         <!-- 스텝 영역 -->
         <ol class="krds-step-wrap">
             <li class="done"> <span> <i class="step">STEP 1</i> <span class="step-tit">약관동의</span> </span> </li>
             <li class="done"> <span> <em class="sr-only">STEP 2</em> <i class="step">STEP 2</i> <span class="step-tit">개인인증</span> </span> </li>
-            <li class="done" id="stepLi3"> <span> <i class="step">STEP 3</i> <span class="step-tit">회원정보입력 및 사업자 인증</span> </span> </li>
-            <li class="active" id="stepLi4"> <span> <i class="step">STEP 4</i> <span class="step-tit">기업정보입력</span> </span> </li>
+            <li class="active"> <span> <i class="step">STEP 3</i> <span class="step-tit">회원정보입력 및 사업자 인증</span> </span> </li>
+            <li> <span> <i class="step">STEP 4</i> <span class="step-tit">기업정보입력</span> </span> </li>
             <li> <span> <i class="step">STEP 5</i> <span class="step-tit">가입완료</span> </span> </li>
         </ol>
         <!-- //스텝 영역 -->
 
-        <!-- 기업정보입력 -->
+        <!-- 회원정보입력 -->
         <div class="member-form-content-area">
 
             <!-- 필수 표시 안내 -->
@@ -1139,285 +1165,188 @@ function initNavi() {
             </div>
             <!-- 필수 표시 안내 -->
 
-            <!-- 폼 헤더 -->
             <div class="member-form-header">
-                <h3 class="form-section-title">기업정보</h3>
+                <h3 class="form-section-title">회원정보</h3>
             </div>
-            <!-- //폼 헤더 -->
-
-            <!-- 회원가입 폼 -->
-            <form id="signUp" class="member-form" action="/ko/signup" method="post" enctype="multipart/form-data" novalidate="novalidate">
-
-            <input type="hidden" name="_page" value="4">
-            <input type="hidden" name="_target">
-            <input type="hidden" name="finish" value="Y">
-            <input type="hidden" id="genreArr" name="seller.genreArr" value="">
-            <input type="hidden" id="snsCodeArr" name="seller.snsCodeArr" value="">
-            <input type="hidden" id="snsUrlArr" name="seller.snsUrlArr" value="">
-
 
                 <div class="form-grid">
-
-                    <!-- 회사명(국문) -->
                     <div class="form-row">
-                        <div class="form-label required">회사명(국문)</div>
-                        <div class="form-input-group"><p class="form-noinput">퍼널스</p></div>
+                        <label for="loginId" class="form-label required">아이디</label>
+                        <div class="form-input-group">
+                           <input id="loginId" name="member.loginId" placeholder="아이디을 입력해주세요" class="form-input wpct30" type="text" value="" size="20" maxlength="50">
+
+                           <!-- <p class="form-hint-invalid"></p> -->
+                        </div>
+                    </div>
+                    <!-- 비밀번호 -->
+                    <div class="form-row">
+                        <label for="password" class="form-label required">비밀번호</label>
+
+                        <div class="form-conts btn-ico-wrap">
+                            <div class="input-group">
+                                <input id="password" name="member.password" placeholder="비밀번호를 입력해주세요" class="form-input" type="password" value="" size="20" maxlength="16">
+
+
+                                <button type="button" class="krds-btn medium icon">
+                                    <span class="sr-only">비밀번호 숨기기</span>
+                                    <i class="svg-icon ico-pw-visible"></i>
+                                </button>
+                            </div>
+
+                            <div class="dv-in-box">
+                                <span class="form-add-txt danger"> 영문,숫자,특수문자 포함한 9-16자 이내로 입력해 주세요. 동일문자, 연속문자가 포함된 비밀번호는 사용할 수 없습니다.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 비밀번호 확인 -->
+                    <div class="form-row">
+                        <label for="password2" class="form-label required">비밀번호 확인</label>
+
+                        <div class="form-conts btn-ico-wrap">
+                            <div class="input-group">
+                                <input id="password2" name="member.password2" class="form-input" type="password" value="" size="20" maxlength="16">
+
+
+                                <button type="button" class="krds-btn medium icon">
+                                    <span class="sr-only">비밀번호 숨기기</span>
+                                    <i class="svg-icon ico-pw-visible"></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                     <div class="form-row">
-                        <label for="companyNameEn" class="form-label required">회사명(영문)</label>
+                        <div class="form-label required">이름</div>
                         <div class="form-input-group">
-                            <input id="companyNameEn" name="seller.companyNameEn" class="form-input wpct50" type="text" value="" size="20" maxlength="100">
+                            <p class="form-noinput">이원호</p>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-label required">이름(영문)</div>
+                        <div class="form-input-group">
+                            <div class="name-inputs">
+                                <label for="lastName">Last Name (성)</label>
+                                <input id="lastName" name="member.lastName" class="form-input wpct30" type="text" value="" size="20" maxlength="49">
+
+                            </div>
+                            <div class="name-inputs mgt-10">
+                                <label for="firstName">First Name (이름)</label>
+                                <input id="firstName" name="member.firstName" class="form-input wpct30" type="text" value="" size="20" maxlength="50">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-label required">휴대폰</div>
+                        <div class="form-input-group">
+
+
+
+
+                                    <input id="phoneCd" name="member.phoneCd" size="20" maxlength="20" placeholder="국가번호" value="82" type="hidden">
+                                    <p class="form-noinput">01088680490</p>
+
 
 
                         </div>
                     </div>
                     <div class="form-row">
-                        <div class="form-label required">사업자등록번호</div>
-                        <div class="form-input-group"><p class="form-noinput">1278803197</p></div>
+                        <label for="email" class="form-label required">이메일</label>
+                        <div class="form-input-group">
+                            <input id="email" name="member.email" class="form-input wpct30" type="text" value="" size="20" maxlength="100">
+                            <span class="form-add-txt danger"> email@naver.com 형식으로 입력해 주세요.</span>
+
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="companyNameKo" class="form-label required">회사명</label>
+                        <div class="form-input-group">
+                            <input id="companyNameKo" name="seller.companyNameKo" class="form-input wpct30" type="text" value="" size="20" maxlength="100">
+                            <span class="form-add-txt danger"> 사업자등록증에 기재된 명확한 회사명을 입력해 주세요.</span>
+
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="companyNameKo" class="form-label required">사업자등록번호</label>
+                        <div class="form-input-group">
+                            <div class="input-group-wrap flexnone">
+                                <input id="companyNo" name="seller.companyNo" data-type="num" class="form-input wpct20" type="text" value="" size="20" maxlength="10">
+                                <a href="javascript:void(0);" id="aCertCompany" role="button" onclick="return false;" class="btn-primary form-button">사업자인증</a>
+                                <span class="form-add-txt danger"> 회사명과 사업자등록번호를 입력후 사업자인증을 클릭해 주세요.</span>
+
+                            </div>
+                            <div class="dv-in-box02">
+                                <p class="form-add-col"> ※ 사업자등록번호는 숫자만 입력해 주세요.</p>
+                                <p class="form-add-col"> ※ 사업자등록이 되어 있지 않다면, 나이스 온라인 법인등록을 진행해 주세요. <a class="btn-primary form-button hei30" href="https://www.niceid.co.kr/comp/register/comp_guide.nc" target="_blank" role="button">나이스 법인등록</a></p>
+                            </div>
+                        </div>
                     </div>
                     <div class="form-row">
-                        <label for="ceoName" class="form-label required">대표자</label>
+                        <label for="companyDept" class="form-label required">부서 및 직책</label>
                         <div class="form-input-group">
-                            <input id="ceoName" name="seller.ceoName" class="form-input wpct50" type="text" value="" size="20" maxlength="100">
+                            <input id="companyDept" name="member.companyDept" class="form-input wpct30" type="text" value="" size="20" maxlength="100">
 
                         </div>
                     </div>
                     <div class="form-row">
-                        <label for="emailYn0" class="form-label required">여성 기업 여부</label>
+                        <label for="companyTel" class="form-label required">사무실 전화</label>
+                        <div class="form-input-group02 flexrow-tel">
+                            <span class="form-tel">+</span>
+                            <input id="companyTelCd" name="member.companyTelCd" data-err-ordr="1" data-err-grp="companyTel" data-type="numstartwithnatural" placeholder="국가번호" class="form-input wpct10" type="text" value="" size="20" maxlength="4">
+                            <input id="companyTel" name="member.companyTel" data-err-ordr="2" data-err-grp="companyTel" data-type="phonenumber" class="form-input wpct30" type="text" value="" size="20" maxlength="30">
+                            <span class="form-add-txt danger"><strong> [필수] </strong> '-' 포함하여 입력해 주세요.</span>
+
+
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="emailYn0" class="form-label required">EMAIL 수신여부</label>
                         <div class="form-input-group">
                             <div class="krds-radio-area">
 
                                     <div class="krds-form-check">
-                                        <input type="radio" id="womanYn0" name="seller.womanYn" value="Y" class="valid">
-                                        <label for="womanYn0">해당</label>
+                                        <input id="emailYn0" name="member.emailYn" type="radio" value="Y">
+                                        <label for="emailYn0">수신 동의</label>
                                     </div>
 
                                     <div class="krds-form-check">
-                                        <input type="radio" id="womanYn1" name="seller.womanYn" value="N" class="valid">
-                                        <label for="womanYn1">해당없음</label>
+                                        <input id="emailYn1" name="member.emailYn" type="radio" value="N">
+                                        <label for="emailYn1">수신 미동의</label>
                                     </div>
 
                             </div>
-                        </div>
-                    </div>
 
-
-                    <!-- 우편번호 -->
-                    <div class="form-row">
-                        <label for="companyZip" class="form-label required">우편번호</label>
-                        <div class="form-input-group">
-                            <span class="sr-only">우편번호</span>
-                            <input id="companyZip" name="seller.companyZip" class="form-input wpct10" readonly="readonly" type="text" value="" size="5" maxlength="5">
-
-                            <a class="btn-primary form-button" href="javascript:void(0);" role="button" onclick="openSearchZipPopup()" title="새창열림">우편번호<i class="button-icon03"></i></a>
-                        </div>
-                    </div>
-
-                    <!-- 주소(국문) -->
-                    <div class="form-row">
-                        <div class="form-label required">주소(국문)</div>
-                        <div class="form-input-group">
-                            <div class="name-inputs">
-                                <label for="companyAddr1Ko" class="sr-only">우편번호에 따른 국문 주소</label>
-                                <input id="companyAddr1Ko" name="seller.companyAddr1Ko" class="form-input wpct50" readonly="readonly" type="text" value="" size="20" maxlength="255">
-
-                            </div>
-                            <div class="name-inputs mgt-10">
-                                <label for="companyAddr2Ko" class="sr-only">상세 주소(국문)</label>
-                                <input id="companyAddr2Ko" name="seller.companyAddr2Ko" class="form-input wpct50" type="text" value="" size="20" maxlength="255">
-
-                            </div>
                         </div>
                     </div>
                     <div class="form-row">
-                          <div class="form-label required">주소(영문)</div>
-                          <div class="form-input-group">
-                            <div class="name-inputs">
-                                <label for="companyAddr1En" class="sr-only">우편번호에 따른 영문 주소</label>
-                                <input id="companyAddr1En" name="seller.companyAddr1En" class="form-input wpct50" readonly="readonly" type="text" value="" size="20" maxlength="255">
-
-                            </div>
-                            <div class="name-inputs mgt-10">
-                                <label for="companyAddr2En" class="sr-only">상세주소</label>
-                                <input id="companyAddr2En" name="seller.companyAddr2En" class="form-input wpct50" type="text" value="" size="20" maxlength="255">
-
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 대표 전화 -->
-                    <div class="form-row">
-                        <label for="companyMainTel" class="form-label required">대표 전화</label>
+                        <label for="smsYn0" class="form-label required">SMS 수신여부</label>
                         <div class="form-input-group">
-                            <input id="companyMainTel" name="seller.companyMainTel" data-type="phonenumber" class="form-input wpct30" type="text" value="" size="20" maxlength="30">
+                            <div class="krds-radio-area">
 
-                            <span class="form-add-txt danger"><strong> [필수]</strong> '-' 포함하여 입력해 주세요.</span>
-                        </div>
-                    </div>
-
-                    <!-- 팩스 -->
-                    <div class="form-row">
-                        <label for="companyFax" class="form-label berequired">팩스</label>
-                        <div class="form-input-group">
-                            <input id="companyFax" name="seller.companyFax" data-type="phonenumber" class="form-input wpct30" type="text" value="" size="20" maxlength="30">
-
-                            <span class="form-add-txt danger"><strong> [필수]</strong> '-' 포함하여 입력해 주세요.</span>
-                        </div>
-                    </div>
-
-                    <!-- 웹사이트  -->
-                    <div class="form-row">
-                        <label for="siteUrl" class="form-label berequired">웹사이트</label>
-                        <div class="form-input-group">
-                            <input id="siteUrl" name="seller.siteUrl" class="form-input wpct30" type="text" value="" size="20" maxlength="255">
-
-                        </div>
-                    </div>
-
-
-                    <div class="form-row">
-                        <label for="introKo" class="form-label required">회사 소개(국문)</label>
-                        <div class="form-input-group">
-                            <textarea id="introKo" name="seller.introKo" maxlength="4000" placeholder="내용을 입력하세요" class="form-textarea wpct100" oninput="fnTextareaCnt(this, 1000);" rows="5" cols="50"></textarea>
-
-                            <p class="textarea-count"> <span class="count-now">0</span><span class="count-total">/1,000</span> </p>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <label for="introEn" class="form-label required">회사 소개(영문)</label>
-                        <div class="form-input-group">
-                            <textarea id="introEn" name="seller.introEn" maxlength="4000" placeholder="내용을 입력하세요" class="form-textarea wpct100" oninput="fnTextareaCnt(this, 1000);" rows="5" cols="50"></textarea>
-
-                            <p class="textarea-count"> <span class="count-now">0</span><span class="count-total">/1,000</span> </p>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <label for="bizKo" class="form-label berequired">주요 경력 현황(국문)</label>
-                        <div class="form-input-group">
-                            <textarea id="bizKo" name="seller.bizKo" maxlength="4000" class="form-textarea wpct100" rows="5" cols="50" placeholder="내용을 입력하세요" data-val-bytes="28" aria-invalid="false" oninput="fnTextareaCnt(this, 1000);"></textarea>
-                             <p class="textarea-count"> <span class="count-now">0</span><span class="count-total">/1,000</span> </p>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <label for="bizEn" class="form-label berequired">주요 경력 현황(영문)</label>
-                        <div class="form-input-group">
-                            <textarea id="bizEn" name="seller.bizEn" maxlength="4000" class="form-textarea wpct100" rows="5" cols="50" placeholder="내용을 입력하세요" oninput="fnTextareaCnt(this, 1000);"></textarea>
-                             <p class="textarea-count"> <span class="count-now">0</span><span class="count-total">/1,000</span> </p>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <label for="email" class="form-label berequired">기업 홍보영상(유튜브 주소)</label>
-                        <div class="form-input-group">
-                            <input id="movieUrl" name="seller.movieUrl" class="form-input wpct30" type="text" value="" size="20" maxlength="100">
-                            <span class="form-add-txt danger"> 유튜브 영상주소만 가능</span>
-                            <a class="btn-yutubexam" href="javascript:void(0);" onclick="helpUrlView();return false;" title="새창열림">유튜브 URL 등록 방법</a>
-                        </div>
-                    </div>
-
-
-
-                </div>
-                <!-- //폼 1-->
-
-                <div class="form-grid02 mgt-30">
-                    <div class="form-row rownone">
-
-                        <div class="form-label required">
-                            회사 로고
-                        </div>
-
-
-                        <div class="form-input-group">
-                            <span class="form-add-txt danger">이미지 권장 사이즈 : 400 x 192 </span>
-                            <span class="form-add-txt danger">※ 10MB 이하의 파일만 등록 가능합니다.</span>
-                        </div>
-                        <div class="imgpreview-group">
-                            <div class="upload-area mgb-10">
-                                <input type="file" id="imgAtchFile_3" data-idx="0" name="imgAtchFile_3" data-focus-id="btn_imgAtchFile_3" accept=".gif,.jpeg,.jpg,.png" onchange="WELCON.Util.checkFileSize(this, 10, '회사 로고')" class="offscreen">
-                                <a href="javascript:void(0)" id="btn_imgAtchFile_3" role="button" class="btn-primary form-button btn-upload">이미지 업로드<i class="button-upload"></i></a>
-                            </div>
-                            <!-- 미리보기 영역 -->
-                            <div class="preview-area" id="gallery_imgAtchFile_3" style="display:none;">
-                                <div class="js-file-container"></div>
-                            </div>
-                            <input id="logoImageFileId" name="seller.logoImageFileId" type="hidden" value="">
-
-                        </div>
-                    </div>
-                </div>
-                <!-- 대표 이미지(목록)-->
-                 <div class="form-grid02 mgt-30">
-                    <div class="form-row rownone">
-                        <div class="form-label berequired">대표 이미지 (목록)</div>
-                        <div class="form-input-group">
-                            <span class="form-add-txt danger">이미지 권장 사이즈 : 235 x 176 </span>
-                            <span class="form-add-txt danger">※ 10MB 이하의 파일만 등록 가능합니다.</span>
-                        </div>
-                        <div class="imgpreview-group">
-                            <div class="upload-area mgb-10">
-                                   <input type="file" id="imgAtchFile_1" data-idx="0" name="imgAtchFile_1" data-focus-id="btn_imgAtchFile_1" accept=".gif,.jpeg,.jpg,.png" onchange="WELCON.Util.checkFileSize(this, 10, '대표 이미지(목록)')" class="offscreen">
-                                <a href="javascript:void(0)" id="btn_imgAtchFile_1" role="button" class="btn-primary form-button btn-upload">이미지 업로드<i class="button-upload"></i></a>
-                            </div>
-                            <!-- 미리보기 영역 -->
-                            <div class="preview-area" id="gallery_imgAtchFile_1" style="display:none;">
-                                <div class="js-file-container"></div>
-                            </div>
-                            <input id="listImageFileId" name="seller.listImageFileId" type="hidden" value="">
-
-                        </div>
-                    </div>
-                </div>
-                <!-- 대표 이미지(상세)-->
-                <div class="form-grid02 mgt-30">
-                    <div class="form-row rownone">
-                        <div class="form-label berequired">대표 이미지 (상세)</div>
-                        <div class="form-input-group">
-                            <span class="form-add-txt danger">이미지 권장 사이즈 : 1000 x 285 </span>
-                            <span class="form-add-txt danger">※ 10MB 이하의 파일만 등록 가능합니다.</span>
-                        </div>
-                        <div class="imgpreview-group">
-                            <div class="upload-area mgb-10">
-                                <input type="file" id="imgAtchFile_2" data-idx="0" name="imgAtchFile_2" data-focus-id="btn_imgAtchFile_2" accept=".gif,.jpeg,.jpg,.png" onchange="WELCON.Util.checkFileSize(this, 10, '대표 이미지(상세)')" class="offscreen">
-                                <a href="javascript:void(0)" id="btn_imgAtchFile_2" role="button" class="btn-primary form-button btn-upload">이미지 업로드<i class="button-upload"></i></a>
-                            </div>
-                            <!-- 미리보기 영역 -->
-                            <div class="preview-area" id="gallery_imgAtchFile_2" style="display:none;">
-                                <div class="js-file-container"></div>
-                            </div>
-                            <input id="visualImageFileId" name="seller.visualImageFileId" type="hidden" value="">
-
-                        </div>
-                    </div>
-                </div>
-
-                <!-- SNS-->
-                <div class="member-form-header mgt-30">
-                    <h3 class="form-section-title">SNS</h3>
-                </div>
-                <div class="form-grid02 bordernone">
-                    <div class="form-row rownone">
-                        <div class="sns-wrap mgt-10" role="table" aria-label="SNS 채널 등록 정보">
-                            <div class="sns-header" role="row">
-                                <div role="columnheader" data-label="Service">채널</div>
-                                <div role="columnheader" data-label="URL">URL</div>
-                                <div role="columnheader" data-label="Delete"> 삭제</div>
-                            </div>
-                            <ul class="sns-list" id="snsList" role="rowgroup">
-                                <li class="sns-item empty-row" role="row">
-                                    <div role="cell">
-                                        등록된 내용이 없습니다. 추가버튼 누른후 등록해 주세요.
+                                    <div class="krds-form-check">
+                                        <input id="smsYn0" name="member.smsYn" type="radio" value="Y">
+                                        <label for="smsYn0">수신 동의</label>
                                     </div>
-                                </li>
-                            </ul>
-                            <button id="addBtn" type="button" class="add-btn">추가<i class="button-icon03"></i></button>
+
+                                    <div class="krds-form-check">
+                                        <input id="smsYn1" name="member.smsYn" type="radio" value="N">
+                                        <label for="smsYn1">수신 미동의</label>
+                                    </div>
+
+                            </div>
+
                         </div>
                     </div>
                 </div>
-                <!-- //SNS-->
 
+                <div id="prevErrorsMsgGroup" class="textc">
 
+                </div>
 
+                <!-- 하단 버튼 영역 -->
         <style>
         /* 모달 열려있는 동안 뒤쪽 페이지 스크롤 잠금 - body는 .wc-wizard 스코프 밖이라
            별도로 둔다. */
@@ -1878,1598 +1807,6 @@ function initNavi() {
 </div>
 </div>
 <!-- //wcModuleBoxWrap -->
-
-<!-- TEMP-HIDDEN 2026-09-11: "장르" 섹션 전체(장르 체크박스 11개 + 장르별 회사카테고리
-     wrap002001~007 + 기타 장르 divGenreEtc1/2) 임시 숨김(사용자 요청, 삭제 아님).
-     기존 소스 내 작은 라벨 주석(장르명 표시용 짧은 주석 등)과 중첩 불가능한 HTML 주석
-     특성 때문에, 위 "기업정보" 필드 블록과 동일한 방식으로 그 사이사이 구간만 나눠
-     TEMP-HIDDEN-START/END 쌍으로 감쌌다. 되살릴 때는 아래 TEMP-HIDDEN-START/END
-     마커 줄만 전부 제거하면 원래 마크업이 그대로 복원된다(원본 내용은 무변경). -->
-<!-- 2026-09-14: 위 주석은 HTML 주석 기반(TEMP-HIDDEN-START/END) 숨김 방식을 설명하지만,
-     이번엔 "다음" 버튼으로 나중에 다시 보여줘야 해서 주석이 아니라 hidden 속성을 가진
-     wrapper div(#wcGenreSectionWrap)로 감싼다 - 장르 섹션 원본 마크업은 한 글자도
-     바꾸지 않았다. -->
-<div id="wcGenreSectionWrap">
-<div class="member-form-header mgt-30">
-    <h3 class="form-section-title">장르</h3>
-</div>
-
-<div class="form-grid">
-    <div class="form-row rownone">
-        <div id="genreRequired" class="form-label required">장르</div>
-        <div class="form-input-group">
-            <div class="input-with-checkbox">
-                <ul class="in-multibox in-checkbox">
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.genreCds0" name="genre" value="002001">
-
-                                <label for="genreMappingList.genreCds0">방송</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.genreCds1" name="genre" value="002002">
-
-                                <label for="genreMappingList.genreCds1">게임</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.genreCds2" name="genre" value="002003">
-
-                                <label for="genreMappingList.genreCds2">캐릭터</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.genreCds3" name="genre" value="002004">
-
-                                <label for="genreMappingList.genreCds3">만화</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.genreCds4" name="genre" value="002005">
-
-                                <label for="genreMappingList.genreCds4">애니메이션</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.genreCds5" name="genre" value="002006">
-
-                                <label for="genreMappingList.genreCds5">패션</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.genreCds6" name="genre" value="002007">
-
-                                <label for="genreMappingList.genreCds6">음악</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.genreCds7" name="genre" value="002008">
-
-                                <label for="genreMappingList.genreCds7">스타트업</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.genreCds8" name="genre" value="002009">
-
-                                <label for="genreMappingList.genreCds8">신기술 융합콘텐츠</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.genreCds9" name="genre" value="002011">
-
-                                <label for="genreMappingList.genreCds9">스토리</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.genreCds10" name="genre" value="002010">
-
-                                <label for="genreMappingList.genreCds10">기타</label>
-                            </div>
-                        </li>
-
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- 방송 -->
-<div id="wrap002001Title" class="member-form-header mgt-30" style="display: none;">
-    <h3 class="form-section-title">방송 회사</h3>
-</div>
-<div id="wrap002001" class="form-grid" style="display: none;">
-    <div class="form-row">
-        <label for="" class="form-label required">회사 카테고리</label>
-        <div class="form-input-group">
-            <div class="input-with-checkbox">
-                  <ul class="in-multibox in-checkbox">
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.boardCompanyCds0" name="boardCompanyCds" value="005001">
-
-                                <label for="genreMappingList.boardCompanyCds0">판권보유 배급사</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.boardCompanyCds1" name="boardCompanyCds" value="005002">
-
-                                <label for="genreMappingList.boardCompanyCds1">제작사</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.boardCompanyCds2" name="boardCompanyCds" value="005003">
-
-                                <label for="genreMappingList.boardCompanyCds2">세일즈 에이전트</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.boardCompanyCds3" name="boardCompanyCds" value="005004">
-
-                                <label for="genreMappingList.boardCompanyCds3">라이선싱 에이전트</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.boardCompanyCds4" name="boardCompanyCds" value="005005">
-
-                                <label for="genreMappingList.boardCompanyCds4">TV 방송사업자</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.boardCompanyCds5" name="boardCompanyCds" value="005006">
-
-                                <label for="genreMappingList.boardCompanyCds5">온라인/모바일 플랫폼</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.boardCompanyCds6" name="boardCompanyCds" value="005007">
-
-                                <label for="genreMappingList.boardCompanyCds6">MCN</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.boardCompanyCds7" name="boardCompanyCds" value="005008">
-
-                                <label for="genreMappingList.boardCompanyCds7">OTT/IPTV</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.boardCompanyCds8" name="boardCompanyCds" value="005009">
-
-                                <label for="genreMappingList.boardCompanyCds8">방송영상기술</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.boardCompanyCds9" name="boardCompanyCds" value="005010">
-
-                                <label for="genreMappingList.boardCompanyCds9">포스트프로덕션</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.boardCompanyCds10" name="boardCompanyCds" value="005011">
-
-                                <label for="genreMappingList.boardCompanyCds10">컨설팅</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.boardCompanyCds11" name="boardCompanyCds" value="005012">
-
-                                <label for="genreMappingList.boardCompanyCds11">제작/콘텐츠 창작</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.boardCompanyCds12" name="boardCompanyCds" value="005013">
-
-                                <label for="genreMappingList.boardCompanyCds12">기술서비스</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.boardCompanyCds13" name="boardCompanyCds" value="005014">
-
-                                <label for="genreMappingList.boardCompanyCds13">시스템/소프트웨어</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.boardCompanyCds14" name="boardCompanyCds" value="005015">
-
-                                <label for="genreMappingList.boardCompanyCds14">어플리케이션 개발</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.boardCompanyCds15" name="boardCompanyCds" value="005016">
-
-                                <label for="genreMappingList.boardCompanyCds15">장비/제조</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.boardCompanyCds16" name="boardCompanyCds" value="005017">
-
-                                <label for="genreMappingList.boardCompanyCds16">편집/후반작업</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.boardCompanyCds17" name="boardCompanyCds" value="005018">
-
-                                <label for="genreMappingList.boardCompanyCds17">정부기관</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.boardCompanyCds18" name="boardCompanyCds" value="005019">
-
-                                <label for="genreMappingList.boardCompanyCds18">협회/위원회</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.boardCompanyCds19" name="boardCompanyCds" value="005020">
-
-                                <label for="genreMappingList.boardCompanyCds19">광고/홍보</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.boardCompanyCds20" name="boardCompanyCds" value="005021">
-
-                                <label for="genreMappingList.boardCompanyCds20">미디어 에이전시/브랜드</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.boardCompanyCds21" name="boardCompanyCds" value="005022">
-
-                                <label for="genreMappingList.boardCompanyCds21">홍보/섭외 에이전시</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.boardCompanyCds22" name="boardCompanyCds" value="005023">
-
-                                <label for="genreMappingList.boardCompanyCds22">VC/투자</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.boardCompanyCds23" name="boardCompanyCds" value="005024">
-
-                                <label for="genreMappingList.boardCompanyCds23">기타</label>
-                            </div>
-                        </li>
-
-                </ul>
-            </div>
-        </div>
-    </div>
-    <div class="form-row">
-        <label for="" class="form-label">희망 비즈니스</label>
-        <div class="form-input-group">
-            <div class="input-with-checkbox">
-                <ul class="in-multibox in-checkbox">
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.boardBizCds0" name="boardBizCds" value="008001">
-
-                                <label for="genreMappingList.boardBizCds0">프로그램 판권 거래</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.boardBizCds1" name="boardBizCds" value="008002">
-
-                                <label for="genreMappingList.boardBizCds1">공동제작/협업</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.boardBizCds2" name="boardBizCds" value="008003">
-
-                                <label for="genreMappingList.boardBizCds2">투자유치</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.boardBizCds3" name="boardBizCds" value="008004">
-
-                                <label for="genreMappingList.boardBizCds3">기타</label>
-                            </div>
-                        </li>
-
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- 게임  -->
-<div id="wrap002002Title" class="member-form-header mgt-30" style="display: none;">
-    <h3 class="form-section-title">게임 회사</h3>
-</div>
-<div id="wrap002002" class="form-grid" style="display: none;">
-    <div class="form-row">
-        <label for="" class="form-label required">회사 카테고리</label>
-        <div class="form-input-group">
-            <div class="input-with-checkbox">
-                  <ul class="in-multibox in-checkbox">
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.gameCompanyCds0" name="gameCompanyCds" value="018001">
-
-                                <label for="genreMappingList.gameCompanyCds0">게임제작</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.gameCompanyCds1" name="gameCompanyCds" value="018002">
-
-                                <label for="genreMappingList.gameCompanyCds1">게임 배급</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.gameCompanyCds2" name="gameCompanyCds" value="018003">
-
-                                <label for="genreMappingList.gameCompanyCds2">게임투자</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.gameCompanyCds3" name="gameCompanyCds" value="018004">
-
-                                <label for="genreMappingList.gameCompanyCds3">게임마케팅</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.gameCompanyCds4" name="gameCompanyCds" value="018005">
-
-                                <label for="genreMappingList.gameCompanyCds4">게임서비스플랫폼</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.gameCompanyCds5" name="gameCompanyCds" value="018006">
-
-                                <label for="genreMappingList.gameCompanyCds5">기타</label>
-                            </div>
-                        </li>
-
-                </ul>
-            </div>
-        </div>
-    </div>
-    <div class="form-row">
-        <label for="" class="form-label">희망 비즈니스</label>
-        <div class="form-input-group">
-            <div class="input-with-checkbox">
-                <ul class="in-multibox in-checkbox">
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.gameBizCds0" name="gameBizCds" value="023001">
-
-                                <label for="genreMappingList.gameBizCds0">퍼블리싱</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.gameBizCds1" name="gameBizCds" value="023002">
-
-                                <label for="genreMappingList.gameBizCds1">공동제작/협업</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.gameBizCds2" name="gameBizCds" value="023003">
-
-                                <label for="genreMappingList.gameBizCds2">투자유치</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.gameBizCds3" name="gameBizCds" value="023004">
-
-                                <label for="genreMappingList.gameBizCds3">마케팅</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.gameBizCds4" name="gameBizCds" value="023005">
-
-                                <label for="genreMappingList.gameBizCds4">아웃소싱</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.gameBizCds5" name="gameBizCds" value="023006">
-
-                                <label for="genreMappingList.gameBizCds5">기타</label>
-                            </div>
-                        </li>
-
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- 캐릭터 -->
-<div id="wrap002003Title" class="member-form-header mgt-30" style="display: none;">
-    <h3 class="form-section-title">캐릭터 회사</h3>
-</div>
-<div id="wrap002003" class="form-grid" style="display: none;">
-    <div class="form-row">
-        <label for="" class="form-label required">회사 카테고리</label>
-        <div class="form-input-group">
-            <div class="input-with-checkbox">
-                  <ul class="in-multibox in-checkbox">
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.charCompanyCds0" name="charCompanyCds" value="024001">
-
-                                <label for="genreMappingList.charCompanyCds0">라이센서</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.charCompanyCds1" name="charCompanyCds" value="024002">
-
-                                <label for="genreMappingList.charCompanyCds1">라이선스/제조사</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.charCompanyCds2" name="charCompanyCds" value="024003">
-
-                                <label for="genreMappingList.charCompanyCds2">라이선싱 에이전트</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.charCompanyCds3" name="charCompanyCds" value="024004">
-
-                                <label for="genreMappingList.charCompanyCds3">리테일러</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.charCompanyCds4" name="charCompanyCds" value="024005">
-
-                                <label for="genreMappingList.charCompanyCds4">투자사</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.charCompanyCds5" name="charCompanyCds" value="024006">
-
-                                <label for="genreMappingList.charCompanyCds5">기타</label>
-                            </div>
-                        </li>
-
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    <div class="form-row">
-        <label for="" class="form-label">희망 비즈니스</label>
-        <div class="form-input-group">
-            <div class="input-with-checkbox">
-                <ul class="in-multibox in-checkbox">
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.charBizCds0" name="charBizCds" value="029001">
-
-                                <label for="genreMappingList.charBizCds0">라이선스 거래</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.charBizCds1" name="charBizCds" value="029002">
-
-                                <label for="genreMappingList.charBizCds1">공동제작/협업</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.charBizCds2" name="charBizCds" value="029003">
-
-                                <label for="genreMappingList.charBizCds2">투자유치</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.charBizCds3" name="charBizCds" value="029004">
-
-                                <label for="genreMappingList.charBizCds3">제품 유통/배급</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.charBizCds4" name="charBizCds" value="029005">
-
-                                <label for="genreMappingList.charBizCds4">기타</label>
-                            </div>
-                        </li>
-
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- 만화 -->
-<div id="wrap002004Title" class="member-form-header mgt-30" style="display: none;">
-    <h3 class="form-section-title">만화 회사</h3>
-</div>
-<div id="wrap002004" class="form-grid" style="display: none;">
-    <div class="form-row">
-        <label for="" class="form-label required">회사 카테고리</label>
-        <div class="form-input-group">
-            <div class="input-with-checkbox">
-                  <ul class="in-multibox in-checkbox">
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.cartoonCompanyCds0" name="cartoonCompanyCds" value="014001">
-
-                                <label for="genreMappingList.cartoonCompanyCds0">만화 전문 출판사</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.cartoonCompanyCds1" name="cartoonCompanyCds" value="014002">
-
-                                <label for="genreMappingList.cartoonCompanyCds1">일반 출판사(만화부문)</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.cartoonCompanyCds2" name="cartoonCompanyCds" value="014003">
-
-                                <label for="genreMappingList.cartoonCompanyCds2">인터넷/모바일 만화 콘텐츠 제작 및 제공(CP)</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.cartoonCompanyCds3" name="cartoonCompanyCds" value="014004">
-
-                                <label for="genreMappingList.cartoonCompanyCds3">인터넷 만화 콘텐츠 서비스 플랫폼</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.cartoonCompanyCds4" name="cartoonCompanyCds" value="014005">
-
-                                <label for="genreMappingList.cartoonCompanyCds4">모바일 만화 콘텐츠 서비스 플랫폼</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.cartoonCompanyCds5" name="cartoonCompanyCds" value="014006">
-
-                                <label for="genreMappingList.cartoonCompanyCds5">기타</label>
-                            </div>
-                        </li>
-
-                </ul>
-            </div>
-        </div>
-    </div>
-    <div class="form-row">
-        <label for="" class="form-label">희망 비즈니스</label>
-        <div class="form-input-group">
-            <div class="input-with-checkbox">
-                <ul class="in-multibox in-checkbox">
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.cartoonBizCds0" name="cartoonBizCds" value="017001">
-
-                                <label for="genreMappingList.cartoonBizCds0">원작 비즈니스(2차 콘텐츠)</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.cartoonBizCds1" name="cartoonBizCds" value="017002">
-
-                                <label for="genreMappingList.cartoonBizCds1">해외유통(온라인)</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.cartoonBizCds2" name="cartoonBizCds" value="017003">
-
-                                <label for="genreMappingList.cartoonBizCds2">해외유통(오프라인/출판)</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.cartoonBizCds3" name="cartoonBizCds" value="017004">
-
-                                <label for="genreMappingList.cartoonBizCds3">공동제작/협업</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.cartoonBizCds4" name="cartoonBizCds" value="017005">
-
-                                <label for="genreMappingList.cartoonBizCds4">투자유치</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.cartoonBizCds5" name="cartoonBizCds" value="017006">
-
-                                <label for="genreMappingList.cartoonBizCds5">기타</label>
-                            </div>
-                        </li>
-
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- 애니메이션 -->
-<div id="wrap002005Title" class="member-form-header mgt-30" style="display: none;">
-    <h3 class="form-section-title">애니메이션 회사</h3>
-</div>
-<div id="wrap002005" class="form-grid" style="display: none;">
-    <div class="form-row">
-        <label for="" class="form-label required">회사 카테고리</label>
-        <div class="form-input-group">
-            <div class="input-with-checkbox">
-                  <ul class="in-multibox in-checkbox">
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.aniCompanyCds0" name="aniCompanyCds" value="009001">
-
-                                <label for="genreMappingList.aniCompanyCds0">판권보유 배급사</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.aniCompanyCds1" name="aniCompanyCds" value="009002">
-
-                                <label for="genreMappingList.aniCompanyCds1">제작사</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.aniCompanyCds2" name="aniCompanyCds" value="009003">
-
-                                <label for="genreMappingList.aniCompanyCds2">세일즈 에이전트</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.aniCompanyCds3" name="aniCompanyCds" value="009004">
-
-                                <label for="genreMappingList.aniCompanyCds3">라이선싱 에이전트</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.aniCompanyCds4" name="aniCompanyCds" value="009005">
-
-                                <label for="genreMappingList.aniCompanyCds4">TV 방송사업자</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.aniCompanyCds5" name="aniCompanyCds" value="009006">
-
-                                <label for="genreMappingList.aniCompanyCds5">온라인/모바일 플랫폼</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.aniCompanyCds6" name="aniCompanyCds" value="009007">
-
-                                <label for="genreMappingList.aniCompanyCds6">OTT/IPTV</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.aniCompanyCds7" name="aniCompanyCds" value="009008">
-
-                                <label for="genreMappingList.aniCompanyCds7">포스트 프로덕션</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.aniCompanyCds8" name="aniCompanyCds" value="009009">
-
-                                <label for="genreMappingList.aniCompanyCds8">투자사</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.aniCompanyCds9" name="aniCompanyCds" value="009010">
-
-                                <label for="genreMappingList.aniCompanyCds9">컨설팅</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.aniCompanyCds10" name="aniCompanyCds" value="009011">
-
-                                <label for="genreMappingList.aniCompanyCds10">공공기관</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.aniCompanyCds11" name="aniCompanyCds" value="009012">
-
-                                <label for="genreMappingList.aniCompanyCds11">기타</label>
-                            </div>
-                        </li>
-
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    <div class="form-row">
-        <label for="" class="form-label">희망 비즈니스</label>
-        <div class="form-input-group">
-            <div class="input-with-checkbox">
-                <ul class="in-multibox in-checkbox">
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.aniBizCds0" name="aniBizCds" value="013001">
-
-                                <label for="genreMappingList.aniBizCds0">프로그램 판권 거래</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.aniBizCds1" name="aniBizCds" value="013002">
-
-                                <label for="genreMappingList.aniBizCds1">공동제작/협업</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.aniBizCds2" name="aniBizCds" value="013003">
-
-                                <label for="genreMappingList.aniBizCds2">투자유치</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.aniBizCds3" name="aniBizCds" value="013004">
-
-                                <label for="genreMappingList.aniBizCds3">기타</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.aniBizCds4" name="aniBizCds" value="013005">
-
-                                <label for="genreMappingList.aniBizCds4">라이선싱</label>
-                            </div>
-                        </li>
-
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- 패션 -->
-<div id="wrap002006Title" class="member-form-header mgt-30" style="display: none;">
-    <h3 class="form-section-title">애니메이션 회사</h3>
-</div>
-<div id="wrap002006" class="form-grid" style="display: none;">
-    <div class="form-row">
-        <label for="" class="form-label">희망 비즈니스</label>
-        <div class="form-input-group">
-            <div class="input-with-checkbox">
-                <ul class="in-multibox in-checkbox">
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.fashionBizCds0" name="fashionBizCds" value="030001">
-
-                                <label for="genreMappingList.fashionBizCds0">남성복</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.fashionBizCds1" name="fashionBizCds" value="030002">
-
-                                <label for="genreMappingList.fashionBizCds1">여성복</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.fashionBizCds2" name="fashionBizCds" value="030003">
-
-                                <label for="genreMappingList.fashionBizCds2">신발</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.fashionBizCds3" name="fashionBizCds" value="030004">
-
-                                <label for="genreMappingList.fashionBizCds3">가방</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.fashionBizCds4" name="fashionBizCds" value="030005">
-
-                                <label for="genreMappingList.fashionBizCds4">모자</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.fashionBizCds5" name="fashionBizCds" value="030006">
-
-                                <label for="genreMappingList.fashionBizCds5">액세서리</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.fashionBizCds6" name="fashionBizCds" value="030007">
-
-                                <label for="genreMappingList.fashionBizCds6">기타</label>
-                            </div>
-                        </li>
-
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- 음악 -->
-<div id="wrap002007Title" class="member-form-header mgt-30" style="display: none;">
-    <h3 class="form-section-title">음악 회사</h3>
-</div>
-<div id="wrap002007" class="form-grid" style="display: none;">
-    <div class="form-row">
-        <label for="" class="form-label">희망 비즈니스</label>
-        <div class="form-input-group">
-            <div class="input-with-checkbox">
-                <ul class="in-multibox in-checkbox">
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.musicBizCds0" name="musicBizCds" value="032001">
-
-                                <label for="genreMappingList.musicBizCds0">레이블</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.musicBizCds1" name="musicBizCds" value="032002">
-
-                                <label for="genreMappingList.musicBizCds1">기획사</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.musicBizCds2" name="musicBizCds" value="032003">
-
-                                <label for="genreMappingList.musicBizCds2">유통</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.musicBizCds3" name="musicBizCds" value="032004">
-
-                                <label for="genreMappingList.musicBizCds3">프로모터</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.musicBizCds4" name="musicBizCds" value="032005">
-
-                                <label for="genreMappingList.musicBizCds4">페스티벌</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.musicBizCds5" name="musicBizCds" value="032006">
-
-                                <label for="genreMappingList.musicBizCds5">프로듀서</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.musicBizCds6" name="musicBizCds" value="032007">
-
-                                <label for="genreMappingList.musicBizCds6">뮤지션/작곡가/작사가</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.musicBizCds7" name="musicBizCds" value="032008">
-
-                                <label for="genreMappingList.musicBizCds7">문화예술기관 및 협회</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.musicBizCds8" name="musicBizCds" value="032009">
-
-                                <label for="genreMappingList.musicBizCds8">미디어</label>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="krds-form-check">
-                                <input type="checkbox" id="genreMappingList.musicBizCds9" name="musicBizCds" value="032010">
-
-                                <label for="genreMappingList.musicBizCds9">기타</label>
-                            </div>
-                        </li>
-
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- 기타는 회원가입 -->
-<!-- 2026-09-11: 아래 스크립트 블록(mergeGenre 등 장르 체크박스 로직)은 TEMP-HIDDEN
-     범위에서 제외한다 - 마크업만 숨기고 JS 로직은 그대로 살려둬야 한다는 원칙. -->
-
-<script>
-$(document).ready(function(){
-
-});
-
-// 장르 필수입력 표시 보이기
-function showGenreRequiredLabel() {
-    $("#genreRequired").addClass('required');
-}
-
-/* ********************************************************
- * 장르 선택
- ******************************************************** */
-$(document).on("click", "input[name=genre]", function(){
-    var chk = $(this).prop('checked');
-    if(chk) {
-        $("#wrap" + $(this).val()).show();
-        $("#wrap" + $(this).val() + "Title").show();
-    } else {
-        $("#wrap" + $(this).val()).hide();
-        $("#wrap" + $(this).val() + "Title").hide();
-        $("#wrap" + $(this).val()).find("input[type=checkbox]").prop('checked', false);
-    }
-});
-
-function mergeGenre() {
-    var genreArr = "";
-    $("input[name='genre']").each(function(i) {
-        if($(this).prop('checked')) { genreArr += "," + $(this).val();}
-    });
-
-    $("input[name='boardCompanyCds']").each(function(i) {
-        if($(this).prop('checked')) { genreArr += "," + $(this).val(); }
-    });
-
-    $("input[name='boardBizCds']").each(function(i) {
-        if($(this).prop('checked')) { genreArr += "," + $(this).val(); }
-    });
-
-    $("input[name='gameCompanyCds']").each(function(i) {
-        if($(this).prop('checked')) { genreArr += "," + $(this).val(); }
-    });
-
-    $("input[name='gameBizCds']").each(function(i) {
-        if($(this).prop('checked')) { genreArr += "," + $(this).val(); }
-    });
-
-    $("input[name='charCompanyCds']").each(function(i) {
-        if($(this).prop('checked')) { genreArr += "," + $(this).val(); }
-    });
-
-    $("input[name='charBizCds']").each(function(i) {
-        if($(this).prop('checked')) { genreArr += "," + $(this).val(); }
-    });
-
-    $("input[name='cartoonCompanyCds']").each(function(i) {
-        if($(this).prop('checked')) { genreArr += "," + $(this).val(); }
-    });
-
-    $("input[name='cartoonBizCds']").each(function(i) {
-        if($(this).prop('checked')) { genreArr += "," + $(this).val(); }
-    });
-
-    $("input[name='aniCompanyCds']").each(function(i) {
-        if($(this).prop('checked')) { genreArr += "," + $(this).val(); }
-    });
-
-    $("input[name='aniBizCds']").each(function(i) {
-        if($(this).prop('checked')) { genreArr += "," + $(this).val(); }
-    });
-
-    $("input[name='fashionBizCds']").each(function(i) {
-        if($(this).prop('checked')) { genreArr += "," + $(this).val(); }
-    });
-
-    $("input[name='musicBizCds']").each(function(i) {
-        if($(this).prop('checked')) { genreArr += "," + $(this).val(); }
-    });
-
-    return genreArr.substring(1);
-}
-
-//장르 필수입력 validation rule 추가
-function addGenreRequireRule() {
-    $("input[id^='genreMappingList.genreCds']").rules("add", {
-        required: function() {
-            if ($("input[id^='genreMappingList.genreCds']:checked").length < 1) {
-                true;
-            } else {
-                false;
-            }
-        }, messages: {
-            required: "장르 은(는) 필수 입력값입니다."
-        }
-    });
-}
-
-// 장르 선택 시 해당 장르의 회사카테고리 필수 validation rule 추가
-function addGenreCompanyRequireRule(genreValue) {
-    var genreCompanyLabel = "";
-    $('[id="wrap'+genreValue+'"]').find('[name$="CompanyCds"]').each(function(idx) {
-        if (idx == 0) {
-            genreCompanyLabel = $(this).closest('div.form-row').find('.form-label').text();
-        }
-        $(this).rules('add', {
-            required: true
-            , messages: {
-                required: genreCompanyLabel + " 은(는) 필수 입력값입니다."
-            }
-        });
-    });
-}
-
-// 장르의 회사카테고리 필수 validation rule 제거
-function removeGenreCompanyRequireRule(genreValue) {
-    $('[id="wrap'+genreValue+'"]').find('[name$="CompanyCds"]').each(function(idx) {
-        $(this).rules('remove', 'required');
-    });
-}
-
-//장르 validation 수행
-function validateGenre() {
-    $("input[id^='genreMappingList.genreCds']").valid();
-}
-</script>
-
-                <!-- 기타 회사타이틀 -->
-                <div class="member-form-header mgt-30" id="divGenreEtc1" style="display: none;">
-                    <h3 class="form-section-title">기타 장르</h3>
-                </div>
-                <div id="divGenreEtc2" class="form-grid" style="display: none;">
-                    <div class="form-row">
-                        <label for="genreEtc" class="form-label required">기타 장르</label>
-                        <div class="form-input-group">
-                            <div class="input-with-checkbox">
-                                <ul class="in-multibox in-checkbox">
-                                    <li>
-                                        <input id="genreEtc" name="seller.genreEtc" class="form-input" type="text" value="" size="20" maxlength="100">
-
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-</div>
-<!-- //wcGenreSectionWrap -->
-
-                <div id="prevErrorsMsgGroup" class="textc">
-
-                </div>
-                <!-- 2026-09-16: 제출 버튼도 STEP4 콘텐츠 그룹 - "다음" 클릭 후에만 노출. -->
-                <div id="wcSubmitBtnWrap">
-                <div class="btn-wrap">
-                    <button type="button" class="btn-pre btn-xlarge" onclick="fnMain();return false;"><i class="button-icon04"></i>취소</button>
-                    <button type="button" class="btn-save btn-xlarge open-modal" data-target="modalPwchange" onclick="fnSave('_target5');return false;">완료<i class="button-icon03"></i></button>
-                </div>
-                </div>
-            <input type="hidden" name="" value=""></form>
-        </div>
-    </div>
-    <!-- //개인인증 단계 영역 -->
-</div>
-<!-- E.conts-area -->
-
-<div id="snsTpl" style="display:none">
-    <li class="sns-item" role="row">
-        <div role="cell">
-            <select name="seller.snsList.snsCode[{IDX}]" class="form-select" title="{TITLE_IDX}번째 SNS 채널 선택">
-                <option value="">선택하세요.</option>
-
-                <option value="SNS01">유튜브</option>
-
-                <option value="SNS02">페이스북</option>
-
-                <option value="SNS03">인스타그램</option>
-
-                <option value="SNS04">기타</option>
-
-            </select>
-        </div>
-        <div role="cell"><input type="text" class="form-input snsUrl" placeholder="Enter URL" title="{TITLE_IDX}번째 SNS 채널 URL 입력" name="seller.snsList.snsUrl[{IDX}]"></div>
-        <div role="cell"><button class="delete-btn" type="button" title="해당 SNS 채널 항목 삭제">삭제</button></div>
-    </li>
-</div>
-
-
-<script id="upload-preview-tpl" type="text/x-handlebars-template">
-
-    <div class="js-file-container td-inbox"  id="file_{{upload.uuid}}" data-input="{{upload.input}}">
-        <ul class="in-multibox profile">
-             <li class="in-img-wrapper">
-                <div class="in-imgbox mgb-10">
-                     <p class="in-img-pf">
-                         <img alt="welcon no-image" class="img-pf  {{upload.imgCss}}" src="{{upload.file.data}}">
-                     </p>
-                 </div>
-                 <a href="javascript:void(0)"  role="button"  class="btn-delete form-button is-active" onclick="WELCON.modules.ajaxForm.removeUploadedFile(this)">삭제<i class="button-del"></i></a>
-             </li>
-            <li class="in-descbox">
-                <ul>
-                    <li>
-                        <span class="tit"><label for="IMG_ALT_{{upload.input}}_{{upload.uuid}}_ko">한국어 설명</label></span>
-                        <span class="txt">
-                            <input id="IMG_ALT_{{upload.input}}_{{upload.uuid}}_ko" name="IMG_ALT_{{upload.input}}_ko" class="form-input w100per" type="text" size="50">
-                            <input type="hidden" id="imgStored_{{upload.input}}_{{upload.uuid}}" name="inputFileSn_{{upload.input}}" value="{{upload.uuid}}" />
-                        </span>
-                    </li>
-                    <li>
-                        <span class="tit"><label for="IMG_ALT_{{upload.input}}_{{upload.uuid}}_en">영어 설명</label></span>
-                        <span class="txt">
-                            <input id="IMG_ALT_{{upload.input}}_{{upload.uuid}}_en" name="IMG_ALT_{{upload.input}}_en" class="form-input w100per" maxlength="2000" type="text" size="50">
-                        </span>
-                    </li>
-                </ul>
-            </li>
-        </ul>
-    </div>
-
-</script>
-
-<script>requirejs = { waitSeconds: 0 }</script>
-<script src="https://welcon.kocca.kr/static/cmm/js/welcon/vendor/require.js?v=20260825181323341"></script>
-<script>
-    require(["/static/cmm/js/welcon/common.js?v=20260825181323341"], function () {
-        require(["module/mng", "ajax-form", "pickadate"], function (mytrade, ajaxForm, pickadate) {
-            $("#signUp").ajaxForm({
-
-                files: [
-                    {
-                        inputId : "imgAtchFile_1",
-                        maxNumberOfFiles: 1,
-                         allowedExts: ['gif','jpeg','jpg','png'],
-                        uploadTemplateId: "upload-preview-tpl",
-                        previewContainerId: "gallery_imgAtchFile_1",
-                        previewImage: true,
-                        label: "대표 이미지(목록)",
-                        error: errorFileUpload,
-                        imgLabel: "대표 이미지(목록) ",
-
-                        allowReplace: false,
-
-
-                        allowReplace: false,
-                        imgCss: "list-img",
-                        storedFiles: [
-
-                        ]
-
-                    },
-                    {
-                        inputId : "imgAtchFile_2",
-                        maxNumberOfFiles: 1,
-                         allowedExts: ['gif','jpeg','jpg','png'],
-                        uploadTemplateId: "upload-preview-tpl",
-                        previewContainerId: "gallery_imgAtchFile_2",
-                        previewImage: true,
-                        label: "대표 이미지(상세)",
-                        error: errorFileUpload,
-                        imgLabel: "대표 이미지(상세) ",
-
-                        allowReplace: false,
-
-
-                        allowReplace: false,
-                        imgCss: "cp-detail",
-                        storedFiles: [
-
-                        ]
-
-                    },
-                    {
-                        inputId : "imgAtchFile_3",
-                        maxNumberOfFiles: 1,
-                         allowedExts: ['gif','jpeg','jpg','png'],
-                        uploadTemplateId: "upload-preview-tpl",
-                        previewContainerId: "gallery_imgAtchFile_3",
-                        previewImage: true,
-                        error: errorFileUpload,
-
-
-                        imgLabel: "회사 로고 ",
-                        label: "회사 로고",
-
-
-                        allowReplace: false,
-
-
-                        allowReplace: false,
-                        imgCss: "company-list-img",
-                        storedFiles: [
-
-                        ]
-
-                    }],
-
-                success: function(res) {
-                    if (res.status == "DUPLICATE") {
-                        console.log("e 5");
-                        alert(res.message);
-                        WELCON.Util.hideProgress();
-
-                    } else if (res.status == "SUCCESS") {
-                        WELCON.Util.hideProgress();
-                        fnMove('_finish');
-
-                    } else {
-                        console.log("e 3");
-                        WELCON.Util.showAjaxMessage(res);
-                        WELCON.Util.hideProgress();
-                        $(res.result).each(function(idx, elmt) {
-                            if (elmt.field == "member.phoneAuth" || elmt.field == "member.ipinAuth") {
-                                alert(elmt.msg);
-                            }
-                        });
-                    }
-
-                },
-                error: function(jqXHR, error){
-                    console.log("e 4");
-                    WELCON.Util.showAjaxError(jqXHR, error);
-                    WELCON.Util.hideProgress();
-                }
-            });
-        });
-    });
-</script>
-
-<form name="listForm" id="listForm" method="post" action="/">
-    <input type="hidden" name="pageIndex" value="">
-    <input type="hidden" name="searchPageUnit" value="">
-    <input type="hidden" name="searchCondition" value="">
-    <input type="hidden" name="searchKeyword" value="">
-<input type="hidden" name="" value=""></form>
-
-
-            </div>
-            <!--E. sub-contents-area-->
-        </div>
-        <!--E. sub-content-->
-    </div>
-    <!--E. sub_container-->
-
-    <!-- 푸터 영역 -->
-    <footer id="krds-footer">
-        <div class="f-btm">
-            <div class="f-btm-box">
-                    <ul class="f-menu">
-                        <li><a href="/ko/support/privacy-policy" class="krds-btn small text col-violet" target="_blank" title="새 창 열림">개인정보처리방침</a></li>
-                        <li><a href="/ko/support/terms-of-use" class="krds-btn small text">이용약관</a></li>
-                        <li><a href="/ko/support/information-utilization-policy" class="krds-btn small text">정보활용방침</a></li>
-                        <li><a href="/ko/support/sitemap" class="krds-btn small text">사이트맵</a></li>
-                        <li><a href="https://kocca.kr" class="krds-btn small text col-violet" target="_blank" title="새 창 열림">한국콘텐츠진흥원</a></li>
-                        <li><a href="javascript:void(0);" class="krds-btn small text link site-tit" role="button" aria-expanded="false" aria-controls="related-list">관련기관 바로가기</a>
-                            <div class="Relativ-view" id="related-list" style="display:none">
-                                <ul class="realtive-list">
-                                    <li><a target="_blank" href="https://www.mcst.go.kr" title="문화체육관광부(새 창 열림)">문화체육관광부</a></li>
-                                    <li><a target="_blank" href="https://www.kotra.or.kr" title="대한무역투자진흥공사(새 창 열림)">대한무역투자진흥공사</a></li>
-                                    <li><a target="_blank" href="http://kofice.or.kr" title="한국국제문화교류진흥원(새 창 열림)">한국국제문화교류진흥원</a></li>
-                                    <li><a target="_blank" href="https://www.kf.or.kr" title="한국국제교류재단(새 창 열림)">한국국제교류재단</a></li>
-                                    <li><a target="_blank" href="https://www.kcisa.kr" title="한국문화정보원(새 창 열림)">한국문화정보원</a></li>
-                                    <li><a target="_blank" href="https://www.kita.net" title="한국무역협회(새 창 열림)">한국무역협회</a></li>
-                                </ul>
-                            </div>
-                        </li>
-                    </ul>
-            </div>
-        </div>
-        <div class="inner">
-            <!-- f-cnt 영역 -->
-            <div class="f-cnt">
-                <!-- f-info-left 영역 -->
-                <div class="f-info-left">
-                    <div class="f-logo"> <span class="f-kocca">KOCCA</span> <span class="f-welcon">WelCon</span> </div>
-                    <div class="f-left-box">
-                        <ul class="info-txt">
-                            <li class="col-violet"><span>Helpdesk</span> 1566-9984</li>
-                            <li class="col-violet">welcon@kocca.kr</li>
-                        </ul>
-                        <p class="info-addr">58326 전남광주통합특별시 나주시 교육길 35 (빛가람동 351) 한국콘텐츠진흥원<br>
-                        <span>사업자등록번호 105-82-17272</span></p>
-                    </div>
-                    <!-- 모바일에서f-menu-->
-                    <div class="m-f-btm-box">
-                            <ul class="f-menu">
-                                <li><a href="/ko/support/privacy-policy" class="krds-btn small text col-violet" target="_blank" title="새 창 열림">개인정보처리방침</a></li>
-                                <li><a href="/ko/support/terms-of-use" class="krds-btn small text">이용약관</a></li>
-                                <li><a href="/ko/support/information-utilization-policy" class="krds-btn small text">정보활용방침</a></li>
-                                <li><a href="/ko/support/sitemap" class="krds-btn small text">사이트맵</a></li>
-                                <li><a href="https://kocca.kr" class="krds-btn small text col-violet" target="_blank" title="새 창 열림">한국콘텐츠진흥원</a></li>
-                            </ul>
-                    </div>
-                    <!-- //모바일에서f-menu-->
-                </div>
-                <!-- f-info-right 영역 -->
-                <div class="f-info-right">
-                    <div class="link-sns">
-                      <a href="https://www.linkedin.com/company/kocca-welcon" class="krds-btn xlarge icon border" target="_blank" title="새 창 열림">
-                        <span class="sr-only">링크드인</span>
-                        <i class="svg-icon ico-linkdin"></i>
-                      </a>
-                     <a href="https://www.instagram.com/kocca_official" class="krds-btn xlarge icon border" target="_blank" title="새 창 열림">
-                        <span class="sr-only">인스타그램</span>
-                        <i class="svg-icon ico-instagram"></i>
-                      </a>
-                      <a href="https://www.youtube.com/channel/UC3IS4moogXMW0eJSVYzBdig" class="krds-btn xlarge icon border" target="_blank" title="새 창 열림">
-                        <span class="sr-only">유튜브</span>
-                        <i class="svg-icon ico-youtube"></i>
-                      </a>
-
-                      <a href="https://blog.naver.com/koccablog15" class="krds-btn xlarge icon border" target="_blank" title="새 창 열림">
-                        <span class="sr-only">블로그</span>
-                        <i class="svg-icon ico-blog"></i>
-                      </a>
-                    </div>
-                    <div class="">
-                        <a href="http://webwatch.or.kr" title="새창" target="_blank" class="f-mark">
-                        <img src="https://welcon.kocca.kr/static/wcdn2025/img/frt/main/WA_Mark.png" alt="과학기술정보통신부 WA(WEB접근성) 품질인증 마크, 웹와치(WebWatch) 2026.7.30 ~ 2027.7.29" title="WA 품질인증 마크, 웹와치(WebWatch) 2026.7.30 ~ 2027.7.29" width="120">
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <!-- //f-cnt 영역 -->
-            <div class="f-copy">
-                <div class="f-cleft">본 페이지에 게시된 이메일 주소가 자동 수집되는 것을 거부하며, 이를 위반시 정보통신법에 의해 처벌됨을 유념하시기 바랍니다.</div>
-                <div class="f-cright">COPYRIGHT ⓒ 한국콘텐츠진흥원. ALL RIGHTS RESERVED.</div>
-            </div>
-        </div>
-    </footer>
-    <!-- //푸터 영역 -->
-
-
-
-<script>
-function fnGoInstt(value) {
-    var href = "";
-    href = $("#site").val();
-
-    if(href != "") {
-        window.open(href, "", "")
-    } else {
-        alert("이동할 사이트를 선택해 주세요.");
-    }
-}
-</script>
-
-</div>
-
-
-<script>
-//<![CDATA[
-$(document).ready(function(){
-    $("#panelCloseBtn").click(function() {
-        $("#panelSearchKeyword").val("");
-    });
-
-    $("#panelSearchBtn").click(function() {
-        const keyword = $("#panelSearchKeyword").val();
-        searchUtil.goSearhPage(keyword);
-    });
-
-    $("#panelDeleteAllKeywordBtn").click(function() {
-        searchUtil.deleteAllKeyword(true);
-    });
-
-    $("#panelSearchKeyword").on("keydown", function(e) {
-        if (e.key === "Enter") {
-            e.preventDefault();
-            searchUtil.goSearhPage($(this).val());
-        }
-    });
-});
-
-function initPanel() {
-    searchUtil.htmlPanelRecentlyKeywords();
-}
-//]]
-</script>
-<div class="modal-wrap">
-    <!-- 모달 : 통합 검색 -->
-    <div id="popTotalSch" class="krds-modal search-header-modal fade" data-type="right-sheet" aria-labelledby="tit_total_sch">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header sr-only">
-                    <h2 id="tit_total_sch" class="modal-title">Search</h2>
-                </div>
-                <div class="modal-conts">
-                    <div class="pop-total-serch-wrap">
-                        <div class="pop-sch-top">
-                            <div class="search-total-tit">
-                                <h2 class="modal-title">Search</h2>
-                                <p>모두의 K-콘텐츠, 해외진출로 가치를 높이다.</p>
-                            </div>
-                            <div class="sch-form-box">
-                                <label for="panelSearchKeyword" class="sr-only">검색어를 입력해주세요.</label>
-                                <div class="sch-input">
-                                    <input type="text" class="form-input" id="panelSearchKeyword" placeholder="검색어를 입력해주세요.">
-                                    <button type="button" class="btn ico-search" id="panelSearchBtn"> <span class="sr-only">검색</span> <i class="svg-icon ico-sch"></i> </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="search-text">
-                            <ul class="sch-info-list">
-                                <li class="sch-info-item word-popular">
-                                    <h3 class="tit">인기검색어</h3>
-                                    <ol class="list" id="panelPopularKeywordsWrap">
-                                    </ol>
-                                </li>
-                                <li class="sch-info-item word-lately">
-                                    <h3 class="tit">최근검색어</h3>
-                                    <ul class="list" aria-live="polite" id="panelRecentlyKeywordsWrap">
-                                    </ul>
-                                    <button type="button" class="krds-btn medium text" id="panelDeleteAllKeywordBtn">최근검색어 전체 삭제 <i class="svg-icon ico-delete-fill"></i></button>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <button type="button" class="btn-close close-modal" id="panelCloseBtn"> <span class="sr-only">닫기</span> <i class="svg-icon ico-popup-close"></i> </button>
-            </div>
-        </div>
-        <div class="modal-back"></div>
-    </div>
-</div>
-
 
 <!-- 공통모듈 선택하기 모달 - welcon/0909/신규/index.html(.wc-wizard)에서 이식 -->
 <div class="wc-wizard">
@@ -4841,6 +3178,238 @@ render();
 });
 </script>
 
+                <div class="btn-wrap">
+                    <button type="button" class="btn-pre btn-xlarge " onclick="fnMain();return false;"><i class="button-icon04"></i>취소</button>
+                    <button type="button" class="btn-save btn-xlarge open-modal" onclick="location.href='signup-step4-company-info.html';return false;">다음<i class="button-icon03"></i></button>
+                </div>
+                <!-- //하단 버튼 영역 -->
+            <!-- //회원가입 폼 -->
+        </div>
+        <!-- //회원정보입력 -->
+
+    </div>
+    <!-- //개인인증 단계 영역 -->
+</div>
+<!-- E.conts-area -->
+
+<input type="hidden" name="" value=""></form>
+
+<form name="listForm" id="listForm" method="post" action="/">
+    <input type="hidden" name="pageIndex" value="">
+    <input type="hidden" name="searchPageUnit" value="">
+    <input type="hidden" name="searchCondition" value="">
+    <input type="hidden" name="searchKeyword" value="">
+<input type="hidden" name="" value=""></form>
+
+
+            </div>
+            <!--E. sub-contents-area-->
+        </div>
+        <!--E. sub-content-->
+    </div>
+    <!--E. sub_container-->
+
+    <!-- 푸터 영역 -->
+    <footer id="krds-footer">
+        <div class="f-btm">
+            <div class="f-btm-box">
+                    <ul class="f-menu">
+                        <li><a href="/ko/support/privacy-policy" class="krds-btn small text col-violet" target="_blank" title="새 창 열림">개인정보처리방침</a></li>
+                        <li><a href="/ko/support/terms-of-use" class="krds-btn small text">이용약관</a></li>
+                        <li><a href="/ko/support/information-utilization-policy" class="krds-btn small text">정보활용방침</a></li>
+                        <li><a href="/ko/support/sitemap" class="krds-btn small text">사이트맵</a></li>
+                        <li><a href="https://kocca.kr" class="krds-btn small text col-violet" target="_blank" title="새 창 열림">한국콘텐츠진흥원</a></li>
+                        <li><a href="javascript:void(0);" class="krds-btn small text link site-tit" role="button" aria-expanded="false" aria-controls="related-list">관련기관 바로가기</a>
+                            <div class="Relativ-view" id="related-list" style="display:none">
+                                <ul class="realtive-list">
+                                    <li><a target="_blank" href="https://www.mcst.go.kr" title="문화체육관광부(새 창 열림)">문화체육관광부</a></li>
+                                    <li><a target="_blank" href="https://www.kotra.or.kr" title="대한무역투자진흥공사(새 창 열림)">대한무역투자진흥공사</a></li>
+                                    <li><a target="_blank" href="http://kofice.or.kr" title="한국국제문화교류진흥원(새 창 열림)">한국국제문화교류진흥원</a></li>
+                                    <li><a target="_blank" href="https://www.kf.or.kr" title="한국국제교류재단(새 창 열림)">한국국제교류재단</a></li>
+                                    <li><a target="_blank" href="https://www.kcisa.kr" title="한국문화정보원(새 창 열림)">한국문화정보원</a></li>
+                                    <li><a target="_blank" href="https://www.kita.net" title="한국무역협회(새 창 열림)">한국무역협회</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+            </div>
+        </div>
+        <div class="inner">
+            <!-- f-cnt 영역 -->
+            <div class="f-cnt">
+                <!-- f-info-left 영역 -->
+                <div class="f-info-left">
+                    <div class="f-logo"> <span class="f-kocca">KOCCA</span> <span class="f-welcon">WelCon</span> </div>
+                    <div class="f-left-box">
+                        <ul class="info-txt">
+                            <li class="col-violet"><span>Helpdesk</span> 1566-9984</li>
+                            <li class="col-violet">welcon@kocca.kr</li>
+                        </ul>
+                        <p class="info-addr">58326 전남광주통합특별시 나주시 교육길 35 (빛가람동 351) 한국콘텐츠진흥원<br>
+                        <span>사업자등록번호 105-82-17272</span></p>
+                    </div>
+                    <!-- 모바일에서f-menu-->
+                    <div class="m-f-btm-box">
+                            <ul class="f-menu">
+                                <li><a href="/ko/support/privacy-policy" class="krds-btn small text col-violet" target="_blank" title="새 창 열림">개인정보처리방침</a></li>
+                                <li><a href="/ko/support/terms-of-use" class="krds-btn small text">이용약관</a></li>
+                                <li><a href="/ko/support/information-utilization-policy" class="krds-btn small text">정보활용방침</a></li>
+                                <li><a href="/ko/support/sitemap" class="krds-btn small text">사이트맵</a></li>
+                                <li><a href="https://kocca.kr" class="krds-btn small text col-violet" target="_blank" title="새 창 열림">한국콘텐츠진흥원</a></li>
+                            </ul>
+                    </div>
+                    <!-- //모바일에서f-menu-->
+                </div>
+                <!-- f-info-right 영역 -->
+                <div class="f-info-right">
+                    <div class="link-sns">
+                      <a href="https://www.linkedin.com/company/kocca-welcon" class="krds-btn xlarge icon border" target="_blank" title="새 창 열림">
+                        <span class="sr-only">링크드인</span>
+                        <i class="svg-icon ico-linkdin"></i>
+                      </a>
+                     <a href="https://www.instagram.com/kocca_official" class="krds-btn xlarge icon border" target="_blank" title="새 창 열림">
+                        <span class="sr-only">인스타그램</span>
+                        <i class="svg-icon ico-instagram"></i>
+                      </a>
+                      <a href="https://www.youtube.com/channel/UC3IS4moogXMW0eJSVYzBdig" class="krds-btn xlarge icon border" target="_blank" title="새 창 열림">
+                        <span class="sr-only">유튜브</span>
+                        <i class="svg-icon ico-youtube"></i>
+                      </a>
+
+                      <a href="https://blog.naver.com/koccablog15" class="krds-btn xlarge icon border" target="_blank" title="새 창 열림">
+                        <span class="sr-only">블로그</span>
+                        <i class="svg-icon ico-blog"></i>
+                      </a>
+                    </div>
+                    <div class="">
+                        <a href="http://webwatch.or.kr" title="새창" target="_blank" class="f-mark">
+                        <img src="https://welcon.kocca.kr/static/wcdn2025/img/frt/main/WA_Mark.png" alt="과학기술정보통신부 WA(WEB접근성) 품질인증 마크, 웹와치(WebWatch) 2026.7.30 ~ 2027.7.29" title="WA 품질인증 마크, 웹와치(WebWatch) 2026.7.30 ~ 2027.7.29" width="120">
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- //f-cnt 영역 -->
+            <div class="f-copy">
+                <div class="f-cleft">본 페이지에 게시된 이메일 주소가 자동 수집되는 것을 거부하며, 이를 위반시 정보통신법에 의해 처벌됨을 유념하시기 바랍니다.</div>
+                <div class="f-cright">COPYRIGHT ⓒ 한국콘텐츠진흥원. ALL RIGHTS RESERVED.</div>
+            </div>
+        </div>
+    </footer>
+    <!-- //푸터 영역 -->
+
+
+
+<script>
+function fnGoInstt(value) {
+    var href = "";
+    href = $("#site").val();
+
+    if(href != "") {
+        window.open(href, "", "")
+    } else {
+        alert("이동할 사이트를 선택해 주세요.");
+    }
+}
+</script>
+
+</div>
+
+
+<script>
+//<![CDATA[
+$(document).ready(function(){
+    $("#panelCloseBtn").click(function() {
+        $("#panelSearchKeyword").val("");
+    });
+
+    $("#panelSearchBtn").click(function() {
+        const keyword = $("#panelSearchKeyword").val();
+        searchUtil.goSearhPage(keyword);
+    });
+
+    $("#panelDeleteAllKeywordBtn").click(function() {
+        searchUtil.deleteAllKeyword(true);
+    });
+
+    $("#panelSearchKeyword").on("keydown", function(e) {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            searchUtil.goSearhPage($(this).val());
+        }
+    });
+});
+
+function initPanel() {
+    searchUtil.htmlPanelRecentlyKeywords();
+}
+//]]
+</script>
+<div class="modal-wrap">
+    <!-- 모달 : 통합 검색 -->
+    <div id="popTotalSch" class="krds-modal search-header-modal fade" data-type="right-sheet" aria-labelledby="tit_total_sch">
+        <!-- modal-dialog -->
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- modal title -->
+                <div class="modal-header sr-only">
+                    <h2 id="tit_total_sch" class="modal-title">Search</h2>
+                </div>
+                <!-- //modal title -->
+                <!-- modal contents -->
+                <div class="modal-conts">
+                    <!-- 통합검색 -->
+                    <div class="pop-total-serch-wrap">
+                        <!-- 통합검색 정보입력 영역 -->
+                        <div class="pop-sch-top">
+                            <div class="search-total-tit">
+                                <h2 class="modal-title">Search</h2>
+                                <p>모두의 K-콘텐츠, 해외진출로 가치를 높이다.</p>
+                            </div>
+                            <!-- 검색어 입력 폼 -->
+                            <div class="sch-form-box">
+                                <label for="panelSearchKeyword" class="sr-only">검색어를 입력해주세요.</label>
+                                <div class="sch-input">
+                                    <input type="text" class="form-input" id="panelSearchKeyword" placeholder="검색어를 입력해주세요.">
+                                    <button type="button" class="btn ico-search" id="panelSearchBtn"> <span class="sr-only">검색</span> <i class="svg-icon ico-sch"></i> </button>
+                                </div>
+                            </div>
+                            <!-- //검색어 입력 폼 -->
+                        </div>
+                        <!-- //통합검색 정보입력 영역 -->
+                        <!-- 검색어 리스트 -->
+                        <div class="search-text">
+                            <!-- 검색어 입력 전 -->
+                            <ul class="sch-info-list">
+                                <li class="sch-info-item word-popular">
+                                    <h3 class="tit">인기검색어</h3>
+                                    <ol class="list" id="panelPopularKeywordsWrap">
+                                    </ol>
+                                </li>
+                                <li class="sch-info-item word-lately">
+                                    <h3 class="tit">최근검색어</h3>
+                                    <ul class="list" aria-live="polite" id="panelRecentlyKeywordsWrap">
+                                    </ul>
+                                    <button type="button" class="krds-btn medium text" id="panelDeleteAllKeywordBtn">최근검색어 전체 삭제 <i class="svg-icon ico-delete-fill"></i></button>
+                                </li>
+                            </ul>
+                            <!-- //검색어 입력 전 -->
+                        </div>
+                        <!-- //검색어 리스트 -->
+                    </div>
+                    <!-- //통합검색 -->
+                </div>
+                <!-- //modal contents -->
+                <!-- close button -->
+                <button type="button" class="btn-close close-modal" id="panelCloseBtn"> <span class="sr-only">닫기</span> <i class="svg-icon ico-popup-close"></i> </button>
+                <!-- //close button -->
+            </div>
+        </div>
+        <!-- //modal-dialog -->
+        <div class="modal-back"></div>
+    </div>
+    <!-- //모달 : 통합 검색 -->
+</div>
+
 <script>
 $(document).ready(function() {
     $('form').each(function(idx, elmt) {
@@ -4909,34 +3478,6 @@ $(document).on("click", "section[id^='diMyFavoriteWrap_']", function(e){
 
 </script>
 
-<!-- 시연용 데모 버튼 - 실제 사이트에는 없음 -->
-<style>
-#wcDemoScrollBtn {
-  position: fixed;
-  right: 2.4rem;
-  bottom: 2.4rem;
-  z-index: 999;
-  width: 7.2rem;
-  height: 7.2rem;
-  border-radius: 50%;
-  border: none;
-  background: #4f0099;
-  color: #fff;
-  font-size: 1.3rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
-  cursor: pointer;
-  box-shadow: 0 0.4rem 1.2rem rgba(0,0,0,0.28);
-}
-#wcDemoScrollBtn:hover { background: #350066; }
-</style>
-<button type="button" id="wcDemoScrollBtn">시연용</button>
-<script>
-document.getElementById('wcDemoScrollBtn').onclick = function() {
-    var target = document.getElementById('wc-module-field-row');
-    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-};
-</script>
+
 
 <div class="gnb-backdrop"></div></body></html>
