@@ -1845,13 +1845,22 @@ function initNavi() {
 
 <div id="wcModuleBoxWrap">
 <!-- 공통모듈 선택하기 - 장르 섹션과 동일한 마크업(member-form-header+form-grid) 스타일의 박스로 표시(2026-09-10) -->
+<div style="background:#F8F0FF; border:0.1rem dashed #8400FF; border-radius:0.8rem; padding:1rem 1.4rem; margin-bottom:1.2rem; font-size:1.4rem;">
+    <label for="wcLabelPicker" style="font-weight:700; margin-right:0.8rem; color:#4F0099;">문구 제안 (데모용)</label>
+    <select id="wcLabelPicker" style="font-size:1.4rem; padding:0.4rem 0.8rem;">
+        <option value="담당 업무">담당 업무</option>
+        <option value="맞춤 정보" selected>맞춤 정보</option>
+        <option value="업무매칭">업무매칭</option>
+        <option value="업무 포지션">업무 포지션</option>
+    </select>
+</div>
 <div class="member-form-header mgt-30" id="wc-module-field-row">
-    <h3 class="form-section-title">공통모듈</h3>
+    <h3 class="form-section-title" id="wcModuleTitle">공통모듈</h3>
 </div>
 
 <div class="form-grid">
     <div class="form-row rownone">
-        <div class="form-label required">공통모듈</div>
+        <div class="form-label required" id="wcModuleFormLabel">공통모듈</div>
         <div class="form-input-group">
             <div class="wc-wizard">
                 <button type="button" class="module-filter-btn module-filter-btn-lg" id="openWizardModalBtn">공통모듈 선택하기</button>
@@ -3505,14 +3514,14 @@ function initPanel() {
     <div class="modal-body">
 
   <section class="screen" data-s="1">
-    <h1 class="title">활동 장르를 선택해 주세요 <span class="req">*</span></h1>
-    <p class="desc">해당하는 장르를 모두 선택할 수 있습니다.</p>
+    <h1 class="title">활동 분야를 선택해 주세요 <span class="req">*</span></h1>
+    <p class="desc">해당하는 분야를 모두 선택할 수 있습니다.</p>
     <div class="genre-grid" id="genreGrid"></div>
   </section>
 
   <section class="screen screen-fill" data-s="2">
     <div class="sticky-filters">
-      <div class="filter-label">공통모듈 <span class="filter-hint">선택하면 해당 공통모듈의 항목만 보입니다.</span></div>
+      <div class="filter-label"><span class="wc-module-word">공통모듈</span> <span class="filter-hint">선택하면 해당 <span class="wc-module-word-inline">공통모듈</span>의 항목만 보입니다.</span></div>
       <div class="chips" id="catModuleFilter"></div>
       <div class="search-box" id="catSearchBox">
         <input type="text" id="catSearch" placeholder="항목 이름으로 검색 (예: 배급사, 유통)">
@@ -3535,7 +3544,7 @@ function initPanel() {
 
   <section class="screen screen-fill" data-s="3">
     <div class="sticky-filters">
-      <div class="filter-label">공통모듈 <span class="filter-hint">선택하면 해당 공통모듈의 항목만 보입니다.</span></div>
+      <div class="filter-label"><span class="wc-module-word">공통모듈</span> <span class="filter-hint">선택하면 해당 <span class="wc-module-word-inline">공통모듈</span>의 항목만 보입니다.</span></div>
       <div class="chips" id="wishModuleFilter"></div>
       <div class="search-box" id="wishSearchBox">
         <input type="text" id="wishSearch" placeholder="항목 이름으로 검색">
@@ -3720,10 +3729,10 @@ const DATA = {
 };
 
 const GENRES = Object.keys(DATA);
-const STEP_LABELS = ["", "활동 장르", "내가 하는 일", "희망 파트너", "완료"];
+const STEP_LABELS = ["", "활동 분야", "내가 하는 일", "희망 파트너", "완료"];
 // 모달 상단 문구는 스테퍼의 짧은 단계명(STEP_LABELS)과 달리, 2·3단계는 본문에 있던
 // 질문 문장을 그대로 옮겨와 안내 역할을 하도록 별도로 둔다.
-const MODAL_TITLES = ["", "활동 장르", "귀하가 하는 일을 선택해주세요", "귀하가 찾고 있는 파트너 유형을 선택해주세요", "완료"];
+const MODAL_TITLES = ["", "활동 분야", "귀하가 하는 일을 선택해주세요", "귀하가 찾고 있는 파트너 유형을 선택해주세요", "완료"];
 // 원래 본문 h1 아래 있던 보조 설명 문단 - 2·3단계는 제목과 함께 모달 상단으로 옮기고
 // 본문에서는 뺐다. 옮기지 않은 1단계는 본문에 그대로 있으니 여기선 빈 문자열.
 const MODAL_DESCS = ["", "", "가장 대표적인 역할 하나가 주포지션이 되며, 보조포지션 배지를 누르면 주포지션을 바꿀 수 있습니다.", "다른 장르의 기업도 선택할 수 있습니다.", ""];
@@ -4801,6 +4810,25 @@ document.getElementById("wcBackToModuleBtn").onclick = function () {
   document.getElementById("wcGenreSectionWrap").hidden = true;
   document.getElementById("wcModuleBoxWrap").hidden = false;
 };
+
+// 2026-09-14: "공통모듈" 단어가 아직 미확정이라, 데모를 보는 사람이 후보 4개(담당 업무 /
+// 맞춤 정보 / 업무매칭 / 업무 포지션) 중 골라볼 수 있게 하는 라이브 선택기. 실제 채택 로직이
+// 아니라 문구 제안 데모용이며, 페이지 내 "공통모듈" 리터럴이 나오는 5개 지점(7군데)을 전부 갱신한다.
+function applyModuleLabel(word) {
+  const title = document.getElementById("wcModuleTitle");
+  const formLabel = document.getElementById("wcModuleFormLabel");
+  const btn = document.getElementById("openWizardModalBtn");
+  if (title) title.textContent = word;
+  if (formLabel) formLabel.textContent = word;
+  if (btn) btn.textContent = word + " 선택하기";
+  document.querySelectorAll(".wc-module-word").forEach(el => el.textContent = word);
+  document.querySelectorAll(".wc-module-word-inline").forEach(el => el.textContent = word);
+}
+const wcLabelPicker = document.getElementById("wcLabelPicker");
+if (wcLabelPicker) {
+  wcLabelPicker.addEventListener("change", e => applyModuleLabel(e.target.value));
+  applyModuleLabel(wcLabelPicker.value);
+}
 
 wireSearchBox("catSearchBox", "catSearch", "catSearchClear", v => { st.catQ = v; drawCatStep(); });
 wireSearchBox("wishSearchBox", "wishSearch", "wishSearchClear", v => { st.wishQ = v; drawWishStep(); });
