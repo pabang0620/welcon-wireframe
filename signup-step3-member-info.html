@@ -3509,4 +3509,17 @@ $(document).on("click", "section[id^='diMyFavoriteWrap_']", function(e){
 
 
 
-<div class="gnb-backdrop"></div></body></html>
+<div class="gnb-backdrop"></div>
+<script>
+// 2026-09-17: 네비게이션 바(메인 메뉴) 항목은 정적 클론이라 실제 하위 페이지가 없다 -
+// 클릭하면 전부 실제 운영 사이트 메인 페이지로 이동하게 한다. capture 단계에서 가로채고
+// stopImmediatePropagation으로 기존 드롭다운 토글용 클릭 핸들러보다 우선 실행되게 한다.
+document.querySelectorAll('.krds-main-menu').forEach(function (nav) {
+  nav.addEventListener('click', function (e) {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    location.href = 'https://welcon.kocca.kr/ko/main';
+  }, true);
+});
+</script>
+</body></html>
