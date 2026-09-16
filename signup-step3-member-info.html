@@ -1743,15 +1743,18 @@ function initNavi() {
 <div style="background:#F8F0FF; border:0.1rem dashed #8400FF; border-radius:0.8rem; padding:1rem 1.4rem; margin-bottom:0.6rem; margin-top:2rem; font-size:1.4rem;">
     <label for="wcLabelPicker" style="font-weight:700; margin-right:0.8rem; color:#4F0099;">문구 제안 (데모용)</label>
     <select id="wcLabelPicker" style="font-size:1.4rem; padding:0.4rem 0.8rem;">
-        <option value="직무 프로필" selected>직무 프로필</option>
-        <option value="활동 프로필">활동 프로필</option>
-        <option value="전문 분야 등록">전문 분야 등록</option>
-        <option value="경력 프로필">경력 프로필</option>
+        <option value="공통모듈" selected>공통모듈</option>
+        <option value="담당 업무">담당 업무</option>
+        <option value="내 업무 프로필">내 업무 프로필</option>
         <option value="포지션 매칭">포지션 매칭</option>
+        <option value="나의 비즈니스 프로필">나의 비즈니스 프로필</option>
+        <option value="나의 시그널 링크">나의 시그널 링크</option>
+        <option value="나의 비즈니스 카드">나의 비즈니스 카드</option>
     </select>
 </div>
-<div class="member-form-header" id="wc-module-field-row">
+<div class="member-form-header" id="wc-module-field-row" style="display:flex; align-items:baseline; gap:1.2rem; flex-wrap:wrap;">
     <h3 class="form-section-title" id="wcModuleTitle">공통모듈</h3>
+    <span id="wcModuleDesc" style="font-size:1.3rem; font-weight:400; color:#8A949E;"></span>
 </div>
 
 <div class="form-grid">
@@ -3153,16 +3156,29 @@ document.getElementById("wizardModal").onclick = e => { if (e.target.id === "wiz
 // 박스에 이미 그려진 차트(drawMainPageGenreChart)가 그대로 보인다.
 document.getElementById("btnConfirmDone").onclick = closeWizardModal;
 
-// 2026-09-16: "공통모듈" 단어가 아직 미확정이라, 데모를 보는 사람이 후보 4개(담당 업무 /
-// 맞춤 정보 / 업무 매칭 / 업무 포지션) 중 골라볼 수 있게 하는 라이브 선택기. 실제 채택 로직이
-// 아니라 문구 제안 데모용이며, 페이지 내 "공통모듈" 리터럴이 나오는 5개 지점(7군데)을 전부 갱신한다.
+// 2026-09-17: "공통모듈" 대체 문구 후보 6개(사용자가 직접 정리한 안) + 원래 문구
+// "공통모듈"까지 총 7개 중 데모를 보는 사람이 골라볼 수 있게 하는 라이브 선택기. 실제
+// 채택 로직이 아니라 문구 제안 데모용이며, 페이지 내 "공통모듈" 리터럴이 나오는 5개
+// 지점(7군데)을 전부 갱신한다. 후보마다 사용자가 볼 설명 문구도 같이 바뀌도록 타이틀
+// 오른쪽 작은 설명 텍스트(#wcModuleDesc)를 추가했다.
+const MODULE_DESCRIPTIONS = {
+  "공통모듈": "",
+  "담당 업무": "내가 하는 일과 희망 비즈니스를 선택하세요.",
+  "내 업무 프로필": "나의 업무와 희망 파트너를 선택하여 나만의 프로필을 완성하세요.",
+  "포지션 매칭": "장르별 워크플로우에서 나의 포지션과 희망 포지션을 선택하여 나만의 프로필을 완성하세요.",
+  "나의 비즈니스 프로필": "나의 콘텐츠 분야와 비즈니스 관심사를 설정하세요. 바이어 매칭 및 협업에 활용됩니다.",
+  "나의 시그널 링크": "내가 원하는 비즈니스와 나를 연결하는 나만의 신호를 선택하세요.",
+  "나의 비즈니스 카드": "나의 관심 분야와 희망 비즈니스를 한눈에 보여주는 카드를 설정하세요."
+};
 function applyModuleLabel(word) {
   const title = document.getElementById("wcModuleTitle");
   const formLabel = document.getElementById("wcModuleFormLabel");
   const btn = document.getElementById("openWizardModalBtn");
+  const desc = document.getElementById("wcModuleDesc");
   if (title) title.textContent = word;
   if (formLabel) formLabel.textContent = word;
   if (btn) btn.textContent = word + " 선택하기";
+  if (desc) desc.textContent = MODULE_DESCRIPTIONS[word] || "";
   document.querySelectorAll(".wc-module-word").forEach(el => el.textContent = word);
   document.querySelectorAll(".wc-module-word-inline").forEach(el => el.textContent = word);
 }
