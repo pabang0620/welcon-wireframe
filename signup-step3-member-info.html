@@ -2830,22 +2830,6 @@ function highlightSummaryFor(genre, type) {
    직접 텍스트를 그리는 플러그인으로 구현했다. */
 const rightGenreLabelsPlugin = {
   id: "rightGenreLabels",
-  // 2026-09-16: 오른쪽 여백(라벨 자리)을 왼쪽 y축 라벨 폭과 동일하게 맞춘다 - 왼쪽/오른쪽에
-  // 같은 장르명 텍스트가 나오니 필요한 폭도 사실상 같아야 한다. 렌더 후 실측한 왼쪽
-  // 폭(yScale.width)을 오른쪽 패딩에 그대로 적용하고, 값이 달라지면 한 번 더 레이아웃을
-  // 갱신해서 좌우가 수렴하게 한다(우측 패딩은 yScale.width 계산에 영향을 안 줘서
-  // 무한루프 없이 최대 2번 안에 안정된다).
-  afterLayout(chart) {
-    const yScale = chart.scales.y;
-    if (!yScale) return;
-    const desired = Math.ceil(yScale.width) + 8;
-    chart.options.layout = chart.options.layout || {};
-    const current = (chart.options.layout.padding && chart.options.layout.padding.right) || 0;
-    if (Math.abs(current - desired) > 1) {
-      chart.options.layout.padding = Object.assign({}, chart.options.layout.padding, { right: desired });
-      chart.update();
-    }
-  },
   afterDraw(chart) {
     const yScale = chart.scales.y;
     if (!yScale) return;
@@ -2979,6 +2963,23 @@ function renderGenreChartInto(wrapId, canvasId, getInstance, setInstance, cardId
       }
     }
   }));
+
+  // 2026-09-16: 오른쪽 여백(라벨 자리)을 왼쪽 y축 라벨 폭과 동일하게 맞춘다 - 왼쪽/오른쪽에
+  // 같은 장르명 텍스트가 나오니 필요한 폭도 사실상 같아야 한다. 생성 직후 실측한 왼쪽
+  // 폭(scales.y.width)을 오른쪽 패딩에 반영해 한 번만 다시 그린다(플러그인 훅 안에서
+  // update()를 부르면 재진입 문제가 생길 수 있어, 여기 함수 본문에서 생성 직후 1회만
+  // 보정한다 - 2026-09-16 버그 수정: 이전엔 afterLayout 훅 안에서 update()를 불러
+  // 위저드 완료화면 요약값이 안 나오는 회귀가 있었다).
+  const chartInstance = getInstance();
+  if (chartInstance && chartInstance.scales.y) {
+    const desired = Math.ceil(chartInstance.scales.y.width) + 8;
+    const current = (chartInstance.options.layout && chartInstance.options.layout.padding && chartInstance.options.layout.padding.right) || 0;
+    if (Math.abs(current - desired) > 1) {
+      chartInstance.options.layout = chartInstance.options.layout || {};
+      chartInstance.options.layout.padding = Object.assign({}, chartInstance.options.layout.padding, { right: desired });
+      chartInstance.update();
+    }
+  }
 }
 
 function drawGenreChart() {
