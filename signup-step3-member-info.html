@@ -1655,7 +1655,7 @@ function initNavi() {
         .wc-wizard .chart-card { border: 0.1rem solid var(--wc-border-light); background: #fff; margin-top: 2rem; border-radius: 1.2rem; overflow: hidden; }
         /* 요약카드(장르/하는 일/희망 파트너)에 비해 이 차트는 정보성이 낮은 보조 자료라
            문구·여백을 눌러서 존재감을 줄였다. */
-        .wc-wizard .chart-head { padding: 1.1rem 1.6rem; background: var(--wc-box-bg); border-bottom: 0.1rem solid var(--wc-border-light); font-size: 1.3rem; font-weight: 700; color: var(--wc-text-sub); border-radius: 1.2rem 1.2rem 0 0; }
+        .wc-wizard .chart-head { padding: 1.8rem 2.2rem; background: var(--wc-box-bg); border-bottom: 0.1rem solid var(--wc-border-light); font-size: 1.5rem; font-weight: 700; color: var(--wc-text-sub); border-radius: 1.2rem 1.2rem 0 0; }
         .wc-wizard .chart-body { padding: 1.4rem 1.6rem 1.2rem; }
         .wc-wizard .chart-legend { display: flex; flex-wrap: wrap; gap: 1.1rem; margin-bottom: 1rem; font-size: 1.3rem; color: var(--wc-text-sub); }
         .wc-wizard .lg-item { display: flex; align-items: center; gap: 0.5rem; }
@@ -2830,6 +2830,22 @@ function highlightSummaryFor(genre, type) {
    직접 텍스트를 그리는 플러그인으로 구현했다. */
 const rightGenreLabelsPlugin = {
   id: "rightGenreLabels",
+  // 2026-09-16: 오른쪽 여백(라벨 자리)을 왼쪽 y축 라벨 폭과 동일하게 맞춘다 - 왼쪽/오른쪽에
+  // 같은 장르명 텍스트가 나오니 필요한 폭도 사실상 같아야 한다. 렌더 후 실측한 왼쪽
+  // 폭(yScale.width)을 오른쪽 패딩에 그대로 적용하고, 값이 달라지면 한 번 더 레이아웃을
+  // 갱신해서 좌우가 수렴하게 한다(우측 패딩은 yScale.width 계산에 영향을 안 줘서
+  // 무한루프 없이 최대 2번 안에 안정된다).
+  afterLayout(chart) {
+    const yScale = chart.scales.y;
+    if (!yScale) return;
+    const desired = Math.ceil(yScale.width) + 8;
+    chart.options.layout = chart.options.layout || {};
+    const current = (chart.options.layout.padding && chart.options.layout.padding.right) || 0;
+    if (Math.abs(current - desired) > 1) {
+      chart.options.layout.padding = Object.assign({}, chart.options.layout.padding, { right: desired });
+      chart.update();
+    }
+  },
   afterDraw(chart) {
     const yScale = chart.scales.y;
     if (!yScale) return;
