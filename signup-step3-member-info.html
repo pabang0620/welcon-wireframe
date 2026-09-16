@@ -2915,13 +2915,23 @@ function renderGenreChartInto(wrapId, canvasId, getInstance, setInstance, cardId
     };
   });
 
+  // 2026-09-16: 오른쪽 여백(커스텀 장르명 라벨 자리)을 왼쪽 y축과 똑같은 폭으로 만든다.
+  // Chart.js 내부 레이아웃이 끝난 뒤 값을 읽는 방식은 폰트 불일치·responsive 재배치
+  // 타이밍 문제로 부정확했다 - 대신 차트를 만들기 "전에" 캔버스 컨텍스트로 직접
+  // measureText()를 해서 가장 긴 장르명 폭을 재고, 그 값을 처음부터 옵션에 박아 넣는다
+  // (왼쪽 y축도 아래에서 같은 폰트로 그리도록 명시했으니 좌우 폭이 정확히 일치한다).
+  const measureCtx = canvas.getContext("2d");
+  measureCtx.font = "13px 'Pretendard', 'Malgun Gothic', sans-serif";
+  const maxLabelWidth = data.reduce((max, d) => Math.max(max, measureCtx.measureText(d.genre).width), 0);
+  const rightPadding = Math.ceil(maxLabelWidth) + 8;
+
   setInstance(new Chart(canvas, {
     type: "bar",
     data: { labels: data.map(d => d.genre), datasets: datasets },
     plugins: [rightGenreLabelsPlugin],
     options: {
       indexAxis: "y",
-      layout: { padding: { right: 90 } },
+      layout: { padding: { right: rightPadding } },
       responsive: true,
       maintainAspectRatio: false,
       animation: { duration: 200 },
@@ -2944,7 +2954,7 @@ function renderGenreChartInto(wrapId, canvasId, getInstance, setInstance, cardId
           stacked: true, min: 0, max: chartMax, reverse: true, position: "bottom",
           grid: { display: false }, ticks: { display: false }
         },
-        y: { stacked: true, grid: { display: false } }
+        y: { stacked: true, grid: { display: false }, ticks: { font: { size: 13, family: "'Pretendard', 'Malgun Gothic', sans-serif" } } }
       },
       plugins: {
         // 기존 .chart-legend HTML(색상 스와치)을 그대로 쓰므로 Chart.js 기본 범례는 끈다(중복 방지).
@@ -2963,23 +2973,6 @@ function renderGenreChartInto(wrapId, canvasId, getInstance, setInstance, cardId
       }
     }
   }));
-
-  // 2026-09-16: 오른쪽 여백(라벨 자리)을 왼쪽 y축 라벨 폭과 동일하게 맞춘다 - 왼쪽/오른쪽에
-  // 같은 장르명 텍스트가 나오니 필요한 폭도 사실상 같아야 한다. 생성 직후 실측한 왼쪽
-  // 폭(scales.y.width)을 오른쪽 패딩에 반영해 한 번만 다시 그린다(플러그인 훅 안에서
-  // update()를 부르면 재진입 문제가 생길 수 있어, 여기 함수 본문에서 생성 직후 1회만
-  // 보정한다 - 2026-09-16 버그 수정: 이전엔 afterLayout 훅 안에서 update()를 불러
-  // 위저드 완료화면 요약값이 안 나오는 회귀가 있었다).
-  const chartInstance = getInstance();
-  if (chartInstance && chartInstance.scales.y) {
-    const desired = Math.ceil(chartInstance.scales.y.width) + 8;
-    const current = (chartInstance.options.layout && chartInstance.options.layout.padding && chartInstance.options.layout.padding.right) || 0;
-    if (Math.abs(current - desired) > 1) {
-      chartInstance.options.layout = chartInstance.options.layout || {};
-      chartInstance.options.layout.padding = Object.assign({}, chartInstance.options.layout.padding, { right: desired });
-      chartInstance.update();
-    }
-  }
 }
 
 function drawGenreChart() {
