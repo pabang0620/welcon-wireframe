@@ -1415,12 +1415,12 @@ function initNavi() {
           border-left: 0.2rem solid var(--wc-purple); border-bottom: 0.2rem solid var(--wc-purple); transform: rotate(-45deg);
         }
 
-        /* 장르 "기타" 이름 입력 (1개) */
-        .wc-wizard .etc-genre-row { margin-top: 1.6rem; padding: 1.6rem 1.8rem; border: 0.1rem solid var(--wc-purple); border-radius: 0.8rem; background: var(--wc-purple-light-bg); }
-        .wc-wizard .etc-genre-label { display: block; font-size: 1.4rem; font-weight: 700; color: var(--wc-text-sub); margin-bottom: 0.8rem; }
-        .wc-wizard .etc-genre-input { width: 100%; box-sizing: border-box; border: 0.1rem solid var(--wc-border); border-radius: 0.6rem; padding: 1rem 1.2rem; font-size: 1.6rem; background: #fff; color: var(--wc-text); }
-        .wc-wizard .etc-genre-input:focus { outline: none; border-color: var(--wc-purple); }
-        .wc-wizard .etc-genre-hint { margin: 0.6rem 0 0; font-size: 1.3rem; color: #d92d20; min-height: 1.6rem; }
+        /* 장르 "기타" 타일 자체가 입력란이 되는 상태 (엔터로 확정하기 전). 사이트 공용 input 스타일을
+           덮어쓰려고 !important를 쓴다. 경고 문구는 타일 높이를 키우지 않게 아래쪽에 겹쳐 띄운다. */
+        .wc-wizard .genre-tile.etc-editing { display: flex; align-items: center; justify-content: center; padding: 1.4rem 1.6rem; cursor: text; }
+        .wc-wizard .genre-tile .etc-genre-input { width: 100% !important; height: auto !important; box-sizing: border-box; border: 0 !important; border-bottom: 0.2rem solid var(--wc-purple) !important; border-radius: 0 !important; box-shadow: none !important; outline: none !important; background: transparent !important; padding: 0.6rem 0.4rem !important; font-size: 1.7rem; font-weight: 600; text-align: center; color: var(--wc-purple); }
+        .wc-wizard .genre-tile .etc-genre-input::placeholder { color: #8b8f96; font-weight: 400; font-size: 1.4rem; }
+        .wc-wizard .genre-tile .etc-genre-hint { position: absolute; left: 0; right: 0; bottom: 0.4rem; text-align: center; font-size: 1.2rem; font-weight: 400; color: #d92d20; }
 
         /* ===== 필터 칩 (장르 / 공통모듈) ===== */
         .wc-wizard .filter-label { font-size: 1.5rem; font-weight: 700; color: var(--wc-text-sub); margin-bottom: 0.8rem; }
@@ -1833,7 +1833,6 @@ function initNavi() {
 
   <section class="screen" data-s="1">
     <div class="genre-grid" id="genreGrid"></div>
-    <div class="etc-genre-row" id="etcGenreRow" hidden></div>
   </section>
 
   <section class="screen screen-fill" data-s="2">
@@ -2217,9 +2216,18 @@ function updateCountNote() {
 /* ===== STEP1: 장르 ===== */
 function drawGenreStep() {
   const el = document.getElementById("genreGrid");
-  el.innerHTML = GENRES.map(g =>
-    '<button type="button" class="genre-tile ' + (st.genres.has(g) ? "on" : "") + '" data-g="' + g + '">' + glHtml(g) + '</button>'
-  ).join("");
+  el.innerHTML = GENRES.map(g => {
+    const on = st.genres.has(g);
+    // 장르 "기타"를 켰고 아직 이름을 확정하지 않았으면 타일 자체가 입력란이 된다.
+    // 엔터를 누르면 그 이름이 타일 라벨로 확정된다(카테고리 "기타"와 달리 1개만).
+    if (g === ETC_GENRE && on && !st.etcGenreName) {
+      return '<div class="genre-tile on etc-editing" data-g="' + g + '">' +
+        '<input type="text" id="etcGenreInput" class="etc-genre-input" maxlength="' + ETC_NAME_MAX + '" ' +
+          'placeholder="입력 후 엔터를 눌러주세요" value="' + escAttr(st.etcGenreDraft) + '">' +
+        '<span class="etc-genre-hint" id="etcGenreHint"></span></div>';
+    }
+    return '<button type="button" class="genre-tile ' + (on ? "on" : "") + '" data-g="' + g + '">' + glHtml(g) + '</button>';
+  }).join("");
   el.querySelectorAll(".genre-tile").forEach(btn => {
     btn.onclick = () => {
       const g = btn.dataset.g;
@@ -2238,36 +2246,30 @@ function drawGenreStep() {
       st.catModuleFilter.clear();
       st.wishModuleFilter.clear();
       render();
-      if (g === ETC_GENRE && st.genres.has(ETC_GENRE)) document.getElementById("etcGenreInput").focus();
+      const etcInput = document.getElementById("etcGenreInput");
+      if (g === ETC_GENRE && etcInput) etcInput.focus();
     };
   });
-  drawEtcGenreRow();
+  wireEtcGenreInput();
 }
 
-/* 장르 "기타"를 켜면 타일 아래에 이름 입력란이 나타나고, 엔터를 누르면 그 이름이 장르 항목으로
-   확정되어 "기타" 타일 자리에 이름으로 표시된다(카테고리 "기타"와 달리 1개만). 확정되면 입력란은
-   사라지고, 타일을 다시 눌러 끄면 이름이 지워져 새로 입력할 수 있다. */
-function drawEtcGenreRow() {
-  const row = document.getElementById("etcGenreRow");
-  if (!st.genres.has(ETC_GENRE) || st.etcGenreName) { row.hidden = true; row.innerHTML = ""; return; }
-  row.hidden = false;
-  row.innerHTML = '<label class="etc-genre-label" for="etcGenreInput">기타 장르명</label>' +
-    '<input type="text" id="etcGenreInput" class="etc-genre-input" maxlength="' + ETC_NAME_MAX + '" ' +
-      'placeholder="입력 후 엔터를 눌러주세요" value="' + escAttr(st.etcGenreDraft) + '">' +
-    '<p class="etc-genre-hint" id="etcGenreHint"></p>';
+/* 장르 "기타" 타일 안의 입력란 배선 - 입력란 클릭이 타일 토글로 번지지 않게 막고, 엔터로 확정한다. */
+function wireEtcGenreInput() {
   const input = document.getElementById("etcGenreInput");
+  if (!input) return;
   const hint = document.getElementById("etcGenreHint");
   const isDup = name => GENRES.some(g => g !== ETC_GENRE && g === name);
+  input.onclick = e => e.stopPropagation();
   input.oninput = () => {
     st.etcGenreDraft = cleanCustomName(input.value);
-    hint.textContent = isDup(st.etcGenreDraft) ? "이미 있는 장르입니다. 위 목록에서 선택해 주세요." : "";
+    hint.textContent = isDup(st.etcGenreDraft) ? "이미 있는 장르입니다" : "";
   };
   input.onkeydown = e => {
     if (e.key !== "Enter") return;
     e.preventDefault();
     const name = cleanCustomName(input.value);
-    if (!name) { hint.textContent = "장르명을 입력해 주세요."; input.focus(); return; }
-    if (isDup(name)) { hint.textContent = "이미 있는 장르입니다. 위 목록에서 선택해 주세요."; return; }
+    if (!name) { hint.textContent = "장르명을 입력해 주세요"; input.focus(); return; }
+    if (isDup(name)) { hint.textContent = "이미 있는 장르입니다"; return; }
     st.etcGenreName = name;
     st.etcGenreDraft = "";
     render();
