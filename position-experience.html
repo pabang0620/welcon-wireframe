@@ -953,6 +953,13 @@ function initNavi() {
           border-left: 0.2rem solid var(--wc-purple); border-bottom: 0.2rem solid var(--wc-purple); transform: rotate(-45deg);
         }
 
+        /* 장르 "기타" 이름 입력 (1개) */
+        .wc-wizard .etc-genre-row { margin-top: 1.6rem; padding: 1.6rem 1.8rem; border: 0.1rem solid var(--wc-purple); border-radius: 0.8rem; background: var(--wc-purple-light-bg); }
+        .wc-wizard .etc-genre-label { display: block; font-size: 1.4rem; font-weight: 700; color: var(--wc-text-sub); margin-bottom: 0.8rem; }
+        .wc-wizard .etc-genre-input { width: 100%; box-sizing: border-box; border: 0.1rem solid var(--wc-border); border-radius: 0.6rem; padding: 1rem 1.2rem; font-size: 1.6rem; background: #fff; color: var(--wc-text); }
+        .wc-wizard .etc-genre-input:focus { outline: none; border-color: var(--wc-purple); }
+        .wc-wizard .etc-genre-hint { margin: 0.6rem 0 0; font-size: 1.3rem; color: #d92d20; min-height: 1.6rem; }
+
         /* ===== 필터 칩 (장르 / 공통모듈) ===== */
         .wc-wizard .filter-label { font-size: 1.5rem; font-weight: 700; color: var(--wc-text-sub); margin-bottom: 0.8rem; }
         /* 장르/공통모듈/검색창을 모달 스크롤 중에도 항상 상단에 붙여둔다 - .modal-body가
@@ -1364,6 +1371,7 @@ function initNavi() {
 
   <section class="screen" data-s="1">
     <div class="genre-grid" id="genreGrid"></div>
+    <div class="etc-genre-row" id="etcGenreRow" hidden></div>
   </section>
 
   <section class="screen screen-fill" data-s="2">
@@ -1572,6 +1580,11 @@ const DATA = {
     "플랫폼·서비스": ["웹소설 플랫폼/퍼블리셔"],
     "중개·에이전트": ["문학저작권 에이전시(해외판권 수출입)", "웹소설·웹툰 2차 저작물(매체전환) 에이전트"],
     "기타": ["기타"]
+  },
+  // 장르 타일 "기타": 이름은 사용자가 직접 입력하고(1개만), 안의 카테고리는 다른 장르의 "기타"처럼
+  // 직접 입력으로 여러 개 추가할 수 있다. 1단계에서 이 타일을 켠 경우에만 2·3단계에 나타난다(activeGenres).
+  "기타": {
+    "기타": ["기타"]
   }
 };
 
@@ -1605,6 +1618,10 @@ const st = {
   catCustomItems: {},
   wishCustomItems: {},
   mainKey: null,
+  // 장르 "기타" 타일에 직접 입력한 장르명(1개). 내부 키는 항상 ETC_GENRE("기타")이고 화면 표시만 gl()로 바꾼다.
+  etcGenreName: "",
+  // 입력란에 타이핑 중인 값. 엔터를 눌러야 etcGenreName(확정 이름)이 된다.
+  etcGenreDraft: "",
   // 우측 카드 영역에 실제로 보여줄 장르들의 모음(여러 개 동시 선택 가능) - 멤버십 그대로
   // 적용된다(2026-09-11부로 "비어 있으면 전체 표시" 특례 없앰 - applyGenreFilter 주석 참고).
   // drawCatStep 진입 시 st.genres로 자동 채워지므로(seed) 실제로는 거의 항상 채워져 있다.
@@ -1620,6 +1637,36 @@ const key = (g, item) => g + SEP + item;
 const parseKey = k => k.split(SEP);
 const customItemsFor = (store, genre) => store[genre] || [];
 const cleanCustomName = value => value.trim().replace(/\s+/g, " ").replaceAll(SEP, " / ");
+
+/* ===== 장르 "기타" (직접 입력 장르 1개) ===== */
+const ETC_GENRE = "기타";
+const ETC_NAME_MAX = 20;
+// 화면에 보여줄 장르명 - 내부 키는 그대로 두고 표시만 입력한 이름으로 바꾼다.
+function gl(g) { return g === ETC_GENRE && st.etcGenreName ? st.etcGenreName : g; }
+// 입력값은 사용자 문자열이라 HTML에 넣을 때는 반드시 escape한다.
+function glHtml(g) { return escAttr(gl(g)); }
+// 1단계에서 "기타"를 켰는데 엔터로 이름을 확정하지 않았거나 기존 장르명과 같으면 다음 단계로 못 간다.
+function etcNameState() {
+  if (!st.genres.has(ETC_GENRE)) return "ok";
+  const n = st.etcGenreName;
+  if (!n) return "empty";
+  if (GENRES.some(g => g !== ETC_GENRE && g === n)) return "dup";
+  return "ok";
+}
+// 2·3단계 장르 목록: "기타"는 1단계에서 켠 경우에만 포함한다.
+function activeGenres() { return GENRES.filter(g => g !== ETC_GENRE || st.genres.has(ETC_GENRE)); }
+// "기타" 장르를 끄면 입력한 이름과 그 장르에 딸린 선택·입력값을 모두 비운다.
+function clearEtcGenre() {
+  st.etcGenreName = "";
+  st.etcGenreDraft = "";
+  delete st.catCustomItems[ETC_GENRE]; delete st.wishCustomItems[ETC_GENRE];
+  delete st.catOtherText[ETC_GENRE]; delete st.wishOtherText[ETC_GENRE];
+  delete st.catOtherOpen[ETC_GENRE]; delete st.wishOtherOpen[ETC_GENRE];
+  [...st.cats].forEach(k => { if (parseKey(k)[0] === ETC_GENRE) st.cats.delete(k); });
+  [...st.wishes].forEach(k => { if (parseKey(k)[0] === ETC_GENRE) st.wishes.delete(k); });
+  st.catShownGenres.delete(ETC_GENRE); st.wishShownGenres.delete(ETC_GENRE);
+  st.catShownGenresSeededFrom.delete(ETC_GENRE);
+}
 
 function stagesOf(genre) {
   const d = DATA[genre];
@@ -1658,7 +1705,7 @@ function render() {
   document.getElementById("btnBack").style.visibility = (st.step > 1 && st.step < 4) ? "visible" : "hidden";
   const nextBtn = document.getElementById("btnNext");
   nextBtn.textContent = st.step === 3 ? "등록 완료" : (st.step === 4 ? "처음부터 다시" : "다음");
-  nextBtn.disabled = (st.step === 1 && !st.genres.size) || (st.step === 2 && !st.cats.size);
+  nextBtn.disabled = (st.step === 1 && (!st.genres.size || etcNameState() !== "ok")) || (st.step === 2 && !st.cats.size);
   // 4단계(완료 화면)에서만 "확인" 버튼을 보인다 - 지금 선택을 그대로 둔 채 모달만 닫는
   // 별도 액션이라, 전체 초기화인 "처음부터 다시"(btnNext)보다 이쪽을 주 액션(.primary)으로
   // 두고 "처음부터 다시"는 보조 액션으로 내린다(실수로 초기화 누르는 사고 예방).
@@ -1709,7 +1756,7 @@ function updateCountNote() {
 function drawGenreStep() {
   const el = document.getElementById("genreGrid");
   el.innerHTML = GENRES.map(g =>
-    '<button type="button" class="genre-tile ' + (st.genres.has(g) ? "on" : "") + '" data-g="' + g + '">' + g + '</button>'
+    '<button type="button" class="genre-tile ' + (st.genres.has(g) ? "on" : "") + '" data-g="' + g + '">' + glHtml(g) + '</button>'
   ).join("");
   el.querySelectorAll(".genre-tile").forEach(btn => {
     btn.onclick = () => {
@@ -1720,6 +1767,7 @@ function drawGenreStep() {
         st.wishGenreFilter.delete(g);
         st.filterAddedGenres.delete(g);
         [...st.cats].forEach(k => { if (parseKey(k)[0] === g) st.cats.delete(k); });
+        if (g === ETC_GENRE) clearEtcGenre();
       } else {
         st.genres.add(g);
         st.catGenreFilter.add(g);
@@ -1728,8 +1776,40 @@ function drawGenreStep() {
       st.catModuleFilter.clear();
       st.wishModuleFilter.clear();
       render();
+      if (g === ETC_GENRE && st.genres.has(ETC_GENRE)) document.getElementById("etcGenreInput").focus();
     };
   });
+  drawEtcGenreRow();
+}
+
+/* 장르 "기타"를 켜면 타일 아래에 이름 입력란이 나타나고, 엔터를 누르면 그 이름이 장르 항목으로
+   확정되어 "기타" 타일 자리에 이름으로 표시된다(카테고리 "기타"와 달리 1개만). 확정되면 입력란은
+   사라지고, 타일을 다시 눌러 끄면 이름이 지워져 새로 입력할 수 있다. */
+function drawEtcGenreRow() {
+  const row = document.getElementById("etcGenreRow");
+  if (!st.genres.has(ETC_GENRE) || st.etcGenreName) { row.hidden = true; row.innerHTML = ""; return; }
+  row.hidden = false;
+  row.innerHTML = '<label class="etc-genre-label" for="etcGenreInput">기타 장르명</label>' +
+    '<input type="text" id="etcGenreInput" class="etc-genre-input" maxlength="' + ETC_NAME_MAX + '" ' +
+      'placeholder="입력 후 엔터를 눌러주세요" value="' + escAttr(st.etcGenreDraft) + '">' +
+    '<p class="etc-genre-hint" id="etcGenreHint"></p>';
+  const input = document.getElementById("etcGenreInput");
+  const hint = document.getElementById("etcGenreHint");
+  const isDup = name => GENRES.some(g => g !== ETC_GENRE && g === name);
+  input.oninput = () => {
+    st.etcGenreDraft = cleanCustomName(input.value);
+    hint.textContent = isDup(st.etcGenreDraft) ? "이미 있는 장르입니다. 위 목록에서 선택해 주세요." : "";
+  };
+  input.onkeydown = e => {
+    if (e.key !== "Enter") return;
+    e.preventDefault();
+    const name = cleanCustomName(input.value);
+    if (!name) { hint.textContent = "장르명을 입력해 주세요."; input.focus(); return; }
+    if (isDup(name)) { hint.textContent = "이미 있는 장르입니다. 위 목록에서 선택해 주세요."; return; }
+    st.etcGenreName = name;
+    st.etcGenreDraft = "";
+    render();
+  };
 }
 
 /* ===== 공용: 필터 칩 그리기 =====
@@ -1893,7 +1973,7 @@ function cardHtml(card, pickedSet, allowMainToggle, otherText, otherOpen) {
   // 하나로 표시/숨김+스크롤을 전부 처리하는 방식(lastScrolledGenre 기준, wireGenreSideNav
   // 참고)으로 통합되어 더는 필요 없다.
   return '<section class="group" id="genre-section-' + escAttr(card.genre) + '" data-genre="' + escAttr(card.genre) + '">' +
-    '<div class="group-title"><span class="group-title-text">' + card.genre + badge + '</span></div>' +
+    '<div class="group-title"><span class="group-title-text">' + glHtml(card.genre) + badge + '</span></div>' +
     '<div class="group-body">' + tiles + '</div>' +
   '</section>';
 }
@@ -1924,7 +2004,7 @@ function renderGenreSideNav(container, genres, pickedSet, preSelectedGenres, sho
     const hasPicks = count > 0 || (preSelectedGenres && preSelectedGenres.has(g));
     const cls = "genre-nav-item" + (isShown ? " shown" : "");
     return '<button type="button" class="' + cls + '" data-genre="' + escAttr(g) + '">' +
-      '<span>' + g + '</span><span class="genre-nav-count' + (hasPicks ? " has" : "") + '">' + count + '</span>' +
+      '<span>' + glHtml(g) + '</span><span class="genre-nav-count' + (hasPicks ? " has" : "") + '">' + count + '</span>' +
     '</button>';
   }).join("");
 }
@@ -2056,7 +2136,7 @@ function renderPickedBar(container, pickedSet, which, redraw) {
         '<button type="button" data-k="' + o.k + '" aria-label="' + summaryLabel(o.item) + ' 선택 해제">×</button>' +
       '</span>'
     ).join("") + (restCount > 0 ? '<span class="picked-chip-more">외 ' + restCount + '건</span>' : "");
-    return '<div class="picked-genre-group"><span class="picked-genre-label">' + g + '</span><div class="picked-chip-row">' + chips + '</div></div>';
+    return '<div class="picked-genre-group"><span class="picked-genre-label">' + glHtml(g) + '</span><div class="picked-chip-row">' + chips + '</div></div>';
   }).join("");
   container.innerHTML = '<p class="picked-bar-title">선택한 항목 (' + pickedSet.size + '개)</p><div class="picked-genre-groups">' + groups + '</div>';
   container.querySelectorAll("button[data-k]").forEach(btn => {
@@ -2078,6 +2158,8 @@ function renderPickedBar(container, pickedSet, which, redraw) {
    항목까지 해제되면 빠진다(타일도 자동 꺼짐). 1단계에서 타일만 눌러두고 2단계
    항목을 하나도 안 고른 장르는 이 함수가 호출되지 않으므로 그대로 유지된다. */
 function syncGenreFromPicks(g) {
+  // 장르 "기타"는 1단계 타일로만 켜고 끈다(마지막 항목을 빼도 카드가 사라지지 않게).
+  if (g === ETC_GENRE) return;
   let hasAny = false;
   st.cats.forEach(k => { if (parseKey(k)[0] === g) hasAny = true; });
   if (hasAny) st.genres.add(g); else st.genres.delete(g);
@@ -2197,7 +2279,7 @@ function drawCatStep() {
   // (수정 전: st.genres로 선택된 장르만 좁혀서 보여줬던 버그 - 1단계에서 고른 장르는
   // renderGenreSideNav의 preSelectedGenres 인자로 넘겨 하이라이트만 하고, 목차 자체는
   // 필터링하지 않는다. drawWishStep과 동일한 패턴).
-  const genreScope = GENRES;
+  const genreScope = activeGenres();
 
   // 2026-09-10 도입 / 2026-09-11 버그 수정: 우측 카드 영역에 실제로 뭘 보여줄지 결정하는
   // catShownGenres는 위 목차와 별개다 - "선택된(1단계에서 고른) 장르의 카테고리만 기본으로
@@ -2254,7 +2336,7 @@ function drawCatStep() {
 
 /* ===== STEP3: 희망비즈니스 ===== */
 function drawWishStep() {
-  const genreScope = GENRES;
+  const genreScope = activeGenres();
   drawChipRow(document.getElementById("wishModuleFilter"), moduleOptionsFor(genreScope, true), st.wishModuleFilter, drawWishStep,
     stage => moduleBadgeInfo(st.wishes, genreScope, stage, true), false, false);
 
@@ -2315,7 +2397,7 @@ function computeGenreChartData() {
       if (k === mk) main++; else sub++;
     });
     st.wishes.forEach(k => { if (parseKey(k)[0] === g) wish++; });
-    return { genre: g, main: main, sub: sub, wish: wish, denom: genreItemCount(g) };
+    return { genre: g, label: gl(g), main: main, sub: sub, wish: wish, denom: genreItemCount(g) };
   });
 }
 
@@ -2372,6 +2454,25 @@ function highlightSummaryFor(genre, type) {
    막대가 어느 장르인지 눈으로 따라가기 번거로웠다 - 오른쪽에도 같은 장르명을 미러링해서
    그린다. Chart.js 카테고리 축은 한쪽에만 라벨을 띄우는 게 기본이라, afterDraw 훅으로
    직접 텍스트를 그리는 플러그인으로 구현했다. */
+/* 차트 장르명 라벨 규칙 (2026-10-01): 오른쪽 라벨은 캔버스 오른쪽 끝에 딱 맞게 잡혀 있어서
+   (여백 = 측정한 글자폭 + 8px, 여유 0) 글꼴·배율에 따라 폭이 1px만 어긋나도 마지막 글자가
+   잘렸고, 긴 이름(직접 입력한 "기타" 장르명 등)은 줄바꿈 없이 그대로 늘어나 막대 영역을
+   먹었다. 그래서 (1) 한 줄 7자를 넘으면 최대 2줄로 나누고(넘치면 말줄임), (2) 오른쪽 여백에
+   6px 여유를 둔다. 전체 이름은 툴팁에 보여준다. */
+const CHART_LABEL_FONT = "13px 'Pretendard', 'Malgun Gothic', sans-serif";
+const CHART_LABEL_LINE_MAX = 7;
+const CHART_LABEL_LINE_HEIGHT = 15;
+function chartLabelLines(text) {
+  const chars = Array.from(String(text));
+  if (chars.length <= CHART_LABEL_LINE_MAX) return [chars.join("")];
+  let cut = CHART_LABEL_LINE_MAX;
+  const sp = chars.slice(0, CHART_LABEL_LINE_MAX + 1).lastIndexOf(" ");
+  if (sp > 2) cut = sp;
+  const first = chars.slice(0, cut).join("").trim();
+  const rest = Array.from(chars.slice(cut).join("").trim());
+  return [first, rest.length > CHART_LABEL_LINE_MAX ? rest.slice(0, CHART_LABEL_LINE_MAX - 1).join("").trimEnd() + "…" : rest.join("")];
+}
+
 const rightGenreLabelsPlugin = {
   id: "rightGenreLabels",
   afterDraw(chart) {
@@ -2379,13 +2480,14 @@ const rightGenreLabelsPlugin = {
     if (!yScale) return;
     const { ctx, chartArea } = chart;
     ctx.save();
-    ctx.font = "13px 'Pretendard', 'Malgun Gothic', sans-serif";
+    ctx.font = CHART_LABEL_FONT;
     ctx.fillStyle = "#464C53";
     ctx.textAlign = "left";
     ctx.textBaseline = "middle";
     chart.data.labels.forEach((label, i) => {
-      const y = yScale.getPixelForTick(i);
-      ctx.fillText(label, chartArea.right + 8, y);
+      const lines = Array.isArray(label) ? label : [label];
+      const top = yScale.getPixelForTick(i) - (lines.length - 1) * CHART_LABEL_LINE_HEIGHT / 2;
+      lines.forEach((line, n) => ctx.fillText(line, chartArea.right + 8, top + n * CHART_LABEL_LINE_HEIGHT));
     });
     ctx.restore();
   }
@@ -2423,7 +2525,11 @@ function renderGenreChartInto(wrapId, canvasId, getInstance, setInstance, cardId
   canvas.onmouseleave = clearChartHighlight;
   // 장르 하나당 막대 1개 - 장르 수(최대 8개)에 비례해 캔버스 높이를 잡는다.
   // 정보성이 낮은 보조 자료라 존재감을 줄이려고 막대 1개당 높이를 살짝 낮췄다(42→34).
-  wrap.style.height = Math.max(100, data.length * 34) + "px";
+  const chartLabels = data.map(d => chartLabelLines(d.label));
+  // 2줄 라벨이 있으면 라벨 높이를 합산해 행 간격이 모자라지 않게 키운다(58px는 x축·여백 몫).
+  const hasWrapped = chartLabels.some(l => l.length > 1);
+  const neededHeight = chartLabels.reduce((sum, l) => sum + l.length * CHART_LABEL_LINE_HEIGHT + 8, 0) + 58;
+  wrap.style.height = Math.max(100, data.length * 34, hasWrapped ? neededHeight : 0) + "px";
 
   // 분모(denom, 그 장르의 DATA 전체 항목수)가 0인 경우(실제로는 발생하지 않음)는
   // 0으로 나누기 방지를 위해 0%로 처리한다. 같은 항목을 우리 회사와 희망 파트너 양쪽에
@@ -2465,13 +2571,17 @@ function renderGenreChartInto(wrapId, canvasId, getInstance, setInstance, cardId
   // measureText()를 해서 가장 긴 장르명 폭을 재고, 그 값을 처음부터 옵션에 박아 넣는다
   // (왼쪽 y축도 아래에서 같은 폰트로 그리도록 명시했으니 좌우 폭이 정확히 일치한다).
   const measureCtx = canvas.getContext("2d");
-  measureCtx.font = "13px 'Pretendard', 'Malgun Gothic', sans-serif";
-  const maxLabelWidth = data.reduce((max, d) => Math.max(max, measureCtx.measureText(d.genre).width), 0);
-  const rightPadding = Math.ceil(maxLabelWidth) + 8;
+  measureCtx.font = CHART_LABEL_FONT;
+  const maxLabelWidth = chartLabels.reduce((max, lines) => lines.reduce((m, line) => {
+    const tm = measureCtx.measureText(line);
+    return Math.max(m, tm.width, tm.actualBoundingBoxRight || 0);
+  }, max), 0);
+  // 8px는 막대 영역과 글자 사이 간격, 6px는 글꼴·배율 차이로 글자가 캔버스 끝에 닿아 잘리지 않게 하는 여유.
+  const rightPadding = Math.ceil(maxLabelWidth) + 14;
 
   setInstance(new Chart(canvas, {
     type: "bar",
-    data: { labels: data.map(d => d.genre), datasets: datasets },
+    data: { labels: chartLabels, datasets: datasets },
     plugins: [rightGenreLabelsPlugin],
     options: {
       indexAxis: "y",
@@ -2498,13 +2608,14 @@ function renderGenreChartInto(wrapId, canvasId, getInstance, setInstance, cardId
           stacked: true, min: 0, max: chartMax, reverse: true, position: "bottom",
           grid: { display: false }, ticks: { display: false }
         },
-        y: { stacked: true, grid: { display: false }, ticks: { font: { size: 13, family: "'Pretendard', 'Malgun Gothic', sans-serif" } } }
+        y: { stacked: true, grid: { display: false }, ticks: { autoSkip: false, font: { size: 13, family: "'Pretendard', 'Malgun Gothic', sans-serif", lineHeight: CHART_LABEL_LINE_HEIGHT / 13 } } }
       },
       plugins: {
         // 기존 .chart-legend HTML(색상 스와치)을 그대로 쓰므로 Chart.js 기본 범례는 끈다(중복 방지).
         legend: { display: false },
         tooltip: {
           callbacks: {
+            title: items => data[items[0].dataIndex].label,
             label: ctx => {
               const ds = ctx.dataset;
               const count = ds.rawCount[ctx.dataIndex];
@@ -2531,7 +2642,7 @@ function drawGenreChart() {
 function drawMainPageGenreChart() {
   renderGenreChartInto("mainPageGenreChartWrap", "mainPageGenreChartCanvas",
     () => mainPageGenreChartInstance, v => { mainPageGenreChartInstance = v; },
-    "mainPageGenreChartCard", false);
+    "mainPageGenreChartCard", true);
 }
 
 /* ===== STEP4: 완료 요약 ===== */
@@ -2558,7 +2669,7 @@ function sumSubgroupsByGenre(keys, tagFn) {
     byGenre[g].push(k);
   });
   return order.map(g =>
-    '<div class="sum-subgroup"><div class="sum-subgroup-label">' + g + '</div><div class="tag-row">' +
+    '<div class="sum-subgroup"><div class="sum-subgroup-label">' + glHtml(g) + '</div><div class="tag-row">' +
       byGenre[g].map(tagFn).join("") + '</div></div>'
   ).join("");
 }
@@ -2570,7 +2681,7 @@ function drawSummaryStep() {
 
   /* 장르 카드: 활동장르(st.genres + 2단계에서 필터를 끄고 추가 선택한 st.cats 장르, 중복
      제거하되 st.genres가 먼저 오도록) + 희망장르(st.wishes에서 파생, 겹쳐도 양쪽 표시) */
-  const genreTag = g => '<span class="tag">' + g + '</span>';
+  const genreTag = g => '<span class="tag">' + glHtml(g) + '</span>';
   const catGenres = [...st.cats].map(k => parseKey(k)[0]);
   const actGenres = [...new Set([...st.genres, ...catGenres])];
   const wishGenres = [...new Set([...st.wishes].map(k => parseKey(k)[0]))];
@@ -2590,7 +2701,7 @@ function drawSummaryStep() {
     const p = parseKey(k);
     const hlType = cls === "pos-main" ? "main" : "sub";
     const label = summaryLabel(p[1]);
-    const prefix = withGenre ? '<em>' + p[0] + ' · </em>' : "";
+    const prefix = withGenre ? '<em>' + glHtml(p[0]) + ' · </em>' : "";
     return '<span class="tag ' + cls + '" data-hl-genre="' + p[0] + '" data-hl-type="' + hlType + '">' + prefix + label + '</span>';
   };
   // 주포지션은 항상 1개뿐이라 장르 접두어를 그대로 두고, 보조포지션은 여러 장르에 걸쳐
@@ -2655,6 +2766,8 @@ function resetAll() {
   st.catOtherOpen = {}; st.wishOtherOpen = {};
   st.catCustomItems = {}; st.wishCustomItems = {};
   st.mainKey = null;
+  st.etcGenreName = "";
+  st.etcGenreDraft = "";
   st.catShownGenres = new Set(); st.wishShownGenres = new Set(); st.catShownGenresSeededFrom = new Set();
   document.getElementById("catSearch").value = "";
   document.getElementById("catSearchBox").classList.remove("has-val");
@@ -2665,7 +2778,7 @@ function resetAll() {
 document.getElementById("btnNext").onclick = () => {
   if (st.step === 2) {
     const g = findEmptyShownGenre(st.catShownGenres, st.cats);
-    if (g) { alert(g + " 장르에서 항목을 선택해 주세요."); return; }
+    if (g) { alert(gl(g) + " 장르에서 항목을 선택해 주세요."); return; }
   }
   if (st.step === 4) resetAll(); else st.step++;
   render();
