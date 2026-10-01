@@ -2082,6 +2082,8 @@ const st = {
   mainKey: null,
   // 장르 "기타" 타일에 직접 입력한 장르명(1개). 내부 키는 항상 ETC_GENRE("기타")이고 화면 표시만 gl()로 바꾼다.
   etcGenreName: "",
+  // 입력란에 타이핑 중인 값. 엔터를 눌러야 etcGenreName(확정 이름)이 된다.
+  etcGenreDraft: "",
   // 우측 카드 영역에 실제로 보여줄 장르들의 모음(여러 개 동시 선택 가능) - 멤버십 그대로
   // 적용된다(2026-09-11부로 "비어 있으면 전체 표시" 특례 없앰 - applyGenreFilter 주석 참고).
   // drawCatStep 진입 시 st.genres로 자동 채워지므로(seed) 실제로는 거의 항상 채워져 있다.
@@ -2105,7 +2107,7 @@ const ETC_NAME_MAX = 20;
 function gl(g) { return g === ETC_GENRE && st.etcGenreName ? st.etcGenreName : g; }
 // 입력값은 사용자 문자열이라 HTML에 넣을 때는 반드시 escape한다.
 function glHtml(g) { return escAttr(gl(g)); }
-// 1단계에서 "기타"를 켰는데 이름이 비었거나 기존 장르명과 같으면 다음 단계로 못 간다.
+// 1단계에서 "기타"를 켰는데 엔터로 이름을 확정하지 않았거나 기존 장르명과 같으면 다음 단계로 못 간다.
 function etcNameState() {
   if (!st.genres.has(ETC_GENRE)) return "ok";
   const n = st.etcGenreName;
@@ -2118,6 +2120,7 @@ function activeGenres() { return GENRES.filter(g => g !== ETC_GENRE || st.genres
 // "기타" 장르를 끄면 입력한 이름과 그 장르에 딸린 선택·입력값을 모두 비운다.
 function clearEtcGenre() {
   st.etcGenreName = "";
+  st.etcGenreDraft = "";
   delete st.catCustomItems[ETC_GENRE]; delete st.wishCustomItems[ETC_GENRE];
   delete st.catOtherText[ETC_GENRE]; delete st.wishOtherText[ETC_GENRE];
   delete st.catOtherOpen[ETC_GENRE]; delete st.wishOtherOpen[ETC_GENRE];
@@ -2215,7 +2218,7 @@ function updateCountNote() {
 function drawGenreStep() {
   const el = document.getElementById("genreGrid");
   el.innerHTML = GENRES.map(g =>
-    '<button type="button" class="genre-tile ' + (st.genres.has(g) ? "on" : "") + '" data-g="' + g + '">' + g + '</button>'
+    '<button type="button" class="genre-tile ' + (st.genres.has(g) ? "on" : "") + '" data-g="' + g + '">' + glHtml(g) + '</button>'
   ).join("");
   el.querySelectorAll(".genre-tile").forEach(btn => {
     btn.onclick = () => {
@@ -2241,26 +2244,34 @@ function drawGenreStep() {
   drawEtcGenreRow();
 }
 
-/* 장르 "기타"를 켜면 타일 아래에 이름 입력란이 나타난다. 이름은 1개뿐이라 입력란도 하나다. */
+/* 장르 "기타"를 켜면 타일 아래에 이름 입력란이 나타나고, 엔터를 누르면 그 이름이 장르 항목으로
+   확정되어 "기타" 타일 자리에 이름으로 표시된다(카테고리 "기타"와 달리 1개만). 확정되면 입력란은
+   사라지고, 타일을 다시 눌러 끄면 이름이 지워져 새로 입력할 수 있다. */
 function drawEtcGenreRow() {
   const row = document.getElementById("etcGenreRow");
-  if (!st.genres.has(ETC_GENRE)) { row.hidden = true; row.innerHTML = ""; return; }
+  if (!st.genres.has(ETC_GENRE) || st.etcGenreName) { row.hidden = true; row.innerHTML = ""; return; }
   row.hidden = false;
   row.innerHTML = '<label class="etc-genre-label" for="etcGenreInput">기타 장르명</label>' +
     '<input type="text" id="etcGenreInput" class="etc-genre-input" maxlength="' + ETC_NAME_MAX + '" ' +
-      'placeholder="활동하시는 장르를 직접 입력해 주세요 (1개)" value="' + escAttr(st.etcGenreName) + '">' +
+      'placeholder="입력 후 엔터를 눌러주세요" value="' + escAttr(st.etcGenreDraft) + '">' +
     '<p class="etc-genre-hint" id="etcGenreHint"></p>';
   const input = document.getElementById("etcGenreInput");
-  const syncEtcState = () => {
-    document.getElementById("etcGenreHint").textContent =
-      etcNameState() === "dup" ? "이미 있는 장르입니다. 위 목록에서 선택해 주세요." : "";
-    document.getElementById("btnNext").disabled = !st.genres.size || etcNameState() !== "ok";
-  };
+  const hint = document.getElementById("etcGenreHint");
+  const isDup = name => GENRES.some(g => g !== ETC_GENRE && g === name);
   input.oninput = () => {
-    st.etcGenreName = cleanCustomName(input.value);
-    syncEtcState();
+    st.etcGenreDraft = cleanCustomName(input.value);
+    hint.textContent = isDup(st.etcGenreDraft) ? "이미 있는 장르입니다. 위 목록에서 선택해 주세요." : "";
   };
-  syncEtcState();
+  input.onkeydown = e => {
+    if (e.key !== "Enter") return;
+    e.preventDefault();
+    const name = cleanCustomName(input.value);
+    if (!name) { hint.textContent = "장르명을 입력해 주세요."; input.focus(); return; }
+    if (isDup(name)) { hint.textContent = "이미 있는 장르입니다. 위 목록에서 선택해 주세요."; return; }
+    st.etcGenreName = name;
+    st.etcGenreDraft = "";
+    render();
+  };
 }
 
 /* ===== 공용: 필터 칩 그리기 =====
@@ -3218,6 +3229,7 @@ function resetAll() {
   st.catCustomItems = {}; st.wishCustomItems = {};
   st.mainKey = null;
   st.etcGenreName = "";
+  st.etcGenreDraft = "";
   st.catShownGenres = new Set(); st.wishShownGenres = new Set(); st.catShownGenresSeededFrom = new Set();
   document.getElementById("catSearch").value = "";
   document.getElementById("catSearchBox").classList.remove("has-val");
