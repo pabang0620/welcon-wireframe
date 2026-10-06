@@ -1,0 +1,239 @@
+/*
+ * 내 업무 프로필
+ * 로드 순서: krds common.css / output.css, root.css, member.css 뒤
+ * 클래스: 접두어 work-profile-, 영역-역할 형태의 kebab-case
+ * 상태 클래스(.active .has .main .sub .reference .highlight .filtered-out .editing)는 항상 work-profile-* 와 함께 쓴다
+ * 색상은 krds 토큰 우선, 대응 토큰이 없는 값만 리터럴. 단위 rem(html 10px 기준)
+ */
+
+.work-profile,
+.work-profile-modal {
+  --work-profile-text: var(--krds-color-light-gray-90, #1E2124);
+  --work-profile-text-sub: var(--krds-color-light-gray-70, #464C53);
+  --work-profile-border: var(--krds-color-light-gray-60, #58616A);
+  --work-profile-border-light: var(--krds-color-light-gray-30, #B1B8BE);
+  --work-profile-box-bg: #F7F7F8;
+  --work-profile-white: var(--krds-color-light-gray-0, #fff);
+  --work-profile-primary: var(--krds-color-light-primary-70, #4F0099);
+  --work-profile-primary-dark: var(--krds-color-light-primary-80, #350066);
+  --work-profile-primary-light: var(--krds-color-light-primary-5, #F8F0FF);
+  --work-profile-primary-line: var(--krds-color-light-primary-50, #8400FF);
+  --work-profile-danger: #d92d20;
+  /* 차트 막대 색. work-profile.js 의 CHART_SEG_META 와 같은 값 */
+  --work-profile-chart-main: #6d28d9;
+  --work-profile-chart-sub: #8b5cf6;
+  --work-profile-chart-wish: #b6466a;
+}
+.work-profile *, .work-profile *::before, .work-profile *::after,
+.work-profile-modal *, .work-profile-modal *::before, .work-profile-modal *::after { box-sizing: border-box; }
+.work-profile button, .work-profile input,
+.work-profile-modal button, .work-profile-modal input { font-family: inherit; }
+
+/* ---------- 폼 영역 (제목 줄, 트리거 버튼) ---------- */
+.work-profile-title { display: flex; align-items: baseline; gap: 1.2rem; flex-wrap: wrap; }
+.work-profile-title-desc { font-size: 1.8rem; font-weight: 400; color: var(--work-profile-text-sub); }
+
+/* ---------- 요약 카드 / 태그 (모달 4단계와 폼 영역이 함께 쓴다) ---------- */
+.work-profile-sum-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.6rem; }
+.work-profile-main-sum-grid { display: none; margin-top: 1.6rem; }
+.work-profile-main-sum-grid.active { display: grid; }
+.work-profile-sum-card { border: 0.1rem solid var(--work-profile-border-light); background: var(--work-profile-white); border-radius: 1.2rem; overflow: hidden; }
+.work-profile-sum-head {
+  display: flex; justify-content: space-between; padding: 1.8rem 2.2rem; background: var(--work-profile-box-bg);
+  border-bottom: 0.1rem solid var(--work-profile-border-light); border-radius: 1.2rem 1.2rem 0 0;
+  font-size: 1.5rem; font-weight: 700; color: var(--work-profile-text-sub);
+}
+.work-profile-sum-edit { border: 0; background: none; padding: 0; font-size: inherit; color: var(--work-profile-primary); font-weight: 600; cursor: pointer; }
+.work-profile-sum-body { display: flex; flex-wrap: wrap; align-content: flex-start; gap: 0.6rem; min-height: 6rem; padding: 2rem 2.2rem; }
+.work-profile-sum-groups { display: flex; flex-direction: column; gap: 1.2rem; width: 100%; }
+.work-profile-sum-group-label { margin-bottom: 0.6rem; font-size: 1.3rem; font-weight: 700; color: var(--work-profile-border); letter-spacing: 0.02em; }
+.work-profile-sum-subgroup { margin-top: 1rem; }
+.work-profile-sum-subgroup:first-child { margin-top: 0.6rem; }
+.work-profile-sum-subgroup-label { margin-bottom: 0.5rem; font-size: 1.3rem; font-weight: 600; color: var(--work-profile-text-sub); }
+.work-profile-sum-none { font-size: 1.45rem; color: var(--work-profile-border); }
+.work-profile-sum-group .work-profile-sum-none { display: block; }
+.work-profile-tag-row { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+.work-profile-tag {
+  max-width: 100%; padding: 0.5rem 1rem; border: 0.1rem solid var(--work-profile-border-light); border-radius: 0.6rem;
+  background: var(--work-profile-white); font-size: 1.5rem; color: var(--work-profile-text); word-break: keep-all; overflow-wrap: anywhere;
+}
+.work-profile-tag em { margin-right: 0.4rem; font-size: 1.3rem; font-style: normal; color: var(--work-profile-border); }
+
+/* ---------- 포지션 분포 그래프 ---------- */
+.work-profile-chart { margin-top: 2rem; border: 0.1rem solid var(--work-profile-border-light); border-radius: 1.2rem; background: var(--work-profile-white); overflow: hidden; }
+.work-profile-main-chart { display: none; margin-top: 1.6rem; }
+.work-profile-main-chart.active { display: block; }
+.work-profile-chart-head {
+  padding: 1.8rem 2.2rem; background: var(--work-profile-box-bg); border-bottom: 0.1rem solid var(--work-profile-border-light);
+  border-radius: 1.2rem 1.2rem 0 0; font-size: 1.5rem; font-weight: 700; color: var(--work-profile-text-sub);
+}
+.work-profile-chart-body { padding: 1.4rem 1.6rem 1.2rem; }
+.work-profile-chart-legend { display: flex; flex-wrap: wrap; gap: 1.1rem; margin-bottom: 1rem; font-size: 1.3rem; color: var(--work-profile-text-sub); }
+.work-profile-legend-item { display: flex; align-items: center; gap: 0.5rem; }
+.work-profile-legend-swatch { display: inline-block; flex: none; width: 0.9rem; height: 0.9rem; }
+.work-profile-legend-swatch.main { background: var(--work-profile-chart-main); }
+.work-profile-legend-swatch.sub { background: var(--work-profile-chart-sub); }
+.work-profile-legend-swatch.wish { background: var(--work-profile-chart-wish); }
+.work-profile-chart-wrap { position: relative; width: 100%; }
+
+/* ---------- 모달 (krds-modal 위에 덮어쓴다) ----------
+   krds 규칙이 ".krds-modal:not([data-type=bottom-sheet]) .modal-dialog .modal-xxx" 깊이라 같은 깊이로 맞춘다 */
+.work-profile-modal { --krds-modal--size-large: 140rem; }
+.work-profile-modal:not([data-type=bottom-sheet]) .modal-dialog { width: 94%; }
+.work-profile-modal:not([data-type=bottom-sheet]) .modal-dialog .modal-content { max-width: none; height: 88%; padding: 0; max-height: 88%; overflow: hidden; }
+.work-profile-modal:not([data-type=bottom-sheet]) .modal-dialog .modal-header { display: flex; align-items: baseline; gap: 1.2rem; margin: 0; padding: 1.6rem 6.4rem 1.6rem 2.4rem; border-bottom: 0.1rem solid var(--work-profile-border-light); }
+.work-profile-modal:not([data-type=bottom-sheet]) .modal-dialog .modal-header .modal-title { flex: none; max-width: 100%; font-size: 2.2rem; line-height: 1.2; color: var(--work-profile-text); }
+.work-profile-modal-desc { margin: 0; font-size: 1.3rem; color: var(--work-profile-text-sub); }
+.work-profile-modal-desc[hidden] { display: none; }
+.work-profile-modal:not([data-type=bottom-sheet]) .modal-dialog .modal-conts { flex: 1; min-height: 0; align-items: stretch; padding: 2rem 2.4rem; overscroll-behavior: contain; }
+.work-profile-modal:not([data-type=bottom-sheet]) .modal-dialog .modal-btn { padding: 1.6rem 2.4rem; border-top: 0.1rem solid var(--work-profile-border-light); }
+
+.work-profile-screen { display: none; width: 100%; }
+.work-profile-screen.active { display: block; }
+.work-profile-screen.work-profile-screen-fill.active { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+
+/* 1단계: 장르 타일 */
+.work-profile-genre-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+.work-profile-genre-tile {
+  position: relative; padding: 2.6rem 1.6rem; border: 0.1rem solid var(--work-profile-border-light); border-radius: 0.8rem;
+  background: var(--work-profile-white); font-size: 1.7rem; font-weight: 600; text-align: center; color: var(--work-profile-text); cursor: pointer;
+}
+.work-profile-genre-tile:hover { border-color: var(--work-profile-border); }
+.work-profile-genre-tile.active { border-width: 0.2rem; border-color: var(--work-profile-primary); background: var(--work-profile-primary-light); color: var(--work-profile-primary); }
+.work-profile-genre-tile.active::after {
+  content: ""; position: absolute; top: 1.1rem; right: 1.3rem; width: 0.8rem; height: 0.5rem;
+  border-left: 0.2rem solid var(--work-profile-primary); border-bottom: 0.2rem solid var(--work-profile-primary); transform: rotate(-45deg);
+}
+/* 장르 "기타" 타일: 이름 확정 전에는 타일 자체가 입력란이 된다 */
+.work-profile-genre-tile.editing { display: flex; align-items: center; justify-content: center; padding: 1.4rem 1.6rem; cursor: text; }
+/* 사이트 공용 input 스타일(높이·테두리·그림자)을 이 안에서만 덮어쓰므로 !important를 쓴다 */
+.work-profile-genre-tile .work-profile-etc-input {
+  width: 100% !important; height: auto !important; padding: 0.6rem 0.4rem !important; border: 0 !important; border-bottom: 0.2rem solid var(--work-profile-primary) !important;
+  border-radius: 0 !important; box-shadow: none !important; outline: none !important; background: transparent !important;
+  font-size: 1.7rem; font-weight: 600; text-align: center; color: var(--work-profile-primary);
+}
+.work-profile-genre-tile .work-profile-etc-input::placeholder { font-size: 1.4rem; font-weight: 400; color: #8b8f96; }
+.work-profile-genre-tile .work-profile-etc-hint { position: absolute; left: 0; right: 0; bottom: 0.4rem; font-size: 1.2rem; font-weight: 400; text-align: center; color: var(--work-profile-danger); }
+
+/* 2·3단계: 필터 / 검색 */
+.work-profile-sticky-filters {
+  position: sticky; top: -2rem; z-index: 20; margin: -2rem -2.4rem 1.6rem; padding: 1.8rem 2.4rem 1.4rem;
+  border-bottom: 0.1rem solid var(--work-profile-border-light); background: var(--work-profile-white);
+}
+.work-profile-filter-label { margin-bottom: 0.8rem; font-size: 1.5rem; font-weight: 700; color: var(--work-profile-text-sub); }
+.work-profile-filter-hint { margin-left: 0.8rem; font-size: 1.3rem; font-weight: 400; color: var(--work-profile-border); }
+.work-profile-stage-chips { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-bottom: 1.8rem; }
+.work-profile-stage-chip {
+  min-height: 3.4rem; padding: 1rem 1.7rem; border: 0.1rem solid var(--work-profile-border-light); border-radius: 0.6rem;
+  background: var(--work-profile-white); font-size: 1.5rem; line-height: 1.35; color: var(--work-profile-text-sub); cursor: pointer;
+}
+.work-profile-stage-chip:hover { border-color: var(--work-profile-border); }
+.work-profile-stage-chip.has { border-color: var(--work-profile-primary-line); background: var(--work-profile-primary-light); color: var(--work-profile-primary-dark); }
+.work-profile-stage-chip.active,
+.work-profile-stage-chip.active.has { border-color: var(--work-profile-primary); background: var(--work-profile-primary); color: var(--work-profile-white); }
+.work-profile-stage-chip-badge { display: inline-block; min-width: 1.4rem; margin-left: 0.6rem; padding: 0 0.5rem; border-radius: 50%; font-size: 1.3rem; font-weight: 800; text-align: center; vertical-align: middle; }
+.work-profile-stage-chip-badge.main { background: var(--work-profile-primary); color: var(--work-profile-white); }
+.work-profile-stage-chip-badge.sub { background: var(--work-profile-border-light); color: var(--work-profile-text); }
+.work-profile-search-box {
+  display: flex; align-items: center; max-width: 48rem; padding: 1.1rem 1.5rem; border: 0.15rem solid var(--work-profile-border-light);
+  border-radius: 0.6rem; background: var(--work-profile-white);
+}
+.work-profile-search-box:focus-within { border-color: var(--work-profile-primary); }
+.work-profile-search-box input { flex: 1; border: 0; outline: none; background: transparent; font-size: 1.5rem; color: var(--work-profile-text); }
+.work-profile-search-clear { position: relative; display: none; flex: none; place-items: center; width: 1.8rem; height: 1.8rem; border: 0; border-radius: 50%; background: var(--work-profile-box-bg); cursor: pointer; }
+.work-profile-search-box.has-val .work-profile-search-clear { display: grid; }
+.work-profile-search-clear::before, .work-profile-search-clear::after { content: ""; position: absolute; width: 0.9rem; height: 0.15rem; background: var(--work-profile-text-sub); }
+.work-profile-search-clear::before { transform: rotate(45deg); }
+.work-profile-search-clear::after { transform: rotate(-45deg); }
+
+/* 2·3단계: 좌측 장르 목차 + 우측 카드 */
+.work-profile-split { display: flex; align-items: stretch; flex: 1; min-height: 30rem; border: 0.1rem solid var(--work-profile-border-light); border-radius: 1.2rem; background: var(--work-profile-white); overflow: hidden; }
+.work-profile-nav { flex: none; width: 20rem; padding: 1.2rem 0; border-right: 0.1rem solid var(--work-profile-border-light); background: var(--work-profile-box-bg); overflow-y: auto; overscroll-behavior: contain; }
+.work-profile-nav-item {
+  display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 1.2rem 1.8rem; border: 0; border-left: 0.3rem solid transparent; border-radius: 0;
+  background: transparent; box-shadow: none; font-size: 1.5rem; font-weight: 600; line-height: normal; letter-spacing: normal; text-align: left; color: var(--work-profile-text); cursor: pointer;
+}
+.work-profile-nav-item:hover { background: var(--work-profile-white); }
+.work-profile-nav-item:focus-visible { outline: 0.2rem solid var(--work-profile-primary-line); outline-offset: -0.2rem; }
+.work-profile-nav-item.active { border-left-color: var(--work-profile-primary-dark); background: var(--work-profile-primary); color: var(--work-profile-white); }
+.work-profile-nav-count { display: inline-flex; align-items: center; justify-content: center; min-width: 2rem; height: 2rem; padding: 0 0.5rem; border-radius: 999px; background: var(--work-profile-border-light); font-size: 1.3rem; font-weight: 700; color: var(--work-profile-white); }
+.work-profile-nav-count.has { background: var(--work-profile-primary); }
+.work-profile-nav-item.active .work-profile-nav-count { background: var(--work-profile-white); color: var(--work-profile-primary); }
+.work-profile-main-panel { flex: 1; min-width: 0; padding: 2rem 2.2rem; overflow-y: auto; overscroll-behavior: contain; }
+.work-profile-cards { display: flex; flex-direction: column; gap: 2.4rem; }
+.work-profile-group { padding-top: 0.4rem; border-top: 0.1rem solid var(--work-profile-border-light); scroll-margin-top: 1rem; }
+.work-profile-group:first-child { padding-top: 0; border-top: 0; }
+.work-profile-group.filtered-out { display: none; }
+.work-profile-group-title { display: flex; align-items: center; padding: 0.4rem 0 1.4rem; font-size: 1.7rem; font-weight: 700; letter-spacing: 0.02em; color: var(--work-profile-primary-dark); }
+.work-profile-group-title-text { display: flex; align-items: center; }
+.work-profile-group-badge { display: grid; flex: none; place-items: center; width: 1.8rem; height: 1.8rem; margin-left: 0.8rem; border-radius: 50%; background: var(--work-profile-primary); font-size: 1.3rem; font-weight: 800; color: var(--work-profile-white); }
+.work-profile-group-body { display: grid; grid-template-columns: repeat(auto-fill, minmax(24rem, 1fr)); gap: 1.2rem; }
+
+/* 항목 카드 */
+.work-profile-option {
+  display: flex; flex-wrap: wrap; align-items: flex-start; align-content: flex-start; gap: 1rem; min-height: 4.6rem; padding: 1.5rem 1.7rem;
+  border: 0.1rem solid var(--work-profile-border-light); border-radius: 1rem; background: var(--work-profile-white); cursor: pointer;
+}
+.work-profile-option:hover { border-color: var(--work-profile-border); }
+.work-profile-option:focus-visible { outline: 0.2rem solid var(--work-profile-primary-line); outline-offset: 0.2rem; }
+.work-profile-option-box { display: grid; flex: none; place-items: center; width: 1.8rem; height: 1.8rem; margin-top: 0.2rem; border: 0.15rem solid var(--work-profile-border-light); border-radius: 0.4rem; background: var(--work-profile-white); }
+.work-profile-option-box::after { content: ""; width: 0.9rem; height: 0.9rem; background: var(--work-profile-primary); transform: scale(0); transition: transform 0.12s; }
+.work-profile-option.active,
+.work-profile-option.other-open { border-color: var(--work-profile-primary-line); background: var(--work-profile-primary-light); }
+.work-profile-option.active .work-profile-option-box,
+.work-profile-option.other-open .work-profile-option-box { border-color: var(--work-profile-primary); }
+.work-profile-option.active .work-profile-option-box::after { transform: scale(1); }
+.work-profile-option-label { flex: 1; min-width: 0; font-size: 1.75rem; line-height: 1.45; color: var(--work-profile-text); word-break: keep-all; overflow-wrap: anywhere; }
+.work-profile-option.active .work-profile-option-label { font-weight: 600; }
+.work-profile-option-meta { display: flex; flex: 1 1 100%; flex-wrap: wrap; align-items: center; gap: 0.6rem; min-height: 1.9rem; margin-left: 2.8rem; }
+.work-profile-option-stage { font-size: 1.55rem; font-weight: 400; color: var(--work-profile-text-sub); }
+.work-profile-option-input {
+  width: 100%; padding: 0.5rem 0.8rem; border: 0.1rem solid var(--work-profile-border-light); border-radius: 0.6rem; background: var(--work-profile-white);
+  font: inherit; font-size: 1.5rem; color: var(--work-profile-text);
+}
+.work-profile-option-input:focus { outline: none; border-color: var(--work-profile-primary); }
+/* 3단계에서 2단계 선택 항목을 참고용으로 보여줄 때 */
+.work-profile-option.reference { background: var(--work-profile-box-bg); }
+.work-profile-empty { padding: 5rem 1.6rem; border: 0.1rem dashed var(--work-profile-border-light); border-radius: 0.8rem; font-size: 1.5rem; text-align: center; color: var(--work-profile-text-sub); }
+.work-profile-own-tag { display: inline-block; padding: 0.2rem 0.7rem; border: 0.1rem solid var(--work-profile-border-light); border-radius: 0.4rem; background: var(--work-profile-white); font-size: 1.3rem; font-weight: 700; white-space: nowrap; color: var(--work-profile-text-sub); }
+.work-profile-position-badge { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 0.4rem; font-size: 1.3rem; font-weight: 700; white-space: nowrap; }
+.work-profile-position-badge.main { background: var(--work-profile-primary); color: var(--work-profile-white); }
+.work-profile-position-badge.sub { border: 0.1rem solid var(--work-profile-primary); background: var(--work-profile-white); color: var(--work-profile-primary); }
+.work-profile-option.reference .work-profile-position-badge.main { background: var(--work-profile-border); }
+.work-profile-option.reference .work-profile-position-badge.sub { border-color: var(--work-profile-border-light); color: var(--work-profile-border); }
+.work-profile-position-badge-btn { padding: 0.15rem 0.5rem; border-radius: 0.4rem; box-shadow: none; line-height: normal; cursor: pointer; }
+.work-profile-position-badge-btn:hover,
+.work-profile-position-badge-btn:focus-visible { background: var(--work-profile-primary); color: var(--work-profile-white); }
+.work-profile-tag.pos-sub em { color: var(--work-profile-border); }
+.work-profile-tag.highlight { transition: none; }
+
+/* ---------- 반응형 ---------- */
+@media (max-width: 900px) {
+  .work-profile-genre-grid { grid-template-columns: repeat(2, 1fr); }
+  .work-profile-sum-grid { grid-template-columns: 1fr; }
+  .work-profile-modal:not([data-type=bottom-sheet]) .modal-dialog { width: 96%; }
+}
+@media (max-width: 767px) {
+  .work-profile-modal:not([data-type=bottom-sheet]) .modal-dialog { width: 96%; height: 100%; margin: 0 auto; }
+  .work-profile-modal:not([data-type=bottom-sheet]) .modal-dialog .modal-content { height: 94%; max-height: 94%; }
+  .work-profile-modal:not([data-type=bottom-sheet]) .modal-dialog .modal-header { flex-wrap: wrap; gap: 0.4rem 1.2rem; padding: 1.6rem 5.6rem 1.2rem 1.6rem; }
+  .work-profile-modal:not([data-type=bottom-sheet]) .modal-dialog .modal-header .modal-title { font-size: 1.8rem; }
+  .work-profile-modal-desc { flex: 1 1 100%; }
+  .work-profile-modal:not([data-type=bottom-sheet]) .modal-dialog .modal-conts { padding: 1.6rem; }
+  .work-profile-modal:not([data-type=bottom-sheet]) .modal-dialog .modal-btn { padding: 1.2rem 1.6rem; }
+  .work-profile-sticky-filters { position: static; margin: 0 0 1.2rem; padding: 0 0 1.2rem; }
+  .work-profile-filter-hint { display: none; }
+  .work-profile-stage-chips { flex-wrap: nowrap; margin-bottom: 1.2rem; overflow-x: auto; }
+  .work-profile-stage-chip { flex: none; }
+  .work-profile-screen.work-profile-screen-fill.active { display: block; }
+  .work-profile-split { overflow: visible; }
+  .work-profile-main-panel { overflow: visible; }
+  .work-profile-split { flex-direction: column; min-height: 0; }
+  .work-profile-nav { display: flex; width: auto; padding: 0; overflow-x: auto; overflow-y: hidden; border-right: 0; border-bottom: 0.1rem solid var(--work-profile-border-light); }
+  .work-profile-nav-item { flex: none; width: auto; gap: 0.8rem; border-left: 0; border-bottom: 0.3rem solid transparent; white-space: nowrap; }
+  .work-profile-nav-item.active { border-bottom-color: var(--work-profile-primary-dark); }
+  .work-profile-main-panel { padding: 1.6rem; }
+}
+@media (max-width: 620px) {
+  .work-profile-genre-grid { grid-template-columns: 1fr; }
+}
