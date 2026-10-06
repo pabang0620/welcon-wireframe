@@ -365,7 +365,7 @@ function stageOptionsFor(genresScope, includeOther) {
 }
 
 /* 장르별 카드 데이터. referenceSet 에 있는 항목은 참고 표시(reference) */
-function collectCards(genresScope, stageFilter, q, referenceSet, skipOther, customStore) {
+function collectCards(genresScope, stageFilter, q, referenceSet, skipOther, customStore, removableStore) {
   const cards = [];
   const customStores = Array.isArray(customStore) ? customStore : (customStore ? [customStore] : []);
   genresScope.forEach(g => {
@@ -383,7 +383,8 @@ function collectCards(genresScope, stageFilter, q, referenceSet, skipOther, cust
         customItems.forEach(item => {
           const k = key(g, item);
           if (!matchesQuery(item, q)) return;
-          items.push({ k: k, item: item, stage: stage, reference: !!(referenceSet && referenceSet.has(k)), custom: true });
+          items.push({ k: k, item: item, stage: stage, reference: !!(referenceSet && referenceSet.has(k)), custom: true,
+            removable: !!removableStore && customItemsFor(removableStore, g).indexOf(item) > -1 });
         });
       }
       DATA[g][stage].forEach(item => {
@@ -412,6 +413,7 @@ function cardHtml(card, pickedSet, allowMainToggle, otherText, otherOpen) {
     const isOtherInput = o.stage === "기타" && o.item === "기타";
     const isOtherOpen = isOtherInput && !!(otherOpen && otherOpen[card.genre]);
     const isReference = !!o.reference;
+    const isRemovable = !!o.removable;
     const posBadge = allowMainToggle ? positionLabel(o.k, !isReference && isOn) : "";
     const extra = isReference ? '<span class="work-profile-own-tag">하는 일</span>' + posBadge : posBadge;
     const otherVal = otherText ? (otherText[card.genre] || "") : "";
@@ -428,9 +430,10 @@ function cardHtml(card, pickedSet, allowMainToggle, otherText, otherOpen) {
       ? ' role="button" tabindex="0"'
       : ' role="checkbox" tabindex="0" aria-checked="' + (isOn ? "true" : "false") + '"');
     const subHtml = isOtherInput ? "" : '<span class="work-profile-option-stage">' + o.stage + '</span>';
-    return '<div class="work-profile-option' + (isOn ? " active" : "") + (isOtherOpen ? " other-open" : "") + (isReference ? " reference" : "") + '" data-k="' + o.k + '"' + optionAria + '>' +
+    return '<div class="work-profile-option' + (isOn ? " active" : "") + (isOtherOpen ? " other-open" : "") + (isReference ? " reference" : "") + (isRemovable ? " removable" : "") + '" data-k="' + o.k + '"' + optionAria + '>' +
       '<div class="work-profile-option-box" aria-hidden="true"></div><div class="work-profile-option-label' + (showOther ? " has-input" : "") + '">' + labelHtml + '</div>' +
       '<div class="work-profile-option-meta">' + subHtml + extra + '</div>' +
+      (isRemovable ? '<button type="button" class="work-profile-option-remove" data-k="' + o.k + '" aria-label="' + labelText + ' 항목 삭제"></button>' : '') +
     '</div>';
   }).join("");
 
@@ -561,6 +564,36 @@ function wireOptions(container, pickedSet, otherOpen, onChange) {
   });
 }
 
+/* 직접 입력한 항목 삭제: 목록과 선택에서 모두 없앤다 */
+function wireRemoveButtons(container, store, onChange) {
+  container.querySelectorAll(".work-profile-option-remove").forEach(btn => {
+    btn.onclick = e => {
+      e.stopPropagation();
+      const p = parseKey(btn.dataset.k);
+      store[p[0]] = customItemsFor(store, p[0]).filter(name => name !== p[1]);
+      purgeOrphanCustomItems();
+      onChange();
+    };
+  });
+}
+
+/* 목록에서 사라진 직접 입력 항목이 선택에 남지 않도록 정리 */
+function purgeOrphanCustomItems() {
+  const listed = (stores, k) => {
+    const p = parseKey(k);
+    return dataItemExists(p[0], p[1]) || stores.some(store => customItemsFor(store, p[0]).indexOf(p[1]) > -1);
+  };
+  [...st.works].forEach(k => {
+    if (listed([st.worksCustomItems], k)) return;
+    st.works.delete(k);
+    if (st.mainKey === k) st.mainKey = null;
+    syncGenreFromPicks(parseKey(k)[0]);
+  });
+  [...st.wishes].forEach(k => {
+    if (!listed([st.worksCustomItems, st.wishCustomItems], k)) st.wishes.delete(k);
+  });
+}
+
 /* "기타" 직접 입력: 엔터로 항목을 추가하고 선택한다 */
 function wireOtherInputs(container, otherText, otherOpen, pickedSet, customStore, onCommit) {
   container.querySelectorAll(".work-profile-option-input").forEach(input => {
@@ -638,7 +671,7 @@ function drawWorksStep() {
     stage => stageBadgeInfo(st.works, genreScope, stage));
 
   const q = st.worksQuery.trim();
-  const cards = collectCards(genreScope, st.worksStageFilter, q, null, false, st.worksCustomItems);
+  const cards = collectCards(genreScope, st.worksStageFilter, q, null, false, st.worksCustomItems, st.worksCustomItems);
   const el = document.getElementById("work-profile-works-area");
   renderCards(el, cards, st.works, q ? '"' + q + '"에 해당하는 항목이 없습니다.' : '해당하는 항목이 없습니다.', true, st.worksOtherText, st.worksOtherOpen);
   applyGenreFilter(el, st.worksShownGenres);
@@ -646,17 +679,13 @@ function drawWorksStep() {
   const navEl = document.getElementById("work-profile-works-nav");
   renderGenreSideNav(navEl, genreScope, st.works, st.genres, st.worksShownGenres);
 
-  wireGenreSideNav(navEl, "worksShownGenres", () => {
-    drawWorksStep();
-    document.getElementById("work-profile-next").disabled = !st.works.size;
-  }, "work-profile-works-area", st.works);
+  wireGenreSideNav(navEl, "worksShownGenres", drawWorksStep, "work-profile-works-area", st.works);
 
-  wireOptions(el, st.works, st.worksOtherOpen, () => {
-    drawWorksStep();
-    document.getElementById("work-profile-next").disabled = !st.works.size;
-  });
+  wireOptions(el, st.works, st.worksOtherOpen, drawWorksStep);
+  wireRemoveButtons(el, st.worksCustomItems, drawWorksStep);
   wireMainBadges(el);
   wireOtherInputs(el, st.worksOtherText, st.worksOtherOpen, st.works, st.worksCustomItems, drawWorksStep);
+  document.getElementById("work-profile-next").disabled = !st.works.size;
 }
 
 /* 3단계: 희망 파트너. 2단계에서 고른 항목은 참고 표시 */
@@ -666,7 +695,7 @@ function drawWishStep() {
     stage => stageBadgeInfo(st.wishes, genreScope, stage, true));
 
   const q = st.wishQuery.trim();
-  const cards = collectCards(genreScope, st.wishStageFilter, q, st.works, false, [st.worksCustomItems, st.wishCustomItems]);
+  const cards = collectCards(genreScope, st.wishStageFilter, q, st.works, false, [st.worksCustomItems, st.wishCustomItems], st.wishCustomItems);
   const el = document.getElementById("work-profile-wish-area");
   renderCards(el, cards, st.wishes, q ? '"' + q + '"에 해당하는 항목이 없습니다.' : '선택할 수 있는 파트너 유형이 없습니다.', false, st.wishOtherText, st.wishOtherOpen);
   applyGenreFilter(el, st.wishShownGenres);
@@ -678,6 +707,7 @@ function drawWishStep() {
   wireOptions(el, st.wishes, st.wishOtherOpen, () => {
     drawWishStep();
   });
+  wireRemoveButtons(el, st.wishCustomItems, drawWishStep);
   wireOtherInputs(el, st.wishOtherText, st.wishOtherOpen, st.wishes, st.wishCustomItems, drawWishStep);
 }
 

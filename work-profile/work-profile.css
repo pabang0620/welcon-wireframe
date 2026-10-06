@@ -175,6 +175,19 @@
   border: 0.1rem solid var(--work-profile-border-light); border-radius: 1rem; background: var(--work-profile-white); cursor: pointer;
 }
 .work-profile-option:hover { border-color: var(--work-profile-border); }
+.work-profile-option { position: relative; }
+.work-profile-option.removable .work-profile-option-label { padding-right: 2.6rem; }
+.work-profile-option-remove {
+  position: absolute; top: 0.8rem; right: 0.8rem; width: 2.4rem; height: 2.4rem; padding: 0; border: 0; border-radius: 50%;
+  background: transparent; cursor: pointer;
+}
+.work-profile-option-remove::before, .work-profile-option-remove::after {
+  content: ""; position: absolute; top: 50%; left: 50%; width: 1.2rem; height: 0.15rem; margin: -0.075rem 0 0 -0.6rem; background: var(--work-profile-text-sub);
+}
+.work-profile-option-remove::before { transform: rotate(45deg); }
+.work-profile-option-remove::after { transform: rotate(-45deg); }
+.work-profile-option-remove:hover, .work-profile-option-remove:focus-visible { background: var(--work-profile-border-light); outline: none; }
+.work-profile-option-remove:hover::before, .work-profile-option-remove:hover::after { background: var(--work-profile-text); }
 .work-profile-option:focus-visible { outline: 0.2rem solid var(--work-profile-primary-line); outline-offset: 0.2rem; }
 .work-profile-option-box { display: grid; flex: none; place-items: center; width: 1.8rem; height: 1.8rem; margin-top: 0.2rem; border: 0.15rem solid var(--work-profile-border-light); border-radius: 0.4rem; background: var(--work-profile-white); }
 .work-profile-option-box::after { content: ""; width: 0.9rem; height: 0.9rem; background: var(--work-profile-primary); transform: scale(0); transition: transform 0.12s; }
