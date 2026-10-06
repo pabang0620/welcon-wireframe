@@ -237,7 +237,10 @@ function render() {
 
   if (st.step === 1) drawGenreStep();
   if (st.step === 2) { drawWorksStep(); scrollToFirstSelectedGenre(); }
-  if (st.step === 3) { st.wishShownGenres = new Set(st.worksShownGenres); drawWishStep(); }
+  if (st.step === 3) {
+    st.wishShownGenres = new Set([...st.worksShownGenres, ...[...st.wishes].map(k => parseKey(k)[0])]);
+    drawWishStep();
+  }
   if (st.step === 4) { st.completed = true; drawSummaryStep(); }
   publishSelection();
 }
