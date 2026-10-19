@@ -21,6 +21,7 @@
   --work-profile-danger: #d92d20;
   /* 차트 막대 색. work-profile.js 의 CHART_SEG_META 와 같은 값 */
   --work-profile-chart-main: #6d28d9;
+  --work-profile-chart-main-dark: #4c1d95;
   --work-profile-chart-sub: #8b5cf6;
   --work-profile-chart-wish: #b6466a;
 }
@@ -153,6 +154,10 @@
   display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 1.2rem 1.8rem; border: 0; border-left: 0.3rem solid transparent; border-radius: 0;
   background: transparent; box-shadow: none; font-size: 1.5rem; font-weight: 600; line-height: normal; letter-spacing: normal; text-align: left; color: var(--work-profile-text); cursor: pointer;
 }
+/* 장르 이름이 목차 폭보다 길면(영어판) 줄바꿈하고 개수 배지는 줄어들지 않게 한다 */
+.work-profile-nav-item > span:first-child { min-width: 0; overflow-wrap: anywhere; text-align: left; }
+.work-profile-nav-item { gap: 0.8rem; }
+.work-profile-nav-count { flex: none; }
 .work-profile-nav-item:hover { background: var(--work-profile-white); }
 .work-profile-nav-item:focus-visible { outline: 0.2rem solid var(--work-profile-primary-line); outline-offset: -0.2rem; }
 .work-profile-nav-item.active { border-left-color: var(--work-profile-primary-dark); background: var(--work-profile-primary); color: var(--work-profile-white); }

@@ -11,6 +11,9 @@
  *   WorkProfile.setSelection(obj)   저장된 값 불러오기 (getSelection 과 같은 형식)
  *   WorkProfile.isComplete()        4단계(완료)까지 진행했고 내가 하는 일이 1개 이상이면 true
  *   document 이벤트 "work-profile:change" (detail = 선택값), hidden input #work-profile-value (JSON)
+ *
+ * 언어: 기본은 한국어. 다른 언어는 work-profile-data-xx.js(WORK_PROFILE_DATA, 항목 키도 그 언어로)와
+ *   work-profile-locale-xx.js(WORK_PROFILE_LOCALE: text, static, 숫자 옵션)를 이 파일보다 먼저 로드한다.
  */
 (function () {
 "use strict";
@@ -22,10 +25,37 @@ const CODES = window.WORK_PROFILE_DATA.codes || {};
 
 const GENRES = Object.keys(DATA);
 
-/* 단계별 모달 제목과 보조 설명 */
-const MODAL_TITLES = ["", "장르를 선택해 주세요", "귀하가 하는 일을 선택해주세요", "귀하가 찾고 있는 파트너 유형을 선택해주세요", "완료"];
+/* "기타"에 해당하는 내부 이름. 데이터 파일의 etc 로 바꿀 수 있다 (영어판은 "Other") */
+const ETC = window.WORK_PROFILE_DATA.etc || { genre: "기타", stage: "기타", item: "기타" };
 
-const MODAL_DESCS = ["", "해당하는 활동 분야를 모두 선택할 수 있습니다.", "가장 대표적인 역할 하나가 주포지션이 되며, 보조포지션 배지를 누르면 주포지션을 바꿀 수 있습니다.", "다른 장르의 포지션도 선택할 수 있습니다.", ""];
+/* 화면 문구. 기본은 한국어이고 window.WORK_PROFILE_LOCALE.text 가 있으면 그 값으로 덮어쓴다 */
+const LOCALE = window.WORK_PROFILE_LOCALE || {};
+const L = Object.assign({
+  /* 단계별 모달 제목과 보조 설명 */
+  modalTitles: ["", "장르를 선택해 주세요", "귀하가 하는 일을 선택해주세요", "귀하가 찾고 있는 파트너 유형을 선택해주세요", "완료"],
+  modalDescs: ["", "해당하는 활동 분야를 모두 선택할 수 있습니다.", "가장 대표적인 역할 하나가 주포지션이 되며, 보조포지션 배지를 누르면 주포지션을 바꿀 수 있습니다.", "다른 장르의 포지션도 선택할 수 있습니다.", ""],
+  next: "다음", register: "등록 완료", restart: "처음부터 다시",
+  etcPlaceholder: "입력 후 엔터를 눌러주세요",
+  dupGenre: "이미 있는 장르입니다", needGenreName: "장르명을 입력해 주세요",
+  ownTag: "하는 일", removeAria: "{name} 항목 삭제", needOther: "기타 항목을 입력해 주세요.",
+  posMain: "주포지션", posSub: "보조포지션", posWish: "희망 포지션", setMainTitle: "주포지션으로 지정",
+  emptyQuery: '"{q}"에 해당하는 항목이 없습니다.', emptyWorks: "해당하는 항목이 없습니다.", emptyWish: "선택할 수 있는 파트너 유형이 없습니다.",
+  chartCaption: "장르별 포지션 분포", thGenre: "장르", thDenom: "장르 전체 항목 수",
+  chartAria: "장르별 포지션 분포 그래프입니다. 자세한 수치는 이어지는 표를 참고하세요.",
+  tooltip: "{label} {count}개 / {denom}개 중 {pct}%",
+  sumActivity: "활동", sumWishGroup: "희망", sumNotSelected: "선택하지 않음", sumNone: "없음",
+  needItemInGenre: "{genre} 장르에서 항목을 선택해 주세요.",
+  chartLabelLineMax: 7, summaryLabelMax: 18, chartFont: ""
+}, LOCALE.text || {});
+const fmt = (str, vars) => str.replace(/\{(\w+)\}/g, (m, k) => (vars[k] == null ? "" : vars[k]));
+
+/* 정적 마크업(work-profile.html)의 문구를 로케일 값으로 바꾼다. 로케일에 없는 키는 마크업의 한국어를 그대로 둔다 */
+(function applyStaticText() {
+  const S = LOCALE.static || {};
+  document.querySelectorAll("[data-wp-i18n]").forEach(el => { const v = S[el.dataset.wpI18n]; if (v != null) el.textContent = v; });
+  document.querySelectorAll("[data-wp-i18n-ph]").forEach(el => { const v = S[el.dataset.wpI18nPh]; if (v != null) el.setAttribute("placeholder", v); });
+  document.querySelectorAll("[data-wp-i18n-aria]").forEach(el => { const v = S[el.dataset.wpI18nAria]; if (v != null) el.setAttribute("aria-label", v); });
+})();
 /* 선택 키는 "장르||항목" 문자열 */
 const SEP = "||";
 
@@ -60,7 +90,7 @@ const customItemsFor = (store, genre) => store[genre] || [];
 const cleanCustomName = value => value.trim().replace(/\s+/g, " ").replaceAll(SEP, " / ");
 
 /* 장르 "기타": 사용자가 이름을 직접 입력하며 1개만 만들 수 있다. 내부 키는 항상 "기타", 화면에는 입력한 이름을 보여준다 */
-const ETC_GENRE = "기타";
+const ETC_GENRE = ETC.genre;
 const ETC_NAME_MAX = 20;
 
 /* 화면 표시용 장르명 */
@@ -96,7 +126,7 @@ function clearEtcGenre() {
 
 function stagesOf(genre) {
   const d = DATA[genre];
-  return STAGE_ORDER.filter(s => d[s]).concat(d["기타"] ? ["기타"] : []);
+  return STAGE_ORDER.filter(s => d[s]).concat(d[ETC.stage] ? [ETC.stage] : []);
 }
 
 function dataItemExists(genre, item) {
@@ -219,15 +249,15 @@ function render() {
   document.querySelectorAll(".work-profile-screen").forEach(el => {
     el.classList.toggle("active", el.dataset.s === String(st.step));
   });
-  document.getElementById("work-profile-modal-title").textContent = MODAL_TITLES[st.step];
+  document.getElementById("work-profile-modal-title").textContent = L.modalTitles[st.step];
   const descEl = document.getElementById("work-profile-modal-desc");
-  const descText = MODAL_DESCS[st.step];
+  const descText = L.modalDescs[st.step];
   descEl.textContent = descText;
   descEl.hidden = !descText;
 
   document.getElementById("work-profile-back").style.visibility = (st.step > 1 && st.step < 4) ? "visible" : "hidden";
   const nextBtn = document.getElementById("work-profile-next");
-  nextBtn.textContent = st.step === 3 ? "등록 완료" : (st.step === 4 ? "처음부터 다시" : "다음");
+  nextBtn.textContent = st.step === 3 ? L.register : (st.step === 4 ? L.restart : L.next);
   nextBtn.disabled = (st.step === 1 && (!st.genres.size || etcNameState() !== "ok")) || (st.step === 2 && !st.works.size);
 
   const confirmBtn = document.getElementById("work-profile-confirm");
@@ -265,7 +295,7 @@ function drawGenreStep() {
     if (g === ETC_GENRE && on && !st.etcGenreName) {
       return '<div class="work-profile-genre-tile active editing" data-g="' + g + '">' +
         '<input type="text" id="work-profile-etc-input" class="work-profile-etc-input" maxlength="' + ETC_NAME_MAX + '" ' +
-          'placeholder="입력 후 엔터를 눌러주세요" value="' + escAttr(st.etcGenreDraft) + '">' +
+          'placeholder="' + escAttr(L.etcPlaceholder) + '" value="' + escAttr(st.etcGenreDraft) + '">' +
         '<span class="work-profile-etc-hint" id="work-profile-etc-hint"></span></div>';
     }
     return '<button type="button" class="work-profile-genre-tile ' + (on ? "active" : "") + '" data-g="' + g + '">' + glHtml(g) + '</button>';
@@ -283,8 +313,7 @@ function drawGenreStep() {
       st.worksStageFilter.clear();
       st.wishStageFilter.clear();
       render();
-      const etcInput = document.getElementById("work-profile-etc-input");
-      if (g === ETC_GENRE && etcInput) etcInput.focus();
+      if (g === ETC_GENRE) focusAfterClick(() => document.getElementById("work-profile-etc-input"));
     };
   });
   wireEtcGenreInput();
@@ -298,14 +327,14 @@ function wireEtcGenreInput() {
   input.onclick = e => e.stopPropagation();
   input.oninput = () => {
     st.etcGenreDraft = cleanCustomName(input.value);
-    hint.textContent = isDup(st.etcGenreDraft) ? "이미 있는 장르입니다" : "";
+    hint.textContent = isDup(st.etcGenreDraft) ? L.dupGenre : "";
   };
   input.onkeydown = e => {
     if (e.key !== "Enter") return;
     e.preventDefault();
     const name = cleanCustomName(input.value);
-    if (!name) { hint.textContent = "장르명을 입력해 주세요"; input.focus(); return; }
-    if (isDup(name)) { hint.textContent = "이미 있는 장르입니다"; return; }
+    if (!name) { hint.textContent = L.needGenreName; input.focus(); return; }
+    if (isDup(name)) { hint.textContent = L.dupGenre; return; }
     st.etcGenreName = name;
     st.etcGenreDraft = "";
     render();
@@ -334,8 +363,8 @@ function stageOfKey(k) {
   const g = p[0], item = p[1];
   const d = DATA[g];
   for (const s in d) { if (d[s].indexOf(item) > -1) return s; }
-  if (customItemsFor(st.worksCustomItems, g).indexOf(item) > -1) return "기타";
-  if (customItemsFor(st.wishCustomItems, g).indexOf(item) > -1) return "기타";
+  if (customItemsFor(st.worksCustomItems, g).indexOf(item) > -1) return ETC.stage;
+  if (customItemsFor(st.wishCustomItems, g).indexOf(item) > -1) return ETC.stage;
   return null;
 }
 
@@ -356,11 +385,11 @@ function stageBadgeInfo(pickedSet, genresScope, stage, noMain) {
 function stageOptionsFor(genresScope, includeOther) {
   const set = new Set();
   genresScope.forEach(g => stagesOf(g).forEach(s => {
-    if (!includeOther && s === "기타") return;
+    if (!includeOther && s === ETC.stage) return;
     set.add(s);
   }));
   const ordered = STAGE_ORDER.filter(s => set.has(s));
-  if (set.has("기타")) ordered.push("기타");
+  if (set.has(ETC.stage)) ordered.push(ETC.stage);
   return ordered;
 }
 
@@ -371,9 +400,9 @@ function collectCards(genresScope, stageFilter, q, referenceSet, skipOther, cust
   genresScope.forEach(g => {
     const items = [];
     stagesOf(g).forEach(stage => {
-      if (skipOther && stage === "기타") return;
+      if (skipOther && stage === ETC.stage) return;
       if (stageFilter.size && !stageFilter.has(stage)) return;
-      if (stage === "기타" && customStore) {
+      if (stage === ETC.stage && customStore) {
         const customItems = [];
         customStores.forEach(store => {
           customItemsFor(store, g).forEach(item => {
@@ -398,6 +427,15 @@ function collectCards(genresScope, stageFilter, q, referenceSet, skipOther, cust
   return cards;
 }
 
+/* 클릭으로 화면을 다시 그린 직후에 입력칸으로 포커스를 준다.
+   사이트 모달 스크립트(custom-ui-script.js)는 click 이 모달 바깥에서 일어났다고 보면 첫 버튼(닫기)으로 포커스를 옮기는데,
+   클릭한 요소가 다시 그려져 DOM 에서 빠지면 바깥 클릭으로 오인한다. 그래서 클릭 처리가 끝난 뒤 한 번 더 포커스를 준다 */
+function focusAfterClick(getEl) {
+  const el = getEl();
+  if (el) el.focus();
+  setTimeout(() => { const later = getEl(); if (later) later.focus(); }, 0);
+}
+
 function escAttr(s) {
   return String(s == null ? "" : s)
     .replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -410,12 +448,12 @@ function cardHtml(card, pickedSet, allowMainToggle, otherText, otherOpen) {
 
   const tiles = card.items.map(o => {
     const isOn = pickedSet.has(o.k);
-    const isOtherInput = o.stage === "기타" && o.item === "기타";
+    const isOtherInput = o.stage === ETC.stage && o.item === ETC.item;
     const isOtherOpen = isOtherInput && !!(otherOpen && otherOpen[card.genre]);
     const isReference = !!o.reference;
     const isRemovable = !!o.removable;
     const posBadge = allowMainToggle ? positionLabel(o.k, !isReference && isOn) : "";
-    const extra = isReference ? '<span class="work-profile-own-tag">하는 일</span>' + posBadge : posBadge;
+    const extra = isReference ? '<span class="work-profile-own-tag">' + escAttr(L.ownTag) + '</span>' + posBadge : posBadge;
     const otherVal = otherText ? (otherText[card.genre] || "") : "";
     const labelText = o.custom ? escAttr(o.item) : o.item;
 
@@ -423,7 +461,7 @@ function cardHtml(card, pickedSet, allowMainToggle, otherText, otherOpen) {
 
     const labelHtml = showOther
       ? '<input type="text" class="work-profile-option-input" data-k="' + o.k +
-        '" placeholder="입력 후 엔터를 눌러주세요" value="' + escAttr(otherVal) + '">'
+        '" placeholder="' + escAttr(L.etcPlaceholder) + '" value="' + escAttr(otherVal) + '">'
       : labelText;
 
     const optionAria = showOther ? "" : (isOtherInput
@@ -433,7 +471,7 @@ function cardHtml(card, pickedSet, allowMainToggle, otherText, otherOpen) {
     return '<div class="work-profile-option' + (isOn ? " active" : "") + (isOtherOpen ? " other-open" : "") + (isReference ? " reference" : "") + (isRemovable ? " removable" : "") + '" data-k="' + o.k + '"' + optionAria + '>' +
       '<div class="work-profile-option-box" aria-hidden="true"></div><div class="work-profile-option-label' + (showOther ? " has-input" : "") + '">' + labelHtml + '</div>' +
       '<div class="work-profile-option-meta">' + subHtml + extra + '</div>' +
-      (isRemovable ? '<button type="button" class="work-profile-option-remove" data-k="' + o.k + '" aria-label="' + labelText + ' 항목 삭제"></button>' : '') +
+      (isRemovable ? '<button type="button" class="work-profile-option-remove" data-k="' + o.k + '" aria-label="' + escAttr(fmt(L.removeAria, { name: o.item })) + '"></button>' : '') +
     '</div>';
   }).join("");
 
@@ -547,7 +585,7 @@ function wireOptions(container, pickedSet, otherOpen, onChange) {
     opt.onclick = () => {
       const k = opt.dataset.k;
       const p = parseKey(k);
-      if (p[1] === "기타") {
+      if (p[1] === ETC.item) {
         otherOpen[p[0]] = true;
         onChange();
         return;
@@ -608,13 +646,13 @@ function wireOtherInputs(container, otherText, otherOpen, pickedSet, customStore
       const genre = parseKey(input.dataset.k)[0];
       const value = cleanCustomName(input.value);
       if (!value) {
-        alert("기타 항목을 입력해 주세요.");
+        alert(L.needOther);
         input.focus();
         return;
       }
       const list = customStore[genre] || (customStore[genre] = []);
       if (!dataItemExists(genre, value) && list.indexOf(value) === -1) list.push(value);
-      pickedSet.delete(key(genre, "기타"));
+      pickedSet.delete(key(genre, ETC.item));
       pickedSet.add(key(genre, value));
       otherText[genre] = "";
       delete otherOpen[genre];
@@ -624,8 +662,7 @@ function wireOtherInputs(container, otherText, otherOpen, pickedSet, customStore
       if (onCommit) onCommit();
     };
   });
-  const firstOpenInput = container.querySelector(".work-profile-option-input");
-  if (firstOpenInput) firstOpenInput.focus();
+  if (container.querySelector(".work-profile-option-input")) focusAfterClick(() => container.querySelector(".work-profile-option-input"));
 }
 
 function wireMainBadges(container) {
@@ -649,9 +686,9 @@ function positionLabel(k, clickable) {
   const isMain = k === getMainKey();
 
   const cls = "work-profile-position-badge " + (isMain ? "main" : "sub");
-  const text = isMain ? "주포지션" : "보조포지션";
+  const text = isMain ? L.posMain : L.posSub;
   if (!isMain && clickable) {
-    return '<button type="button" class="' + cls + ' work-profile-position-badge-btn" data-mk="' + k + '" title="주포지션으로 지정">' + text + '</button>';
+    return '<button type="button" class="' + cls + ' work-profile-position-badge-btn" data-mk="' + k + '" title="' + escAttr(L.setMainTitle) + '">' + text + '</button>';
   }
   return '<span class="' + cls + '">' + text + '</span>';
 }
@@ -673,7 +710,7 @@ function drawWorksStep() {
   const q = st.worksQuery.trim();
   const cards = collectCards(genreScope, st.worksStageFilter, q, null, false, st.worksCustomItems, st.worksCustomItems);
   const el = document.getElementById("work-profile-works-area");
-  renderCards(el, cards, st.works, q ? '"' + q + '"에 해당하는 항목이 없습니다.' : '해당하는 항목이 없습니다.', true, st.worksOtherText, st.worksOtherOpen);
+  renderCards(el, cards, st.works, q ? fmt(L.emptyQuery, { q: q }) : L.emptyWorks, true, st.worksOtherText, st.worksOtherOpen);
   applyGenreFilter(el, st.worksShownGenres);
 
   const navEl = document.getElementById("work-profile-works-nav");
@@ -697,7 +734,7 @@ function drawWishStep() {
   const q = st.wishQuery.trim();
   const cards = collectCards(genreScope, st.wishStageFilter, q, st.works, false, [st.worksCustomItems, st.wishCustomItems], st.wishCustomItems);
   const el = document.getElementById("work-profile-wish-area");
-  renderCards(el, cards, st.wishes, q ? '"' + q + '"에 해당하는 항목이 없습니다.' : '선택할 수 있는 파트너 유형이 없습니다.', false, st.wishOtherText, st.wishOtherOpen);
+  renderCards(el, cards, st.wishes, q ? fmt(L.emptyQuery, { q: q }) : L.emptyWish, false, st.wishOtherText, st.wishOtherOpen);
   applyGenreFilter(el, st.wishShownGenres);
 
   const navEl = document.getElementById("work-profile-wish-nav");
@@ -716,7 +753,7 @@ function genreItemCount(genre) {
   const d = DATA[genre];
   let n = 0;
   for (const s in d) {
-    n += d[s].filter(item => !(s === "기타" && item === "기타")).length;
+    n += d[s].filter(item => !(s === ETC.stage && item === ETC.item)).length;
   }
   n += [...new Set([
     ...customItemsFor(st.worksCustomItems, genre),
@@ -744,11 +781,15 @@ function computeGenreChartData() {
 let chartInstance = null;
 let mainChartInstance = null;
 
-/* 그래프 색상. work-profile.css 의 --work-profile-chart-* 와 같은 값 */
+/* 그래프 색상. work-profile.css 의 --work-profile-chart-* 를 읽고, 변수가 없으면 아래 기본값을 쓴다 (사이트별 테마 파일이 변수만 바꾸면 된다) */
+function chartColor(name, fallback) {
+  const el = document.querySelector(".work-profile") || document.documentElement;
+  return getComputedStyle(el).getPropertyValue(name).trim() || fallback;
+}
 const CHART_SEG_META = {
-  main: { label: "주포지션", color: "#6d28d9", hlBg: "#4c1d95", hlText: "#fff" },
-  sub: { label: "보조포지션", color: "#8b5cf6" },
-  wish: { label: "희망 포지션", color: "#b6466a" }
+  main: { label: L.posMain, get color() { return chartColor("--work-profile-chart-main", "#6d28d9"); }, get hlBg() { return chartColor("--work-profile-chart-main-dark", "#4c1d95"); }, hlText: "#fff" },
+  sub: { label: L.posSub, get color() { return chartColor("--work-profile-chart-sub", "#8b5cf6"); } },
+  wish: { label: L.posWish, get color() { return chartColor("--work-profile-chart-wish", "#b6466a"); } }
 };
 
 function hexToRgba(hex, alpha) {
@@ -787,8 +828,12 @@ function highlightSummaryFor(genre, type) {
   });
 }
 
-const CHART_LABEL_FONT = "13px 'Pretendard', 'Malgun Gothic', sans-serif";
-const CHART_LABEL_LINE_MAX = 7;
+/* 그래프 글꼴. 로케일 chartFont 가 "page" 면 사이트(.work-profile)의 글꼴을 따른다 */
+function chartFontFamily() {
+  if (L.chartFont === "page") return getComputedStyle(document.querySelector(".work-profile") || document.body).fontFamily;
+  return "'Pretendard', 'Malgun Gothic', sans-serif";
+}
+const CHART_LABEL_LINE_MAX = L.chartLabelLineMax;
 const CHART_LABEL_LINE_HEIGHT = 15;
 /* 장르명이 7자를 넘으면 최대 2줄로 나누고 넘치면 말줄임 */
 function chartLabelLines(text) {
@@ -810,7 +855,7 @@ const rightGenreLabelsPlugin = {
     if (!yScale) return;
     const { ctx, chartArea } = chart;
     ctx.save();
-    ctx.font = CHART_LABEL_FONT;
+    ctx.font = "13px " + chartFontFamily();
     ctx.fillStyle = "#464C53";
     ctx.textAlign = "left";
     ctx.textBaseline = "middle";
@@ -833,10 +878,10 @@ function fillChartA11y(wrap, canvas, data) {
     table.className = "work-profile-chart-table sr-only";
     wrap.appendChild(table);
   }
-  table.innerHTML = '<caption>장르별 포지션 분포</caption><thead><tr><th scope="col">장르</th><th scope="col">주포지션</th>' +
-    '<th scope="col">보조포지션</th><th scope="col">희망 포지션</th><th scope="col">장르 전체 항목 수</th></tr></thead><tbody>' + rows + '</tbody>';
+  table.innerHTML = '<caption>' + escAttr(L.chartCaption) + '</caption><thead><tr><th scope="col">' + escAttr(L.thGenre) + '</th><th scope="col">' + escAttr(L.posMain) + '</th>' +
+    '<th scope="col">' + escAttr(L.posSub) + '</th><th scope="col">' + escAttr(L.posWish) + '</th><th scope="col">' + escAttr(L.thDenom) + '</th></tr></thead><tbody>' + rows + '</tbody>';
   canvas.setAttribute("role", "img");
-  canvas.setAttribute("aria-label", "장르별 포지션 분포 그래프입니다. 자세한 수치는 이어지는 표를 참고하세요.");
+  canvas.setAttribute("aria-label", L.chartAria);
 }
 
 /* 장르별 포지션 분포 막대 그래프. 분모는 장르의 전체 항목 수 */
@@ -896,7 +941,7 @@ function renderChartInto(wrapId, canvasId, getInstance, setInstance, cardId, ena
   });
 
   const measureCtx = canvas.getContext("2d");
-  measureCtx.font = CHART_LABEL_FONT;
+  measureCtx.font = "13px " + chartFontFamily();
   const maxLabelWidth = chartLabels.reduce((max, lines) => lines.reduce((m, line) => {
     const tm = measureCtx.measureText(line);
     return Math.max(m, tm.width, tm.actualBoundingBoxRight || 0);
@@ -932,7 +977,7 @@ function renderChartInto(wrapId, canvasId, getInstance, setInstance, cardId, ena
           stacked: true, min: 0, max: chartMax, reverse: true, position: "bottom",
           grid: { display: false }, ticks: { display: false }
         },
-        y: { stacked: true, grid: { display: false }, ticks: { autoSkip: false, font: { size: 13, family: "'Pretendard', 'Malgun Gothic', sans-serif", lineHeight: CHART_LABEL_LINE_HEIGHT / 13 } } }
+        y: { stacked: true, grid: { display: false }, ticks: { autoSkip: false, font: { size: 13, family: chartFontFamily(), lineHeight: CHART_LABEL_LINE_HEIGHT / 13 } } }
       },
       plugins: {
 
@@ -945,7 +990,7 @@ function renderChartInto(wrapId, canvasId, getInstance, setInstance, cardId, ena
               const count = ds.rawCount[ctx.dataIndex];
               const denom = ds.rawDenom[ctx.dataIndex];
               const pct = Math.round(ctx.parsed.x);
-              return ds.label + " " + count + "개 / " + denom + "개 중 " + pct + "%";
+              return fmt(L.tooltip, { label: ds.label, count: count, denom: denom, pct: pct });
             }
           }
         }
@@ -973,7 +1018,7 @@ function sumGroup(label, list, tagFn) {
 }
 
 function summaryLabel(item) {
-  const short = item.length > 18 ? item.slice(0, 18) + "..." : item;
+  const short = item.length > L.summaryLabelMax ? item.slice(0, L.summaryLabelMax) + "..." : item;
   return escAttr(short);
 }
 
@@ -1002,10 +1047,10 @@ function drawSummaryStep() {
   const activityGenres = [...new Set([...st.genres, ...worksGenres])];
   const wishGenres = [...new Set([...st.wishes].map(k => parseKey(k)[0]))];
   const wishGenreBlock = wishGenres.length
-    ? sumGroup("희망", wishGenres, genreTag)
-    : '<div class="work-profile-sum-group"><div class="work-profile-sum-group-label">희망</div><span class="work-profile-sum-none">선택하지 않음</span></div>';
-  const genreHtml = sumGroup("활동", activityGenres, genreTag) + wishGenreBlock;
-  const sumGenreHtml = genreHtml ? '<div class="work-profile-sum-groups">' + genreHtml + '</div>' : '<span class="work-profile-sum-none">없음</span>';
+    ? sumGroup(L.sumWishGroup, wishGenres, genreTag)
+    : '<div class="work-profile-sum-group"><div class="work-profile-sum-group-label">' + escAttr(L.sumWishGroup) + '</div><span class="work-profile-sum-none">' + escAttr(L.sumNotSelected) + '</span></div>';
+  const genreHtml = sumGroup(L.sumActivity, activityGenres, genreTag) + wishGenreBlock;
+  const sumGenreHtml = genreHtml ? '<div class="work-profile-sum-groups">' + genreHtml + '</div>' : '<span class="work-profile-sum-none">' + escAttr(L.sumNone) + '</span>';
   document.getElementById("work-profile-sum-genre").innerHTML = sumGenreHtml;
 
   const mainKey = getMainKey();
@@ -1021,10 +1066,10 @@ function drawSummaryStep() {
   };
 
   const subGroupHtml = subKeys.length
-    ? '<div class="work-profile-sum-group"><div class="work-profile-sum-group-label">보조포지션</div>' + sumSubgroupsByGenre(subKeys, posTag("pos-sub", false)) + '</div>'
+    ? '<div class="work-profile-sum-group"><div class="work-profile-sum-group-label">' + escAttr(L.posSub) + '</div>' + sumSubgroupsByGenre(subKeys, posTag("pos-sub", false)) + '</div>'
     : "";
-  const catHtml = sumGroup("주포지션", mainKeys, posTag("pos-main", true)) + subGroupHtml;
-  const sumWorksHtml = catHtml ? '<div class="work-profile-sum-groups">' + catHtml + '</div>' : '<span class="work-profile-sum-none">없음</span>';
+  const catHtml = sumGroup(L.posMain, mainKeys, posTag("pos-main", true)) + subGroupHtml;
+  const sumWorksHtml = catHtml ? '<div class="work-profile-sum-groups">' + catHtml + '</div>' : '<span class="work-profile-sum-none">' + escAttr(L.sumNone) + '</span>';
   document.getElementById("work-profile-sum-works").innerHTML = sumWorksHtml;
 
   const wishKeys = [...st.wishes];
@@ -1034,7 +1079,7 @@ function drawSummaryStep() {
     return '<span class="work-profile-tag" data-hl-genre="' + p[0] + '" data-hl-type="wish">' + label + '</span>';
   };
   const wishHtml = sumSubgroupsByGenre(wishKeys, wishTag);
-  const sumWishHtml = wishHtml ? '<div class="work-profile-sum-groups"><div class="work-profile-sum-group">' + wishHtml + '</div></div>' : '<span class="work-profile-sum-none">선택하지 않음</span>';
+  const sumWishHtml = wishHtml ? '<div class="work-profile-sum-groups"><div class="work-profile-sum-group">' + wishHtml + '</div></div>' : '<span class="work-profile-sum-none">' + escAttr(L.sumNotSelected) + '</span>';
   document.getElementById("work-profile-sum-wish").innerHTML = sumWishHtml;
 
   const mainSumGenre = document.getElementById("work-profile-main-sum-genre");
@@ -1086,7 +1131,7 @@ function resetAll() {
 document.getElementById("work-profile-next").onclick = () => {
   if (st.step === 2) {
     const g = findEmptyShownGenre(st.worksShownGenres, st.works);
-    if (g) { alert(gl(g) + " 장르에서 항목을 선택해 주세요."); return; }
+    if (g) { alert(fmt(L.needItemInGenre, { genre: gl(g) })); return; }
   }
   if (st.step === 4) resetAll(); else st.step++;
   render();
