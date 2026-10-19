@@ -16,6 +16,7 @@ welcon.kocca.kr 실제 회원가입 화면을 클론한 정적 HTML 프로토타
 | `position-experience.html` | 위저드만 남긴 포지션 체험 페이지 |
 | `signup-step4-company-info.html`, `index.html` | 기업정보입력 화면 (위저드 없음, 두 파일은 같은 내용) |
 | `genre.html` | 콘텐츠 등록의 장르·상세장르 선택 화면 |
+| `en/` | 영문 사이트 가입 화면(회원정보)에 영어판 "내 업무 프로필"을 넣은 데모. 주소는 `/en/`. 위저드 코드는 `en/work-profile/` |
 | `work-profile/` | 위저드 코드 (`work-profile.css`, `work-profile.js`, `work-profile-data.js`, `lib/chart.umd.min.js`). 두 페이지가 공통으로 불러온다 |
 
 ## 내 업무 프로필

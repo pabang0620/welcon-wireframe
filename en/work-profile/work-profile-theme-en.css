@@ -1,0 +1,28 @@
+/*
+ * 내 업무 프로필 - 영문 사이트(welcon.kocca.kr/en) 테마
+ * 로드 순서: work-profile.css 뒤
+ * 영문 사이트는 krds 토큰의 primary 와 secondary 가 국문과 반대다 (primary = 크림슨, secondary = 퍼플).
+ * work-profile.css 의 색은 --krds-color-light-primary-* 를 쓰므로 버튼, 선택 타일, 강조선은 별도 작업 없이 크림슨이 된다.
+ * 여기서는 토큰만으로 안 되는 그래프 색(주 포지션, 보조 포지션, 희망 포지션)만 맞춘다.
+ */
+.work-profile,
+.work-profile-modal {
+  --work-profile-chart-main: var(--krds-color-light-primary-60);
+  --work-profile-chart-main-dark: var(--krds-color-light-primary-80);
+  --work-profile-chart-sub: var(--krds-color-light-primary-30);
+  --work-profile-chart-wish: var(--krds-color-light-secondary-60);
+}
+
+/* 주 버튼: 이 사이트의 Upload, Sign up 버튼은 primary-60 이다. krds-btn.primary 기본(primary-50)보다 어두우므로 맞춘다 */
+.work-profile #work-profile-open,
+.work-profile-modal .krds-btn.primary:not(:disabled) { border-color: var(--krds-color-light-primary-60); background: var(--krds-color-light-primary-60); color: var(--work-profile-white); }
+.work-profile #work-profile-open:hover,
+.work-profile #work-profile-open:active,
+.work-profile #work-profile-open:focus,
+.work-profile-modal .krds-btn.primary:not(:disabled):hover,
+.work-profile-modal .krds-btn.primary:not(:disabled):active,
+.work-profile-modal .krds-btn.primary:not(:disabled):focus { border-color: var(--krds-color-light-primary-70); background: var(--krds-color-light-primary-70); }
+
+/* 보조 버튼(이전, 처음부터 다시): 이 사이트의 Cancel 버튼처럼 회색 테두리 */
+.work-profile-modal .krds-btn.secondary { border: 0.1rem solid var(--work-profile-border); background: var(--work-profile-white); color: var(--work-profile-text); }
+.work-profile-modal .krds-btn.secondary:hover { background: var(--krds-color-light-gray-5, #F4F5F6); color: var(--work-profile-text); }
